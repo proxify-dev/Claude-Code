@@ -6,7 +6,7 @@ hero:
   tagline: Skills, agents, and guides for agentic engineering. Get your team productive with Claude Code — fast.
   actions:
     - text: Get Started
-      link: /getting-started/installation/
+      link: /Claude-Code/getting-started/installation/
       icon: right-arrow
       variant: primary
     - text: View on GitHub
@@ -17,27 +17,25 @@ hero:
 
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-export const base = import.meta.env.BASE_URL;
-
 <CardGrid>
   <LinkCard
     title="Getting Started"
-    href={`${base}getting-started/installation/`}
+    href="/Claude-Code/getting-started/installation/"
     description="Install Claude Code, run your first session, and get productive in 10 minutes."
   />
   <LinkCard
     title="Guides"
-    href={`${base}guides/claude-md/`}
+    href="/Claude-Code/guides/claude-md/"
     description="Write effective CLAUDE.md files, master workflow patterns, and level up to agentic engineering."
   />
   <LinkCard
     title="Skills"
-    href={`${base}skills/overview/`}
+    href="/Claude-Code/skills/overview/"
     description="Install, create, and distribute reusable knowledge packages."
   />
   <LinkCard
     title="Agents"
-    href={`${base}agents/overview/`}
+    href="/Claude-Code/agents/overview/"
     description="Build autonomous subprocesses for code review, testing, and more."
   />
 </CardGrid>
