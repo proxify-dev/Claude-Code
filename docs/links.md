@@ -14,6 +14,7 @@ Curated links for Proxify engineers adopting Claude Code.
 - [skills.sh](https://skills.sh) — Community skills marketplace
 - [Skill Architecture Guide](../skills/skill-architecture/SKILL.md) — How to design effective skills
 - [Agent Development Guide](../skills/agent-development/SKILL.md) — How to build agents for Claude Code
+- **Install Proxify skills:** `npx skills add proxify-dev/Claude-Code`
 
 ## Learning Resources
 

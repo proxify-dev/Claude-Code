@@ -1,0 +1,12 @@
+{
+  "name": "claude-code",
+  "version": "0.1.0",
+  "description": "Proxify's Claude Code acceleration toolkit — skills, agents, and guides for agentic engineering",
+  "author": {
+    "name": "Proxify",
+    "url": "https://github.com/proxify-dev"
+  },
+  "homepage": "https://github.com/proxify-dev/Claude-Code",
+  "license": "MIT",
+  "keywords": ["claude-code", "skills", "agentic-engineering", "proxify"]
+}

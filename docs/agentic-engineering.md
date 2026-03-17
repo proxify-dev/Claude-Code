@@ -78,5 +78,5 @@ The agent doesn't know what it doesn't know. Your job is to fill the gaps with c
 ## Further Reading
 
 - [Workflow patterns](workflow-patterns.md) — concrete patterns for common tasks
-- [Common pitfalls](../tips/common-pitfalls.md) — mistakes to avoid
-- [Effective prompting](../tips/effective-prompting.md) — how to communicate clearly with agents
+- [Common pitfalls](common-pitfalls.md) — mistakes to avoid
+- [Effective prompting](effective-prompting.md) — how to communicate clearly with agents

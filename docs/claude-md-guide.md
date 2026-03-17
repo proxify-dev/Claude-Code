@@ -85,4 +85,8 @@ No frameworks, no tables of code patterns, no examples of implementation details
 
 ## Deep Dive
 
-For the full reference on CLAUDE.md architecture, distribution layers, and the pointer pattern, see the [skill-architecture skill](../skills/skill-architecture/SKILL.md).
+For the full reference on CLAUDE.md architecture, distribution layers, and the pointer pattern, see the [skill-architecture skill](../skills/skill-architecture/SKILL.md). Install it with:
+
+```bash
+npx skills add proxify-dev/Claude-Code@skill-architecture
+```

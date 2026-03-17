@@ -14,25 +14,36 @@ Skills use a three-level loading model:
 
 The metadata description is the trigger — it determines whether the skill fires. The body routes agents to the right reference. References are where the depth lives.
 
-## Installing a Skill
+## Installing Skills
 
-Skills live in `~/.claude/skills/`. Each skill is a directory with at least a `SKILL.md`:
+### From this repo (Proxify skills)
 
 ```bash
-# Copy a skill from this repo
-cp -r skills/skill-architecture ~/.claude/skills/skill-architecture
+# Install all Proxify skills
+npx skills add proxify-dev/Claude-Code
 
-# Or symlink to stay in sync
-ln -s /path/to/Claude-Code/skills/skill-architecture ~/.claude/skills/skill-architecture
+# Install a specific skill
+npx skills add proxify-dev/Claude-Code@skill-architecture
+npx skills add proxify-dev/Claude-Code@agent-development
 ```
 
-After installing, the skill is active in all your Claude Code sessions.
+### From the community
 
-## Browsing Available Skills
+```bash
+# Browse available skills
+npx skills search <keyword>
 
-- **This repo's skills:** See the [skills catalog](../skills/catalog.md)
-- **Community skills:** Browse [skills.sh](https://skills.sh)
-- **Install from marketplace:** `npx skills install <skill-name>`
+# Install from any public repo
+npx skills add owner/repo
+npx skills add owner/repo@specific-skill
+```
+
+Skills get installed to `~/.claude/skills/<name>/` (global) or `.claude/skills/<name>/` (project-level). After installing, the skill is active in your Claude Code sessions.
+
+### Browsing available skills
+
+- **Proxify skills:** See the [skills/](../skills/) directory in this repo
+- **Community directory:** Browse [skills.sh](https://skills.sh)
 
 ## Anatomy of a Skill
 
@@ -74,6 +85,42 @@ The SKILL.md body loads into context every trigger, so keep it lean — route to
 2. Write `SKILL.md` with frontmatter (name + description) and a routing body
 3. Add reference files for the deep content
 4. Test by starting a Claude Code session and asking about the skill's domain
+
+## Distributing Skills
+
+To make your skills installable via `npx skills add`:
+
+1. Create a public GitHub repo with a `skills/` directory at root
+2. Each subdirectory of `skills/` containing a `SKILL.md` is a distributable skill
+3. The `name` field in SKILL.md frontmatter must match the directory name
+4. No registration needed — skills.sh auto-discovers public repos
+
+```
+your-repo/
+└── skills/
+    ├── my-first-skill/
+    │   └── SKILL.md
+    └── my-second-skill/
+        ├── SKILL.md
+        └── references/
+```
+
+Engineers install with: `npx skills add your-github-handle/your-repo`
+
+### Plugins: Beyond Skills
+
+A repo can be a full Claude Code **plugin** that bundles skills alongside other components:
+
+```
+my-plugin/
+├── .claude-plugin/plugin.json    # Plugin manifest
+├── skills/                       # Skills (npx skills add)
+├── agents/                       # Subagents
+├── commands/                     # Slash commands
+└── hooks/                        # Event handlers
+```
+
+This is how the [proxify-dev/Claude-Code](https://github.com/proxify-dev/Claude-Code) repo is structured — it's both a skills distribution repo and a plugin.
 
 ## Key Principles
 

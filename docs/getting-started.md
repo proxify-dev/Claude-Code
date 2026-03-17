@@ -42,7 +42,7 @@ Reusable knowledge packages that teach Claude domain-specific patterns. They loa
 
 ### Agents
 
-Autonomous subprocesses that handle complex, multi-step tasks independently. Claude can spawn specialized agents for code review, testing, exploration, and more. See the [agent development skill](../skills/agent-development/SKILL.md).
+Autonomous subprocesses that handle complex, multi-step tasks independently. Claude can spawn specialized agents for code review, testing, exploration, and more. See the [agent development skill](../skills/agent-development/SKILL.md). Install it with `npx skills add proxify-dev/Claude-Code@agent-development`.
 
 ### Hooks
 

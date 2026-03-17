@@ -1,47 +1,61 @@
-# Claude-Code Knowledge Base
+# Claude-Code
 
-Markdown knowledge base for Proxify engineers adopting Claude Code. Guides, skill references, tips, and resources.
+Proxify's Claude Code acceleration plugin — skills, agents, and guides for agentic engineering.
 
-## Directory Structure
+## Install
 
-- `/guides/` — Long-form walkthroughs (getting started, CLAUDE.md writing, skills, workflows, mindset)
-- `/skills/` — Reference copies of recommended skills + installation catalog
-- `/tips/` — Short focused articles (context management, prompting, pitfalls)
-- `/resources/` — External links and glossary
+```bash
+npx skills add proxify-dev/Claude-Code
+```
+
+## Plugin Structure
+
+- `/skills/` — Distributable skills (discovered by `npx skills add`)
+- `/agents/` — Bundled subagents (future)
+- `/docs/` — Guides, tips, and resources for engineers
+- `/.claude-plugin/plugin.json` — Plugin manifest
+
+## Available Skills
+
+| Skill | Install |
+|-------|---------|
+| `skill-architecture` | `npx skills add proxify-dev/Claude-Code@skill-architecture` |
+| `agent-development` | `npx skills add proxify-dev/Claude-Code@agent-development` |
 
 ## Content Conventions
 
 - All content is Markdown — one topic per file, self-contained
-- Titles use `# Title` (H1), sections use `## Section` (H2)
-- Prefer bullet points and tables over prose paragraphs
-- Code examples use fenced blocks with language tags
-- Internal links use relative paths: `[guide](../guides/getting-started.md)`
+- Prefer bullet points and tables over prose
 - File names: lowercase, hyphens, `.md` extension
+- Internal links use relative paths
 
-## Adding New Content
+## Adding a New Skill
 
-- Guides → `/guides/` — walkthroughs that teach a concept end-to-end
-- Tips → `/tips/` — short reference articles for specific questions
-- Resources → `/resources/links.md` (external) or `/resources/glossary.md` (terms)
-- New skills → copy into `/skills/<skill-name>/` and add entry to `/skills/catalog.md`
+1. Create `skills/<skill-name>/SKILL.md` with valid frontmatter (`name` must match directory name)
+2. Add `references/` subdirectory for deep content if needed
+3. The skill becomes installable via `npx skills add proxify-dev/Claude-Code@<skill-name>`
+4. skills.sh auto-discovers it once pushed to GitHub
+
+## Adding an Agent
+
+1. Create `agents/<agent-name>.md` with YAML frontmatter (name, description, model, color)
+2. Write the system prompt as the markdown body
+3. The agent is bundled with the plugin
+
+## Adding Documentation
+
+- Add new docs to `/docs/`
+- Update README.md with a link
 
 ## Dual-Repo Boundary
 
-**This repo contains reference copies of skills, not the originals.**
-
 | Repo | Path | Role |
 |------|------|------|
-| Personal skills repo | `~/skills/` | Source of truth for custom skills. **Read-only from this project.** |
-| Active skills | `~/.claude/skills/` | Symlinks that activate skills in Claude Code sessions |
-| This org repo | This project | Proxify knowledge base. **All writes go here.** |
+| Personal skills | `~/skills/` | Source of truth for custom skills. **Read-only from this project.** |
+| Active skills | `~/.claude/skills/` | Where `npx skills add` installs to |
+| This org repo | This project | Proxify plugin + knowledge base. **All writes go here.** |
 
-**Rules:**
-- Copy skill files into `/skills/<skill-name>/` — never symlink
-- Never modify files in `~/skills/` from this project
-- If a skill is updated in `~/skills/`, manually refresh the copy here
-- `/skills/catalog.md` documents both source location and install instructions
-
-**The boundary rule:** Read from `~/skills/`, write only to this project's `/skills/`. To update an original skill, switch to the `~/skills/` repo.
+**The boundary rule:** Read from `~/skills/`, write only to this project. To update an original skill, switch to `~/skills/`.
 
 ## Reference Documents
 
@@ -50,6 +64,3 @@ Markdown knowledge base for Proxify engineers adopting Claude Code. Guides, skil
 
 ### Agent Development — `@skills/agent-development/SKILL.md`
 **Read when:** Creating agents, writing system prompts, configuring MCP servers
-
-### Skills Catalog — `@skills/catalog.md`
-**Read when:** Adding a new skill reference or helping an engineer install skills
