@@ -1,0 +1,88 @@
+# Writing Effective CLAUDE.md Files
+
+CLAUDE.md is the highest-leverage configuration surface for Claude Code. It's loaded into every conversation, so every line must earn its place.
+
+## What CLAUDE.md Does
+
+When you launch Claude Code in a directory, it walks the directory tree collecting CLAUDE.md files. More specific locations take precedence:
+
+| Priority | Location | Scope |
+|----------|----------|-------|
+| 1 (highest) | `/etc/claude-code/CLAUDE.md` | Organization-wide |
+| 2 | `~/.claude/CLAUDE.md` | Personal, all projects |
+| 3 | `./CLAUDE.md` | Project root |
+| 4 | `./CLAUDE.local.md` | Personal project overrides (gitignored) |
+| 5 | Parent directories | Inherited in monorepos |
+| 6 | Subdirectories | Module-specific, on demand |
+
+## The 200-Line Budget
+
+The system prompt already contains ~50 instructions. CLAUDE.md adds to that load. Frontier models follow approximately 150-200 instructions with reasonable consistency before quality degrades. Keep yours concise.
+
+## What to Include
+
+- One-line project overview with tech stack
+- Build/test/lint commands (Claude uses these verbatim)
+- Brief architecture/directory map
+- Coding conventions Claude can't infer from existing code
+- Critical warnings about gotchas
+- Pointers to detailed docs using `@imports`
+
+## What to Exclude
+
+- Standard language conventions Claude already knows
+- Code style rules enforced by linters (use hooks instead)
+- Detailed API documentation (link to it)
+- File-by-file codebase descriptions (Claude can read files itself)
+- Anything that changes frequently
+
+## The Pointer Pattern
+
+CLAUDE.md points; it doesn't explain. One line per concern — what to do and where to read more.
+
+**Good:**
+```markdown
+- **Auth flow:** See `@docs/authentication.md` before touching auth code
+```
+
+**Bad:** A 30-line section explaining five auth rules with examples inline.
+
+## CLAUDE.md vs. Hooks
+
+CLAUDE.md relies on LLM compliance — it's advisory. For things that must always happen (formatting, linting, blocking .env commits), use hooks. Hooks execute as code.
+
+## Example
+
+```markdown
+# ShopFront
+Next.js 14 e-commerce app. App Router, Stripe payments, Prisma ORM.
+
+## Commands
+- `npm run dev`: Dev server (port 3000)
+- `npm run test`: Jest tests
+- `npm run lint`: ESLint check
+
+## Architecture
+- `/app`: App Router pages and layouts
+- `/components/ui`: Reusable UI components
+- `/lib`: Utilities and shared logic
+- `/prisma`: Schema and migrations
+
+## Conventions
+- TypeScript strict mode, no `any` types
+- Named exports only, never default exports
+
+## Important
+- NEVER commit .env files
+- Stripe webhook must validate signatures
+
+## Reference Documents
+### Auth Flow — `@docs/authentication.md`
+**Read when:** Touching auth-related code
+```
+
+No frameworks, no tables of code patterns, no examples of implementation details. Those live in skills or reference docs.
+
+## Deep Dive
+
+For the full reference on CLAUDE.md architecture, distribution layers, and the pointer pattern, see the [skill-architecture skill](../skills/skill-architecture/SKILL.md).
