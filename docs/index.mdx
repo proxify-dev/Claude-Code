@@ -15,19 +15,27 @@ hero:
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
-<CardGrid stagger>
-  <Card title="Getting Started" icon="rocket">
-    [Install Claude Code](/getting-started/installation/), run your [first session](/getting-started/first-session/), learn the [key concepts](/getting-started/key-concepts/), and get [quick wins](/getting-started/quick-wins/) in 10 minutes.
-  </Card>
-  <Card title="Guides" icon="open-book">
-    Write effective [CLAUDE.md](/guides/claude-md/) files, master [workflow patterns](/guides/workflow-patterns/), manage [context](/guides/context-management/), and level up to [agentic engineering](/guides/agentic-engineering/).
-  </Card>
-  <Card title="Skills" icon="puzzle">
-    [Install](/skills/using-skills/) reusable knowledge packages, [create](/skills/creating-skills/) your own, and [distribute](/skills/distributing-skills/) them to your team.
-  </Card>
-  <Card title="Agents" icon="laptop">
-    Build [autonomous subprocesses](/agents/overview/) for code review, testing, and more. Learn the [patterns](/agents/patterns/) and [create your own](/agents/creating-agents/).
-  </Card>
+<CardGrid>
+  <LinkCard
+    title="Getting Started"
+    href="/getting-started/installation/"
+    description="Install Claude Code, run your first session, and get productive in 10 minutes."
+  />
+  <LinkCard
+    title="Guides"
+    href="/guides/claude-md/"
+    description="Write effective CLAUDE.md files, master workflow patterns, and level up to agentic engineering."
+  />
+  <LinkCard
+    title="Skills"
+    href="/skills/overview/"
+    description="Install, create, and distribute reusable knowledge packages."
+  />
+  <LinkCard
+    title="Agents"
+    href="/agents/overview/"
+    description="Build autonomous subprocesses for code review, testing, and more."
+  />
 </CardGrid>
