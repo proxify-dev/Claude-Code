@@ -17,25 +17,27 @@ hero:
 
 import { LinkCard, CardGrid } from '@astrojs/starlight/components';
 
+export const base = import.meta.env.BASE_URL;
+
 <CardGrid>
   <LinkCard
     title="Getting Started"
-    href="/getting-started/installation/"
+    href={`${base}getting-started/installation/`}
     description="Install Claude Code, run your first session, and get productive in 10 minutes."
   />
   <LinkCard
     title="Guides"
-    href="/guides/claude-md/"
+    href={`${base}guides/claude-md/`}
     description="Write effective CLAUDE.md files, master workflow patterns, and level up to agentic engineering."
   />
   <LinkCard
     title="Skills"
-    href="/skills/overview/"
+    href={`${base}skills/overview/`}
     description="Install, create, and distribute reusable knowledge packages."
   />
   <LinkCard
     title="Agents"
-    href="/agents/overview/"
+    href={`${base}agents/overview/`}
     description="Build autonomous subprocesses for code review, testing, and more."
   />
 </CardGrid>
