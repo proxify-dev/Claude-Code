@@ -44,7 +44,8 @@ npx skills add proxify-dev/Claude-Code
 
 ## Adding Documentation
 
-- Add new docs to `/docs/`
+- Add new docs to the appropriate `/docs/` subdirectory (`getting-started/`, `guides/`, `skills/`, `agents/`, `reference/`)
+- Add frontmatter (`title`, `description`, `sidebar_position`) to every doc file
 - Update README.md with a link
 
 ## Dual-Repo Boundary

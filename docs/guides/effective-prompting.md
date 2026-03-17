@@ -1,4 +1,8 @@
-# Effective Prompting
+---
+title: "Effective Prompting"
+description: "Communication patterns that work well with Claude Code."
+sidebar_position: 4
+---
 
 Patterns that work well when communicating with Claude Code.
 

@@ -1,4 +1,8 @@
-# Workflow Patterns
+---
+title: "Workflow Patterns"
+description: "Proven patterns for working with Claude Code on real engineering tasks."
+sidebar_position: 2
+---
 
 Proven patterns for working with Claude Code on real engineering tasks. These aren't prescriptive — adapt them to your project and style.
 

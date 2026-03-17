@@ -1,4 +1,8 @@
-# Context Management
+---
+title: "Context Management"
+description: "How to keep Claude Code effective across long sessions and large codebases."
+sidebar_position: 3
+---
 
 How to keep Claude Code effective across long sessions and large codebases.
 

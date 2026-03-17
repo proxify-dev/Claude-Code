@@ -13,12 +13,50 @@ npx skills add proxify-dev/Claude-Code@skill-architecture
 npx skills add proxify-dev/Claude-Code@agent-development
 ```
 
+## Quick Start
+
+1. [Install Claude Code](docs/getting-started/installation.md)
+2. Install Proxify skills: `npx skills add proxify-dev/Claude-Code`
+3. [Write your project's CLAUDE.md](docs/guides/claude-md.md)
+4. [Learn the workflow patterns](docs/guides/workflow-patterns.md)
+
 ## Skills
 
 | Skill | Description |
 |-------|-------------|
 | [skill-architecture](skills/skill-architecture/SKILL.md) | How to design skills that reach agents at the right time. Covers context efficiency, distribution layers, and framing. |
 | [agent-development](skills/agent-development/SKILL.md) | Agent structure, system prompts, triggering conditions, and MCP server configuration for Claude Code. |
+
+## Documentation
+
+### Getting Started
+- [Installation](docs/getting-started/installation.md) — Install and launch Claude Code
+- [First Session](docs/getting-started/first-session.md) — What to do when you start
+- [Key Concepts](docs/getting-started/key-concepts.md) — CLAUDE.md, Skills, Agents, Hooks, MCP
+- [Quick Wins](docs/getting-started/quick-wins.md) — Get productive in 10 minutes
+
+### Guides
+- [Writing CLAUDE.md](docs/guides/claude-md.md) — The highest-leverage config surface
+- [Workflow Patterns](docs/guides/workflow-patterns.md) — Plan-execute, TDD, review, refactoring
+- [Context Management](docs/guides/context-management.md) — Stay effective in long sessions
+- [Effective Prompting](docs/guides/effective-prompting.md) — Communication patterns that work
+- [Agentic Engineering](docs/guides/agentic-engineering.md) — From AI assistance to delegation
+
+### Skills
+- [Overview](docs/skills/overview.md) — What skills are and how they work
+- [Using Skills](docs/skills/using-skills.md) — Install and browse skills
+- [Creating Skills](docs/skills/creating-skills.md) — Build your own skill
+- [Distributing Skills](docs/skills/distributing-skills.md) — Share skills with others
+
+### Agents
+- [Overview](docs/agents/overview.md) — What agents are and when to use them
+- [Creating Agents](docs/agents/creating-agents.md) — Build custom agents
+- [Agent Patterns](docs/agents/patterns.md) — Common agent architectures
+
+### Reference
+- [Glossary](docs/reference/glossary.md) — Key terms explained
+- [Links & Resources](docs/reference/links.md) — Curated external links
+- [Common Pitfalls](docs/reference/common-pitfalls.md) — Mistakes to avoid
 
 ## Plugin Structure
 
@@ -34,34 +72,12 @@ Claude-Code/
 ├── skills/                       # Distributable skills
 ├── agents/                       # Bundled agents (future)
 └── docs/                         # Guides and resources
+    ├── getting-started/
+    ├── guides/
+    ├── skills/
+    ├── agents/
+    └── reference/
 ```
-
-## Documentation
-
-### Getting Started
-- [Getting Started](docs/getting-started.md) — Installation, first session, key concepts
-- [Writing CLAUDE.md](docs/claude-md-guide.md) — The highest-leverage config for Claude Code
-- [Skills Quickstart](docs/skills-quickstart.md) — Install, use, create, and distribute skills
-
-### Workflows & Patterns
-- [Workflow Patterns](docs/workflow-patterns.md) — Plan-then-execute, TDD, refactoring, code review
-- [Agentic Engineering](docs/agentic-engineering.md) — The mindset shift from AI assistance to delegation
-
-### Tips
-- [Context Management](docs/context-management.md) — Keep Claude effective in long sessions
-- [Effective Prompting](docs/effective-prompting.md) — Communication patterns that work
-- [Common Pitfalls](docs/common-pitfalls.md) — Mistakes to avoid when starting out
-
-### Reference
-- [Links & Resources](docs/links.md) — Curated links to docs, tools, and community
-- [Glossary](docs/glossary.md) — Key terms explained
-
-## Quick Start
-
-1. [Install Claude Code](docs/getting-started.md)
-2. Install Proxify skills: `npx skills add proxify-dev/Claude-Code`
-3. [Write your project's CLAUDE.md](docs/claude-md-guide.md)
-4. [Learn the workflow patterns](docs/workflow-patterns.md)
 
 ## Contributing
 
@@ -76,6 +92,6 @@ Claude-Code/
 3. Submit a PR
 
 ### Add documentation
-1. Add a markdown file to `docs/`
+1. Add a markdown file to the appropriate `docs/` subdirectory
 2. Update this README with a link
 3. Submit a PR

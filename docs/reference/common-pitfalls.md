@@ -1,4 +1,8 @@
-# Common Pitfalls
+---
+title: "Common Pitfalls"
+description: "Mistakes engineers make when starting with Claude Code — and how to avoid them."
+sidebar_position: 3
+---
 
 Mistakes engineers make when starting with Claude Code — and how to avoid them.
 

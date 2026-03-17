@@ -1,4 +1,8 @@
-# Links & Resources
+---
+title: "Links & Resources"
+description: "Curated links for engineers adopting Claude Code."
+sidebar_position: 2
+---
 
 Curated links for Proxify engineers adopting Claude Code.
 
@@ -12,8 +16,8 @@ Curated links for Proxify engineers adopting Claude Code.
 ## Skills Ecosystem
 
 - [skills.sh](https://skills.sh) — Community skills marketplace
-- [Skill Architecture Guide](../skills/skill-architecture/SKILL.md) — How to design effective skills
-- [Agent Development Guide](../skills/agent-development/SKILL.md) — How to build agents for Claude Code
+- [Skill Architecture Guide](../../skills/skill-architecture/SKILL.md) — How to design effective skills
+- [Agent Development Guide](../../skills/agent-development/SKILL.md) — How to build agents for Claude Code
 - **Install Proxify skills:** `npx skills add proxify-dev/Claude-Code`
 
 ## Learning Resources

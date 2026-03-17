@@ -1,4 +1,8 @@
-# Writing Effective CLAUDE.md Files
+---
+title: "Writing CLAUDE.md"
+description: "How to write effective CLAUDE.md files — the highest-leverage configuration surface for Claude Code."
+sidebar_position: 1
+---
 
 CLAUDE.md is the highest-leverage configuration surface for Claude Code. It's loaded into every conversation, so every line must earn its place.
 
@@ -85,7 +89,7 @@ No frameworks, no tables of code patterns, no examples of implementation details
 
 ## Deep Dive
 
-For the full reference on CLAUDE.md architecture, distribution layers, and the pointer pattern, see the [skill-architecture skill](../skills/skill-architecture/SKILL.md). Install it with:
+For the full reference on CLAUDE.md architecture, distribution layers, and the pointer pattern, see the [skill-architecture skill](../../skills/skill-architecture/SKILL.md). Install it with:
 
 ```bash
 npx skills add proxify-dev/Claude-Code@skill-architecture

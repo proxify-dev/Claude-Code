@@ -1,4 +1,8 @@
-# Glossary
+---
+title: "Glossary"
+description: "Key terms for working with Claude Code."
+sidebar_position: 1
+---
 
 Key terms for working with Claude Code.
 

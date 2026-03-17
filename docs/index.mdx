@@ -1,0 +1,33 @@
+---
+title: Claude-Code
+description: Proxify's Claude Code acceleration toolkit — skills, agents, and guides for agentic engineering.
+template: splash
+hero:
+  tagline: Skills, agents, and guides for agentic engineering. Get your team productive with Claude Code — fast.
+  actions:
+    - text: Get Started
+      link: /getting-started/installation/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/proxify-dev/Claude-Code
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid stagger>
+  <Card title="Getting Started" icon="rocket">
+    [Install Claude Code](/getting-started/installation/), run your [first session](/getting-started/first-session/), learn the [key concepts](/getting-started/key-concepts/), and get [quick wins](/getting-started/quick-wins/) in 10 minutes.
+  </Card>
+  <Card title="Guides" icon="open-book">
+    Write effective [CLAUDE.md](/guides/claude-md/) files, master [workflow patterns](/guides/workflow-patterns/), manage [context](/guides/context-management/), and level up to [agentic engineering](/guides/agentic-engineering/).
+  </Card>
+  <Card title="Skills" icon="puzzle">
+    [Install](/skills/using-skills/) reusable knowledge packages, [create](/skills/creating-skills/) your own, and [distribute](/skills/distributing-skills/) them to your team.
+  </Card>
+  <Card title="Agents" icon="laptop">
+    Build [autonomous subprocesses](/agents/overview/) for code review, testing, and more. Learn the [patterns](/agents/patterns/) and [create your own](/agents/creating-agents/).
+  </Card>
+</CardGrid>
