@@ -4,6 +4,10 @@ description: "How to keep Claude Code effective across long sessions and large c
 sidebar_position: 3
 ---
 
+:::tip[Official reference]
+For CLAUDE.md mechanics and memory configuration, see the [official memory docs](https://code.claude.com/docs/en/memory). For all configuration options, see [settings](https://code.claude.com/docs/en/settings).
+:::
+
 How to keep Claude Code effective across long sessions and large codebases.
 
 ## The Context Window

@@ -4,9 +4,11 @@ description: "Essential hooks every project should have — enforcing what CLAUD
 sidebar_position: 3
 ---
 
-CLAUDE.md is advisory — Claude follows it because it's in context, but nothing enforces compliance. Hooks are code. They execute automatically on specific events and can block, modify, or extend Claude's behavior.
+Here's the thing about CLAUDE.md: it's a suggestion. Claude *usually* follows it, but nothing enforces compliance. Hooks are different. Hooks are code — they execute automatically on specific events and can block, modify, or extend Claude's behavior. If CLAUDE.md is a polite request, hooks are a locked door.
 
-For the full hooks reference, see the [official docs](https://code.claude.com/docs/hooks).
+:::tip[Official reference]
+For the full hooks API, event types, and configuration options, see the [official hooks docs](https://code.claude.com/docs/en/hooks). This page gives you the five hooks worth setting up first.
+:::
 
 ## The Essential Five
 

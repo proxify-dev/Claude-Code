@@ -4,9 +4,11 @@ description: "Connect Claude Code to your external tools — GitHub, databases, 
 sidebar_position: 4
 ---
 
-MCP (Model Context Protocol) connects Claude Code to external tools and data sources. Instead of copy-pasting context from GitHub issues, database queries, or Jira tickets, Claude can access them directly.
+This is where Claude Code goes from "smart editor" to "team member with access." MCP (Model Context Protocol) connects Claude to your external tools and data sources — GitHub, databases, project management, Slack, and more. No more copy-pasting context. Claude reads the issue, queries the schema, writes the code, and opens the PR.
 
-For the full MCP reference, see the [official docs](https://code.claude.com/docs/mcp).
+:::tip[Official reference]
+For the full MCP API, authentication flows, and server registry, see the [official MCP docs](https://code.claude.com/docs/en/mcp). This page covers the three connections worth setting up first.
+:::
 
 ## The Three Most Impactful Connections
 

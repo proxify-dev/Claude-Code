@@ -78,3 +78,7 @@ When you're new to a codebase or unfamiliar module.
 - **Review diffs, not just the outcome.** Claude may change more than necessary — check what actually changed.
 - **Use `/compact` between tasks.** Frees context for the next piece of work.
 - **Don't fight the agent.** If Claude is going in circles, step back and reframe the task rather than repeating the same instruction.
+
+:::tip[Want more?]
+The official docs have a broader set of [common workflows](https://code.claude.com/docs/en/common-workflows) covering PR creation, CI integration, and more.
+:::

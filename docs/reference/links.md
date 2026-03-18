@@ -8,10 +8,19 @@ Curated links for engineers using Claude Code. We cover the advanced setup and p
 
 ## Official Documentation
 
-- [Claude Code Documentation](https://code.claude.com/docs) — Start here for installation, settings reference, and getting started
-- [Claude Code Docs (Anthropic)](https://docs.anthropic.com/en/docs/claude-code/overview) — Anthropic's reference docs
+This guide covers the opinionated setup. The official docs cover everything else.
+
+- [Claude Code Documentation](https://code.claude.com/docs) — The starting point for everything
+- [Quickstart](https://code.claude.com/docs/en/quickstart) — Installation and first session
+- [Settings Reference](https://code.claude.com/docs/en/settings) — All configuration options
+- [Hooks](https://code.claude.com/docs/en/hooks) — Full hooks API and event types
+- [MCP](https://code.claude.com/docs/en/mcp) — Model Context Protocol reference
+- [Skills](https://code.claude.com/docs/en/skills) — How skills work under the hood
+- [Sub-agents](https://code.claude.com/docs/en/sub-agents) — Agent spawning and management
+- [Best Practices](https://code.claude.com/docs/en/best-practices) — Anthropic's recommendations
+- [CLI Reference](https://code.claude.com/docs/en/cli-reference) — All CLI commands and flags
 - [Claude Code GitHub](https://github.com/anthropics/claude-code) — Source, issues, and discussions
-- [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) — The protocol for connecting Claude to external tools
+- [Model Context Protocol](https://modelcontextprotocol.io/) — The MCP specification
 - [Anthropic Cookbook](https://github.com/anthropics/anthropic-cookbook) — Practical examples and patterns
 
 ## Skills Ecosystem

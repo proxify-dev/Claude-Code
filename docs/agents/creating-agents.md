@@ -4,6 +4,10 @@ description: "How to create agents: frontmatter fields, system prompt design, mo
 sidebar_position: 2
 ---
 
+:::tip[Official reference]
+For how sub-agents work in Claude Code, see the [official sub-agents docs](https://code.claude.com/docs/en/sub-agents).
+:::
+
 ## File Location
 
 Place agent files in the `agents/` directory of your plugin:

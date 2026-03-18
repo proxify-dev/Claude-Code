@@ -62,3 +62,6 @@ Mistakes engineers make when starting with Claude Code — and how to avoid them
 
 **The fix:** One task at a time. Commit between tasks. Each change should be reviewable on its own.
 
+## Keep Learning
+
+For more on working effectively with Claude Code, see the [official best practices](https://code.claude.com/docs/en/best-practices).

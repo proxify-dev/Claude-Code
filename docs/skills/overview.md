@@ -4,6 +4,10 @@ description: "What skills are, how they work, and the three-level loading model.
 sidebar_position: 1
 ---
 
+:::tip[Official reference]
+For how Claude Code discovers and loads skills, see the [official skills docs](https://code.claude.com/docs/en/skills).
+:::
+
 Skills are reusable knowledge packages that teach Claude domain-specific patterns. They load on demand — only when your task matches the skill's trigger description.
 
 ## How Skills Work

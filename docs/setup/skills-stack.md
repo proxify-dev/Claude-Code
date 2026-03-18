@@ -4,6 +4,10 @@ description: "How to discover, install, and compose skills into a layered knowle
 sidebar_position: 2
 ---
 
+:::tip[Official reference]
+For how skills work under the hood, see the [official skills docs](https://code.claude.com/docs/en/skills). This page is about picking the right ones and making them work together.
+:::
+
 Skills are reusable knowledge packages that load on demand. A skills stack is the set you install for a project — chosen to match your tech stack and workflow.
 
 ## The Layered System

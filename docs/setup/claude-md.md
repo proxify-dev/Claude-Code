@@ -4,6 +4,10 @@ description: "How to write effective CLAUDE.md files — the highest-leverage co
 sidebar_position: 1
 ---
 
+:::tip[New to CLAUDE.md?]
+Start with the [official CLAUDE.md guide](https://code.claude.com/docs/en/memory) for the basics. This page is the opinionated blueprint for making yours great.
+:::
+
 CLAUDE.md is the highest-leverage configuration surface for Claude Code. It's loaded into every conversation, so every line must earn its place.
 
 ## What CLAUDE.md Does

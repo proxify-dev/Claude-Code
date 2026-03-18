@@ -83,3 +83,4 @@ The agent doesn't know what it doesn't know. Your job is to fill the gaps with c
 
 - [Workflow patterns](workflow-patterns.md) — concrete patterns for common tasks
 - [Common pitfalls](../reference/common-pitfalls.md) — mistakes to avoid
+- [Official best practices](https://code.claude.com/docs/en/best-practices) — Anthropic's own recommendations
