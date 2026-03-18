@@ -4,6 +4,8 @@ description: "Connect Claude Code to your external tools — GitHub, databases, 
 sidebar_position: 4
 ---
 
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
 This is where Claude Code goes from "smart editor" to "team member with access." MCP (Model Context Protocol) connects Claude to your external tools and data sources — GitHub, databases, project management, Slack, and more. No more copy-pasting context. Claude reads the issue, queries the schema, writes the code, and opens the PR.
 
 :::tip[Official reference]
@@ -12,8 +14,8 @@ For the full MCP API, authentication flows, and server registry, see the [offici
 
 ## The Three Most Impactful Connections
 
-### 1. GitHub — Issues to Code to PR
-
+<Tabs>
+<TabItem label="GitHub">
 The highest-ROI MCP connection. Claude can read issues, understand requirements, write code, and create PRs in a single flow.
 
 ```bash
@@ -25,8 +27,9 @@ claude mcp add --transport http github https://api.githubcopilot.com/mcp/
 - "Review the comments on PR #15 and address them"
 - "Search for related issues before implementing this change"
 
-### 2. Database — Query During Development
-
+This alone transforms the workflow. Start here.
+</TabItem>
+<TabItem label="Database">
 Give Claude read access to your dev database so it can understand your schema and data when implementing features.
 
 ```bash
@@ -39,8 +42,9 @@ claude mcp add supabase-local -- npx -y @supabase/mcp-server-supabase
 - "Check what data exists before writing the seed script"
 - "Write a query that joins orders with customers"
 
-### 3. Project Management — Jira, Linear, or Notion
-
+Start with read-only access. Expand permissions as trust grows.
+</TabItem>
+<TabItem label="Project Mgmt">
 Pull in task context so Claude understands the *why* behind what you're building.
 
 ```bash
@@ -51,6 +55,10 @@ claude mcp add --transport http linear https://mcp.linear.app/sse
 **What it enables:**
 - "Read the requirements from LINEAR-123 and implement the feature"
 - "What tickets are assigned to me this sprint?"
+
+Works with Jira, Linear, Notion, and others. Check the [MCP registry](https://modelcontextprotocol.io/) for your tool.
+</TabItem>
+</Tabs>
 
 ## How to Add MCP Servers
 

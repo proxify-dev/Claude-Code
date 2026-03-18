@@ -4,6 +4,8 @@ description: "How to write effective CLAUDE.md files — the highest-leverage co
 sidebar_position: 1
 ---
 
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+
 :::tip[New to CLAUDE.md?]
 Start with the [official CLAUDE.md guide](https://code.claude.com/docs/en/memory) for the basics. This page is the opinionated blueprint for making yours great.
 :::
@@ -27,22 +29,25 @@ When you launch Claude Code in a directory, it walks the directory tree collecti
 
 The system prompt already contains ~50 instructions. CLAUDE.md adds to that load. Frontier models follow approximately 150-200 instructions with reasonable consistency before quality degrades. Keep yours concise.
 
-## What to Include
+## What Goes In (and What Doesn't)
 
-- One-line project overview with tech stack
-- Build/test/lint commands (Claude uses these verbatim)
-- Brief architecture/directory map
-- Coding conventions Claude can't infer from existing code
-- Critical warnings about gotchas
-- Pointers to detailed docs using `@imports`
-
-## What to Exclude
-
-- Standard language conventions Claude already knows
-- Code style rules enforced by linters (use hooks instead)
-- Detailed API documentation (link to it)
-- File-by-file codebase descriptions (Claude can read files itself)
-- Anything that changes frequently
+<Tabs>
+  <TabItem label="Include">
+    - One-line project overview with tech stack
+    - Build/test/lint commands (Claude uses these verbatim)
+    - Brief architecture/directory map
+    - Coding conventions Claude can't infer from existing code
+    - Critical warnings about gotchas
+    - Pointers to detailed docs using `@imports`
+  </TabItem>
+  <TabItem label="Exclude">
+    - Standard language conventions Claude already knows
+    - Code style rules enforced by linters (use [hooks](hooks-playbook.mdx) instead)
+    - Detailed API documentation (link to it)
+    - File-by-file codebase descriptions (Claude can read files itself)
+    - Anything that changes frequently
+  </TabItem>
+</Tabs>
 
 ## The Pointer Pattern
 
@@ -93,9 +98,9 @@ No frameworks, no tables of code patterns, no examples of implementation details
 
 ## Next Steps
 
-- [Compose your skills stack](skills-stack.md) — layer domain knowledge on top of CLAUDE.md
-- [Set up hooks](hooks-playbook.md) — enforce what CLAUDE.md can only suggest
-- [Wire up MCP](mcp-wiring.md) — connect Claude to your external tools
+- [Compose your skills stack](skills-stack.mdx) — layer domain knowledge on top of CLAUDE.md
+- [Set up hooks](hooks-playbook.mdx) — enforce what CLAUDE.md can only suggest
+- [Wire up MCP](mcp-wiring.mdx) — connect Claude to your external tools
 
 ## Deep Dive
 
