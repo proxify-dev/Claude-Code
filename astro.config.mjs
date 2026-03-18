@@ -9,6 +9,18 @@ export default defineConfig({
       title: 'Claude-Code',
       description: "Proxify's Claude Code acceleration toolkit",
       customCss: ['./src/styles/custom.css'],
+      head: [
+        // Inter variable font — optical sizing + full weight range
+        { tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.googleapis.com' } },
+        { tag: 'link', attrs: { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' } },
+        {
+          tag: 'link',
+          attrs: {
+            rel: 'stylesheet',
+            href: 'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..700;1,14..32,300..700&display=swap',
+          },
+        },
+      ],
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/proxify-dev/Claude-Code' },
       ],
