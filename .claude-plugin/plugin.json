@@ -8,5 +8,6 @@
   },
   "homepage": "https://github.com/proxify-dev/Claude-Code",
   "license": "MIT",
-  "keywords": ["claude-code", "skills", "agentic-engineering", "proxify"]
+  "keywords": ["claude-code", "skills", "agentic-engineering", "proxify"],
+  "hooks": "./hooks/hooks.json"
 }

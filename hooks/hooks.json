@@ -1,0 +1,18 @@
+{
+  "description": "Remind agent to save decision memories when editing itself [CLAUDE.md]",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "${CLAUDE_PLUGIN_ROOT}/scripts/check-config-edit.sh",
+            "timeout": 5,
+            "statusMessage": "Checking for config decision tracking..."
+          }
+        ]
+      }
+    ]
+  }
+}
