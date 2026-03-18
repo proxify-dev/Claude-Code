@@ -87,6 +87,12 @@ Next.js 14 e-commerce app. App Router, Stripe payments, Prisma ORM.
 
 No frameworks, no tables of code patterns, no examples of implementation details. Those live in skills or reference docs.
 
+## Next Steps
+
+- [Compose your skills stack](skills-stack.md) — layer domain knowledge on top of CLAUDE.md
+- [Set up hooks](hooks-playbook.md) — enforce what CLAUDE.md can only suggest
+- [Wire up MCP](mcp-wiring.md) — connect Claude to your external tools
+
 ## Deep Dive
 
 For the full reference on CLAUDE.md architecture, distribution layers, and the pointer pattern, see the [skill-architecture skill](../../skills/skill-architecture/SKILL.md). Install it with:

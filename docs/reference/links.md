@@ -4,11 +4,12 @@ description: "Curated links for engineers adopting Claude Code."
 sidebar_position: 2
 ---
 
-Curated links for Proxify engineers adopting Claude Code.
+Curated links for engineers using Claude Code. We cover the advanced setup and patterns — the official docs cover installation, configuration reference, and getting started.
 
 ## Official Documentation
 
-- [Claude Code Documentation](https://docs.anthropic.com/en/docs/claude-code/overview) — Official docs from Anthropic
+- [Claude Code Documentation](https://code.claude.com/docs) — Start here for installation, settings reference, and getting started
+- [Claude Code Docs (Anthropic)](https://docs.anthropic.com/en/docs/claude-code/overview) — Anthropic's reference docs
 - [Claude Code GitHub](https://github.com/anthropics/claude-code) — Source, issues, and discussions
 - [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) — The protocol for connecting Claude to external tools
 - [Anthropic Cookbook](https://github.com/anthropics/anthropic-cookbook) — Practical examples and patterns

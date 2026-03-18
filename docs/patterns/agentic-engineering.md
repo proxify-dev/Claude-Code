@@ -1,7 +1,7 @@
 ---
 title: "Agentic Engineering"
 description: "The shift from coding with AI assistance to delegating work to AI agents."
-sidebar_position: 5
+sidebar_position: 1
 ---
 
 The shift from "coding with AI assistance" to "delegating work to AI agents." This isn't about prompting tricks — it's a different way of working.
@@ -23,10 +23,10 @@ The difference is who drives. In agentic engineering, you're the architect and r
 The agent's effectiveness is bounded by what it knows. You control that through:
 
 ### CLAUDE.md
-Project-level context that persists across every session. Commands, architecture, conventions, warnings. See the [CLAUDE.md guide](claude-md.md).
+Project-level context that persists across every session. Commands, architecture, conventions, warnings. See the [CLAUDE.md guide](../setup/claude-md.md).
 
 ### Skills
-Domain knowledge that loads when relevant. Instead of explaining your testing philosophy every session, encode it in a skill. See the [skills overview](../skills/overview.md).
+Domain knowledge that loads when relevant. Instead of explaining your testing philosophy every session, encode it in a skill. See the [skills overview](../skills/overview.md). Or jump to [composing a skills stack](../setup/skills-stack.md).
 
 ### Conversation context
 What you tell Claude in the current session. Be specific. Include error messages, file paths, expected vs. actual behavior. The agent can't read your mind, but it can read your codebase — point it in the right direction.
@@ -83,4 +83,3 @@ The agent doesn't know what it doesn't know. Your job is to fill the gaps with c
 
 - [Workflow patterns](workflow-patterns.md) — concrete patterns for common tasks
 - [Common pitfalls](../reference/common-pitfalls.md) — mistakes to avoid
-- [Effective prompting](effective-prompting.md) — how to communicate clearly with agents

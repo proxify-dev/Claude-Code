@@ -1,0 +1,82 @@
+---
+title: "MCP Wiring"
+description: "Connect Claude Code to your external tools — GitHub, databases, project management, and more."
+sidebar_position: 4
+---
+
+MCP (Model Context Protocol) connects Claude Code to external tools and data sources. Instead of copy-pasting context from GitHub issues, database queries, or Jira tickets, Claude can access them directly.
+
+For the full MCP reference, see the [official docs](https://code.claude.com/docs/mcp).
+
+## The Three Most Impactful Connections
+
+### 1. GitHub — Issues to Code to PR
+
+The highest-ROI MCP connection. Claude can read issues, understand requirements, write code, and create PRs in a single flow.
+
+```bash
+claude mcp add --transport http github https://api.githubcopilot.com/mcp/
+```
+
+**What it enables:**
+- "Implement the feature described in issue #42 and open a PR"
+- "Review the comments on PR #15 and address them"
+- "Search for related issues before implementing this change"
+
+### 2. Database — Query During Development
+
+Give Claude read access to your dev database so it can understand your schema and data when implementing features.
+
+```bash
+# PostgreSQL via Supabase MCP
+claude mcp add supabase-local -- npx -y @supabase/mcp-server-supabase
+```
+
+**What it enables:**
+- "Look at the users table schema and add a migration for the new role field"
+- "Check what data exists before writing the seed script"
+- "Write a query that joins orders with customers"
+
+### 3. Project Management — Jira, Linear, or Notion
+
+Pull in task context so Claude understands the *why* behind what you're building.
+
+```bash
+# Example: Linear
+claude mcp add --transport http linear https://mcp.linear.app/sse
+```
+
+**What it enables:**
+- "Read the requirements from LINEAR-123 and implement the feature"
+- "What tickets are assigned to me this sprint?"
+
+## How to Add MCP Servers
+
+Three methods, from simplest to most configurable:
+
+```bash
+# Remote HTTP server (most common)
+claude mcp add --transport http <name> <url>
+
+# Local stdio server
+claude mcp add --transport stdio <name> -- <command> [args]
+
+# From JSON (for complex config)
+claude mcp add-json <name> '{"type": "http", "url": "..."}'
+```
+
+## Scoping: Team vs. Personal
+
+| Config File | Scope | Use For |
+|-------------|-------|---------|
+| `.mcp.json` (project root) | Team — committed to git | Shared tools (GitHub, DB, CI) |
+| `~/.claude.json` | Personal — all projects | Your Slack, your Linear, personal API keys |
+
+**Rule of thumb:** If every developer on the team needs it, put it in `.mcp.json`. If it's tied to your personal accounts or preferences, keep it in `~/.claude.json`.
+
+## Practical Tips
+
+- **Start with one.** GitHub MCP alone transforms the workflow. Add more as you find friction.
+- **Read-only first.** Give Claude read access to your database, not write. Expand permissions as trust grows.
+- **Check what's available.** Run `claude mcp list` to see your active connections.
+- **OAuth flows are supported.** Many MCP servers handle auth automatically — Claude will prompt you to authenticate on first use.

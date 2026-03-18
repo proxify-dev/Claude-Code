@@ -14,22 +14,20 @@ export default defineConfig({
       ],
       sidebar: [
         {
-          label: 'Getting Started',
+          label: 'Setup',
           items: [
-            { label: 'Installation', link: '/getting-started/installation/' },
-            { label: 'First Session', link: '/getting-started/first-session/' },
-            { label: 'Key Concepts', link: '/getting-started/key-concepts/' },
-            { label: 'Quick Wins', link: '/getting-started/quick-wins/' },
+            { label: 'Writing CLAUDE.md', link: '/setup/claude-md/' },
+            { label: 'Skills Stack', link: '/setup/skills-stack/' },
+            { label: 'Hooks Playbook', link: '/setup/hooks-playbook/' },
+            { label: 'MCP Wiring', link: '/setup/mcp-wiring/' },
           ],
         },
         {
-          label: 'Guides',
+          label: 'Patterns',
           items: [
-            { label: 'Writing CLAUDE.md', link: '/guides/claude-md/' },
-            { label: 'Workflow Patterns', link: '/guides/workflow-patterns/' },
-            { label: 'Context Management', link: '/guides/context-management/' },
-            { label: 'Effective Prompting', link: '/guides/effective-prompting/' },
-            { label: 'Agentic Engineering', link: '/guides/agentic-engineering/' },
+            { label: 'Agentic Engineering', link: '/patterns/agentic-engineering/' },
+            { label: 'Workflow Patterns', link: '/patterns/workflow-patterns/' },
+            { label: 'Context Management', link: '/patterns/context-management/' },
           ],
         },
         {
@@ -38,23 +36,19 @@ export default defineConfig({
             { label: 'Overview', link: '/skills/overview/' },
             { label: 'Using Skills', link: '/skills/using-skills/' },
             { label: 'Creating Skills', link: '/skills/creating-skills/' },
-            { label: 'Distributing Skills', link: '/skills/distributing-skills/' },
           ],
         },
         {
           label: 'Agents',
           items: [
-            { label: 'Overview', link: '/agents/overview/' },
             { label: 'Creating Agents', link: '/agents/creating-agents/' },
-            { label: 'Agent Patterns', link: '/agents/patterns/' },
           ],
         },
         {
           label: 'Reference',
           items: [
-            { label: 'Glossary', link: '/reference/glossary/' },
-            { label: 'Links & Resources', link: '/reference/links/' },
             { label: 'Common Pitfalls', link: '/reference/common-pitfalls/' },
+            { label: 'Links & Resources', link: '/reference/links/' },
           ],
         },
       ],

@@ -62,10 +62,3 @@ Mistakes engineers make when starting with Claude Code — and how to avoid them
 
 **The fix:** One task at a time. Commit between tasks. Each change should be reviewable on its own.
 
-## Ignoring the Dual-Repo Boundary
-
-**The mistake:** (For skill developers) Editing skill source files from the wrong repo context.
-
-**Why it hurts:** Changes end up in the wrong place, or get overwritten when syncing.
-
-**The fix:** Know which repo you're in. Skill originals live in `~/skills/`. Reference copies live in this org repo. Update originals first, then sync copies.
