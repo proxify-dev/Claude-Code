@@ -1,14 +1,9 @@
 ---
 title: "Writing CLAUDE.md"
 description: "How to write effective CLAUDE.md files — the highest-leverage configuration surface for Claude Code."
-sidebar_position: 1
 ---
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
-
-:::tip[New to CLAUDE.md?]
-Start with the [official CLAUDE.md guide](https://code.claude.com/docs/en/memory) for the basics. This page is the opinionated blueprint for making yours great.
-:::
+<Tip>**New to CLAUDE.md?** — Start with the [official CLAUDE.md guide](https://code.claude.com/docs/en/memory) for the basics. This page is the opinionated blueprint for making yours great.</Tip>
 
 CLAUDE.md is the highest-leverage configuration surface for Claude Code. It's loaded into every conversation, so every line must earn its place.
 
@@ -32,21 +27,21 @@ The system prompt already contains ~50 instructions. CLAUDE.md adds to that load
 ## What Goes In (and What Doesn't)
 
 <Tabs>
-  <TabItem label="Include">
+  <Tab title="Include">
     - One-line project overview with tech stack
     - Build/test/lint commands (Claude uses these verbatim)
     - Brief architecture/directory map
     - Coding conventions Claude can't infer from existing code
     - Critical warnings about gotchas
     - Pointers to detailed docs using `@imports`
-  </TabItem>
-  <TabItem label="Exclude">
+  </Tab>
+  <Tab title="Exclude">
     - Standard language conventions Claude already knows
     - Code style rules enforced by linters (use [hooks](hooks-playbook.mdx) instead)
     - Detailed API documentation (link to it)
     - File-by-file codebase descriptions (Claude can read files itself)
     - Anything that changes frequently
-  </TabItem>
+  </Tab>
 </Tabs>
 
 ## The Pointer Pattern

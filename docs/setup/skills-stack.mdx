@@ -1,14 +1,9 @@
 ---
 title: "Composing a Skills Stack"
 description: "How to discover, install, and compose skills into a layered knowledge system for your project."
-sidebar_position: 2
 ---
 
-import { Tabs, TabItem } from '@astrojs/starlight/components';
-
-:::tip[Official reference]
-For how skills work under the hood, see the [official skills docs](https://code.claude.com/docs/en/skills). This page is about picking the right ones and making them work together.
-:::
+<Tip>**Official reference** — For how skills work under the hood, see the [official skills docs](https://code.claude.com/docs/en/skills). This page is about picking the right ones and making them work together.</Tip>
 
 Skills are reusable knowledge packages that load on demand. A skills stack is the set you install for a project — chosen to match your tech stack and workflow.
 
@@ -29,7 +24,7 @@ CLAUDE.md tells Claude *about your project*. Skills teach Claude *how to work in
 Pick the stack that matches your project, then add domain skills on top.
 
 <Tabs>
-  <TabItem label="React / Next.js">
+  <Tab title="React / Next.js">
     ```bash
     npx skills add proxify-dev/Claude-Code@skill-architecture
     npx skills add proxify-dev/Claude-Code@agent-development
@@ -40,8 +35,8 @@ Pick the stack that matches your project, then add domain skills on top.
     ```
 
     Good for: SPAs, Next.js apps, component libraries. The `skill-architecture` skill teaches Claude how to use other skills effectively — always include it.
-  </TabItem>
-  <TabItem label="Node.js API">
+  </Tab>
+  <Tab title="Node.js API">
     ```bash
     npx skills add proxify-dev/Claude-Code@skill-architecture
     npx skills search zod
@@ -49,8 +44,8 @@ Pick the stack that matches your project, then add domain skills on top.
     ```
 
     Good for: Express/Fastify APIs, microservices, serverless functions. Add validation and database skills that match your stack.
-  </TabItem>
-  <TabItem label="Fullstack">
+  </Tab>
+  <Tab title="Fullstack">
     Combine both stacks. Skills don't conflict — they load only when triggered by relevant tasks. A Tailwind skill won't fire when you're writing a database migration.
 
     ```bash
@@ -66,7 +61,7 @@ Pick the stack that matches your project, then add domain skills on top.
     npx skills search zod
     npx skills search postgres
     ```
-  </TabItem>
+  </Tab>
 </Tabs>
 
 ## Discovering Skills

@@ -1,0 +1,87 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "theme": "mint",
+  "name": "Claude-Code",
+  "favicon": "/favicon.svg",
+  "colors": {
+    "primary": "#5258FB",
+    "light": "#D5D5FE",
+    "dark": "#171559"
+  },
+  "topbarCtaButton": {
+    "name": "GitHub",
+    "url": "https://github.com/proxify-dev/Claude-Code"
+  },
+  "navigation": {
+    "tabs": [
+      {
+        "tab": "Docs",
+        "groups": [
+          {
+            "group": "Overview",
+            "pages": ["index"]
+          },
+          {
+            "group": "Mindset",
+            "pages": [
+              "patterns/agentic-engineering",
+              "patterns/maturity-ladder"
+            ]
+          },
+          {
+            "group": "Setup",
+            "pages": [
+              "setup/claude-md",
+              "setup/skills-stack",
+              "setup/hooks-playbook",
+              "setup/mcp-wiring",
+              "setup/terminal-setup"
+            ]
+          },
+          {
+            "group": "Daily Workflow",
+            "pages": [
+              "patterns/workflow-patterns",
+              "patterns/context-management",
+              "patterns/session-management",
+              "patterns/parallel-execution",
+              "patterns/prompting-craft"
+            ]
+          },
+          {
+            "group": "Advanced",
+            "pages": [
+              "patterns/autonomous-tasks",
+              "patterns/self-improving-loop",
+              "patterns/subagent-patterns"
+            ]
+          },
+          {
+            "group": "Skills",
+            "pages": [
+              "skills/overview",
+              "skills/using-skills",
+              "skills/creating-skills",
+              "skills/distributing-skills"
+            ]
+          },
+          {
+            "group": "Agents",
+            "pages": [
+              "agents/creating-agents"
+            ]
+          },
+          {
+            "group": "Reference",
+            "pages": [
+              "reference/onboarding-checklist",
+              "reference/common-pitfalls",
+              "reference/links",
+              "reference/shortcuts"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,21 +1,16 @@
 ---
 title: "MCP Wiring"
 description: "Connect Claude Code to your external tools — GitHub, databases, project management, and more."
-sidebar_position: 4
 ---
-
-import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 This is where Claude Code goes from "smart editor" to "team member with access." MCP (Model Context Protocol) connects Claude to your external tools and data sources — GitHub, databases, project management, Slack, and more. No more copy-pasting context. Claude reads the issue, queries the schema, writes the code, and opens the PR.
 
-:::tip[Official reference]
-For the full MCP API, authentication flows, and server registry, see the [official MCP docs](https://code.claude.com/docs/en/mcp). This page covers the three connections worth setting up first.
-:::
+<Tip>**Official reference** — For the full MCP API, authentication flows, and server registry, see the [official MCP docs](https://code.claude.com/docs/en/mcp). This page covers the three connections worth setting up first.</Tip>
 
 ## The Three Most Impactful Connections
 
 <Tabs>
-<TabItem label="GitHub">
+<Tab title="GitHub">
 The highest-ROI MCP connection. Claude can read issues, understand requirements, write code, and create PRs in a single flow.
 
 ```bash
@@ -28,8 +23,8 @@ claude mcp add --transport http github https://api.githubcopilot.com/mcp/
 - "Search for related issues before implementing this change"
 
 This alone transforms the workflow. Start here.
-</TabItem>
-<TabItem label="Database">
+</Tab>
+<Tab title="Database">
 Give Claude read access to your dev database so it can understand your schema and data when implementing features.
 
 ```bash
@@ -43,8 +38,8 @@ claude mcp add supabase-local -- npx -y @supabase/mcp-server-supabase
 - "Write a query that joins orders with customers"
 
 Start with read-only access. Expand permissions as trust grows.
-</TabItem>
-<TabItem label="Project Mgmt">
+</Tab>
+<Tab title="Project Mgmt">
 Pull in task context so Claude understands the *why* behind what you're building.
 
 ```bash
@@ -57,7 +52,7 @@ claude mcp add --transport http linear https://mcp.linear.app/sse
 - "What tickets are assigned to me this sprint?"
 
 Works with Jira, Linear, Notion, and others. Check the [MCP registry](https://modelcontextprotocol.io/) for your tool.
-</TabItem>
+</Tab>
 </Tabs>
 
 ## How to Add MCP Servers

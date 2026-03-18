@@ -1,7 +1,6 @@
 ---
 title: "Parallel Execution"
 description: "Running multiple Claude sessions simultaneously — the single biggest productivity unlock."
-sidebar_position: 5
 ---
 
 ## Why Parallel?
@@ -19,9 +18,7 @@ The workflow:
 3. Kick off each agent with a clear, scoped prompt
 4. Sweep left to right to review output as agents finish
 
-:::warning[Cap at 3-4 active sessions]
-Beyond 3-4 active sessions, your context-switching cost as the reviewer starts outweighing the throughput gain. You become the bottleneck, not the agents.
-:::
+<Warning>**Cap at 3-4 active sessions** — Beyond 3-4 active sessions, your context-switching cost as the reviewer starts outweighing the throughput gain. You become the bottleneck, not the agents.</Warning>
 
 ## Git Worktrees
 
@@ -43,9 +40,7 @@ my-project-feat-b/   ← feature-b branch, its own directory
 
 You don't need to memorize the commands. Just ask Claude: "Create a worktree for feature X." It handles the rest.
 
-:::tip
-Each worktree is a full working directory. You can run dev servers, tests, and builds independently in each one.
-:::
+<Tip>Each worktree is a full working directory. You can run dev servers, tests, and builds independently in each one.</Tip>
 
 ## Shell Aliases for Rapid Switching
 

@@ -1,21 +1,16 @@
 ---
 title: "Hooks Playbook"
 description: "Essential hooks every project should have — enforcing what CLAUDE.md can only suggest."
-sidebar_position: 3
 ---
-
-import { Tabs, TabItem } from '@astrojs/starlight/components';
 
 Here's the thing about CLAUDE.md: it's a suggestion. Claude *usually* follows it, but nothing enforces compliance. Hooks are different. Hooks are code — they execute automatically on specific events and can block, modify, or extend Claude's behavior. If CLAUDE.md is a polite request, hooks are a locked door.
 
-:::tip[Official reference]
-For the full hooks API, event types, and configuration options, see the [official hooks docs](https://code.claude.com/docs/en/hooks). This page gives you the five hooks worth setting up first.
-:::
+<Tip>**Official reference** — For the full hooks API, event types, and configuration options, see the [official hooks docs](https://code.claude.com/docs/en/hooks). This page gives you the five hooks worth setting up first.</Tip>
 
 ## The Essential Five
 
 <Tabs>
-  <TabItem label="Auto-lint">
+  <Tab title="Auto-lint">
     Run your linter after every file edit so Claude sees and fixes issues immediately.
 
     ```json
@@ -32,8 +27,8 @@ For the full hooks API, event types, and configuration options, see the [officia
     ```
 
     **Why:** Catches style violations in real-time instead of accumulating them. Claude sees the linter output and self-corrects on the next edit.
-  </TabItem>
-  <TabItem label="Block .env">
+  </Tab>
+  <Tab title="Block .env">
     Prevent Claude from ever staging sensitive files.
 
     ```json
@@ -50,8 +45,8 @@ For the full hooks API, event types, and configuration options, see the [officia
     ```
 
     **Why:** CLAUDE.md says "don't commit .env" — this makes it impossible. The hook exits with code 1, which blocks the action entirely.
-  </TabItem>
-  <TabItem label="Run tests">
+  </Tab>
+  <Tab title="Run tests">
     Automatically run your test suite after implementation changes.
 
     ```json
@@ -68,8 +63,8 @@ For the full hooks API, event types, and configuration options, see the [officia
     ```
 
     **Why:** Claude gets immediate test feedback and can self-correct without you intervening. The `tail -5` keeps output concise.
-  </TabItem>
-  <TabItem label="Guard config">
+  </Tab>
+  <Tab title="Guard config">
     Warn before Claude edits sensitive configuration files.
 
     ```json
@@ -86,8 +81,8 @@ For the full hooks API, event types, and configuration options, see the [officia
     ```
 
     **Why:** Not all files are equal. Config changes have outsized blast radius. This warns but doesn't block — adjust to `exit 1` if you want a hard stop.
-  </TabItem>
-  <TabItem label="Auto-format">
+  </Tab>
+  <Tab title="Auto-format">
     Run Prettier (or your formatter) after every write.
 
     ```json
@@ -104,7 +99,7 @@ For the full hooks API, event types, and configuration options, see the [officia
     ```
 
     **Why:** Keeps diffs clean and prevents style nits in code review. The `|| true` ensures a missing Prettier config doesn't halt Claude's workflow.
-  </TabItem>
+  </Tab>
 </Tabs>
 
 ## Where to Configure

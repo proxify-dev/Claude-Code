@@ -1,12 +1,9 @@
 ---
 title: "Skills Overview"
 description: "What skills are, how they work, and the three-level loading model."
-sidebar_position: 1
 ---
 
-:::tip[Official reference]
-For how Claude Code discovers and loads skills, see the [official skills docs](https://code.claude.com/docs/en/skills).
-:::
+<Tip>**Official reference** — For how Claude Code discovers and loads skills, see the [official skills docs](https://code.claude.com/docs/en/skills).</Tip>
 
 Skills are reusable knowledge packages that teach Claude domain-specific patterns. They load on demand — only when your task matches the skill's trigger description.
 
@@ -22,9 +19,7 @@ Skills use a three-level loading model:
 
 The **description** is the trigger — it determines whether the skill fires. The body routes to the right reference. References are where the depth lives.
 
-:::tip[The design intent]
-A skill's metadata costs almost nothing. Its body loads only when relevant. Its references load only when needed. This is how you give Claude deep knowledge without polluting the context window.
-:::
+<Tip>**The design intent** — A skill's metadata costs almost nothing. Its body loads only when relevant. Its references load only when needed. This is how you give Claude deep knowledge without polluting the context window.</Tip>
 
 ## In This Section
 

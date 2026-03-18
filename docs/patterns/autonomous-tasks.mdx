@@ -1,7 +1,6 @@
 ---
 title: "Autonomous Task Patterns"
 description: "How to set Claude up to work without supervision — and the guardrails that make it safe."
-sidebar_position: 7
 ---
 
 ## The Write-Test Cycle
@@ -40,9 +39,7 @@ tmux capture-pane -t test-session -p
 
 This pattern works for CLIs, REPLs, dev servers, database consoles — anything that needs a persistent terminal session.
 
-:::tip
-Claude can create and manage tmux sessions on its own. Just describe what you want tested and mention tmux as the approach.
-:::
+<Tip>Claude can create and manage tmux sessions on its own. Just describe what you want tested and mention tmux as the approach.</Tip>
 
 ## Git Bisect with Claude
 
@@ -80,9 +77,7 @@ You get continuous regression feedback without interrupting your flow.
 
 Autonomous agents are powerful but need guardrails. Before delegating unsupervised work:
 
-:::warning[Always commit before delegating]
-If Claude breaks something, `git checkout .` gets you back. Without a commit, your work is gone.
-:::
+<Warning>**Always commit before delegating** — If Claude breaks something, `git checkout .` gets you back. Without a commit, your work is gone.</Warning>
 
 - **Commit first.** Always. Non-negotiable.
 - **Branch for risky work.** Migrations, large refactors, dependency upgrades — branch so main stays clean.
