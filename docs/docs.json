@@ -2,6 +2,10 @@
   "$schema": "https://mintlify.com/docs.json",
   "theme": "mint",
   "name": "Claude-Code",
+  "logo": {
+    "light": "/logo/logo-proxify-dark.svg",
+    "dark": "/logo/logo-proxify-white.svg"
+  },
   "favicon": "/favicon.svg",
   "colors": {
     "primary": "#5258FB",
