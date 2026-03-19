@@ -19,19 +19,11 @@
   "navigation": {
     "tabs": [
       {
-        "tab": "Docs",
+        "tab": "Quickstart",
         "groups": [
           {
             "group": "Overview",
             "pages": ["index"]
-          },
-          {
-            "group": "Mindset",
-            "pages": [
-              "patterns/agentic-engineering",
-              "patterns/maturity-ladder",
-              "patterns/distribution"
-            ]
           },
           {
             "group": "Setup",
@@ -43,6 +35,33 @@
               "setup/terminal-setup"
             ]
           },
+          {
+            "group": "Quick Reference",
+            "pages": [
+              "reference/onboarding-checklist",
+              "reference/common-pitfalls",
+              "reference/shortcuts",
+              "reference/links"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Mindset",
+        "groups": [
+          {
+            "group": "Mindset",
+            "pages": [
+              "patterns/agentic-engineering",
+              "patterns/maturity-ladder",
+              "patterns/distribution"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Playbook",
+        "groups": [
           {
             "group": "Daily Workflow",
             "pages": [
@@ -60,7 +79,12 @@
               "patterns/self-improving-loop",
               "patterns/subagent-patterns"
             ]
-          },
+          }
+        ]
+      },
+      {
+        "tab": "Skills & Agents",
+        "groups": [
           {
             "group": "Skills",
             "pages": [
@@ -74,15 +98,6 @@
             "group": "Agents",
             "pages": [
               "agents/creating-agents"
-            ]
-          },
-          {
-            "group": "Reference",
-            "pages": [
-              "reference/onboarding-checklist",
-              "reference/common-pitfalls",
-              "reference/links",
-              "reference/shortcuts"
             ]
           }
         ]
