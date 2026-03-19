@@ -5,61 +5,78 @@ description: "Four levels of working with AI — from vibe coding to production-
 
 <Tip>**Flexibility is the skill** — The goal isn't to always operate at Level 4. It's to match the level to the stakes. A throwaway script doesn't need interactive code reviews. A payments refactor does.</Tip>
 
-## The Four Levels
+## The four levels
 
-### Level 1: Vibe Coding
+<Steps>
+  <Step title="Vibe coding" icon="sparkles">
+    Let AI go wild. No version control, no review, no guardrails. You accept whatever it produces and move on.
 
-Let AI go wild. No version control, no review, no guardrails. You accept whatever it produces and move on.
+    **When it's appropriate:** Prototypes, throwaway scripts, learning experiments, anything you'll delete tomorrow.
 
-**When it's appropriate:** Prototypes, throwaway scripts, learning experiments, anything you'll delete tomorrow.
+    **When it's not:** Anything that ships to users, touches production data, or lives longer than a week.
+  </Step>
 
-**When it's not:** Anything that ships to users, touches production data, or lives longer than a week.
+  <Step title="Agentic coding with discipline" icon="shield-check">
+    You're using AI to write code, but with basic engineering hygiene:
 
-### Level 2: Agentic Coding with Discipline
+    - Git for version control — commit before and after delegating
+    - File-level understanding of what changed and why
+    - Basic security awareness (no secrets in code, no open permissions)
+    - Sufficient test coverage to catch regressions
 
-You're using AI to write code, but with basic engineering hygiene:
+    This is where most engineers should start. It's fast and the safety floor is reasonable.
+  </Step>
 
-- Git for version control — commit before and after delegating
-- File-level understanding of what changed and why
-- Basic security awareness (no secrets in code, no open permissions)
-- Sufficient test coverage to catch regressions
+  <Step title="Agentic software engineering" icon="gears">
+    The AI is doing more, but you've built guardrails around it:
 
-This is where most engineers should start. It's fast and the safety floor is reasonable.
+    - **Pre-commit hooks** enforce formatting, linting, and secret scanning
+    - **CI pipelines** catch what local checks miss
+    - **Function-level understanding** — you know what every function does, even if you didn't write it
+    - **Thorough testing** — unit, integration, edge cases
+    - **One-shot AI code reviews** — ask Claude to review the diff before you merge
+  </Step>
 
-### Level 3: Agentic Software Engineering
+  <Step title="High-quality software engineering" icon="award">
+    Maximum quality. You understand every line, and you use AI to deepen that understanding:
 
-The AI is doing more, but you've built guardrails around it:
+    - **Line-by-line understanding** of all changes
+    - **Self-reflection loops** — "Are you sure about this approach? What about X?" Forces the model to catch its own mistakes before you have to
+    - **Interactive AI code reviews** — back-and-forth dialogue about design decisions, not just a thumbs-up
+    - **Advanced research** — use Claude to explore alternatives, read docs, compare approaches before committing to one
+    - **AI-powered quality control** — background testing sessions, Playwright for web apps, automated regression checks
+  </Step>
+</Steps>
 
-- **Pre-commit hooks** enforce formatting, linting, and secret scanning
-- **CI pipelines** catch what local checks miss
-- **Function-level understanding** — you know what every function does, even if you didn't write it
-- **Thorough testing** — unit, integration, edge cases
-- **One-shot AI code reviews** — ask Claude to review the diff before you merge
+## At a glance
 
-### Level 4: High-Quality Software Engineering
+<CardGroup cols={2}>
+  <Card title="Level 1: Vibe coding" icon="sparkles">
+    **Quality:** Low · **Speed:** Lightning
 
-Maximum quality. You understand every line, and you use AI to deepen that understanding:
+    **Testing:** Bare minimum · **Reviews:** None
+  </Card>
 
-- **Line-by-line understanding** of all changes
-- **Self-reflection loops** — "Are you sure about this approach? What about X?" Forces the model to catch its own mistakes before you have to
-- **Interactive AI code reviews** — back-and-forth dialogue about design decisions, not just a thumbs-up
-- **Advanced research** — use Claude to explore alternatives, read docs, compare approaches before committing to one
-- **AI-powered quality control** — background testing sessions, Playwright for web apps, automated regression checks
+  <Card title="Level 2: Agentic coding with discipline" icon="shield-check">
+    **Quality:** Okay · **Speed:** Faster
 
-## The Matrix
+    **Testing:** Sufficient · **Reviews:** Brief
+  </Card>
 
-| Level | Code Quality | Speed | Testing | Code Reviews |
-|-------|-------------|-------|---------|--------------|
-| Vibe Coding | Low | Lightning | Bare minimum | None |
-| Agentic Coding with Discipline | Okay | Faster | Sufficient | Brief |
-| Agentic Software Engineering | Medium | Fast | Thorough | One-shot |
-| High-Quality SE | High | Decent | Rock solid | Interactive |
+  <Card title="Level 3: Agentic software engineering" icon="gears">
+    **Quality:** Medium · **Speed:** Fast
 
-## More Tokens != More Slop
+    **Testing:** Thorough · **Reviews:** One-shot
+  </Card>
 
-A common misconception: spending more tokens means more AI-generated slop. That's only true if the tokens go toward generating more code. When tokens go toward **research**, **self-reflection**, and **deeper understanding**, quality goes up — not down.
+  <Card title="Level 4: High-quality SE" icon="award">
+    **Quality:** High · **Speed:** Decent
 
-Level 4 uses more tokens than Level 1. But the tokens buy verification, not volume.
+    **Testing:** Rock solid · **Reviews:** Interactive
+  </Card>
+</CardGroup>
+
+<Note>**More tokens ≠ more slop** — A common misconception: spending more tokens means more AI-generated slop. That's only true if the tokens go toward generating more code. When tokens go toward **research**, **self-reflection**, and **deeper understanding**, quality goes up — not down. Level 4 uses more tokens than Level 1. But the tokens buy verification, not volume.</Note>
 
 ---
 
