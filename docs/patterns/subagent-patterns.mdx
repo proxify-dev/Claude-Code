@@ -3,40 +3,16 @@ title: "Subagent Patterns"
 description: "When and how to use subagents to parallelize work while keeping your main context clean."
 ---
 
+<Tip>**Official reference** — The [official sub-agents docs](https://docs.anthropic.com/en/docs/claude-code/sub-agents) cover built-in agent types, the Agent tool parameters, custom agent frontmatter fields, and permission modes. This page adds the decision framework for when subagents help vs. hurt.</Tip>
+
 ## What Are Subagents?
 
-Claude Code can spawn lightweight agents to handle tasks in parallel (see the [official sub-agents docs](https://code.claude.com/docs/en/sub-agents)). These subagents run independently, do their work, and report back — while your main conversation stays focused.
+Claude Code can spawn lightweight agents to handle tasks in parallel. These subagents run independently, do their work, and report back — while your main conversation stays focused.
 
 You don't need special syntax. Just tell Claude:
 - "Use subagents for this"
 - "Parallelize this work across subagents"
 - "Spin up agents to handle each file separately"
-
-Claude will decide how to split the work and coordinate the results.
-
-## Agent Tool Parameters
-
-Under the hood, Claude uses the **Agent tool** to spawn subagents. Key parameters that affect behavior:
-
-| Parameter | Purpose |
-|-----------|---------|
-| `subagent_type` | Which agent type to use (`Explore`, `Plan`, `general-purpose`, or custom) |
-| `model` | Model override: `haiku`, `sonnet`, `opus`, or `inherit` |
-| `name` | Makes the agent addressable via `SendMessage` |
-| `run_in_background` | Runs asynchronously — you get notified when it completes |
-| `isolation` | Set to `"worktree"` for git-isolated file edits |
-| `mode` | Permission level: `default`, `acceptEdits`, `dontAsk`, `bypassPermissions`, `plan` |
-
-## Built-In Agent Types
-
-| Type | Default model | Tool access | Use when |
-|------|--------------|-------------|----------|
-| **Explore** | Haiku | Read-only (Glob, Grep, Read, Bash) | Codebase navigation, finding files, understanding structure |
-| **Plan** | Inherited | Read-only | Gathering context for planning in plan mode |
-| **General-purpose** | Inherited | Full | Complex multi-step tasks requiring file edits |
-| **Bash** | Inherited | Bash only | Terminal commands in a separate context |
-
-**Explore** is the cheapest option — it runs on Haiku with read-only access. Use it for any "find me all files related to X" work. Invoke with a thoroughness level: `quick`, `medium`, or `very thorough`.
 
 ## Context Hygiene
 
@@ -53,7 +29,7 @@ Keep in your main context:
 - Sequential implementation steps
 - Anything that requires the full picture
 
-The built-in **Explore agent** is a good example — it does broad codebase exploration without polluting your main context with hundreds of file reads.
+The built-in **Explore agent** is the easiest win — it runs on Haiku with read-only access for broad codebase exploration without polluting your main context.
 
 ## When Subagents Help
 
@@ -78,25 +54,7 @@ The built-in **Explore agent** is a good example — it does broad codebase expl
 
 You can set up a hook that routes permission requests to a lighter model (like Haiku) for auto-approval of safe operations. This keeps subagents running without interrupting your main conversation for every file read or bash command.
 
-This is especially useful when subagents need to:
-- Read files across the codebase
-- Run non-destructive bash commands
-- Execute search operations
-
 Without permission routing, you'll get interrupted for every subagent action — which defeats the purpose of parallelization.
-
-## Custom Agent Types
-
-Define custom agents as Markdown files in `.claude/agents/` (project-scoped) or `~/.claude/agents/` (user-scoped). Beyond the basics covered in [Creating Agents](../agents/creating-agents/), these frontmatter fields are especially useful for subagent workflows:
-
-| Field | Purpose |
-|-------|---------|
-| `disallowedTools` | Deny specific tools (e.g., `Write, Edit` for read-only validators) |
-| `permissionMode` | Controls autonomy: `default`, `acceptEdits`, `dontAsk`, `bypassPermissions`, `plan` |
-| `background` | Set to `true` to run as a background agent by default |
-| `isolation` | Set to `"worktree"` for git-isolated work |
-| `effort` | `low`, `medium`, `high`, or `max` — controls reasoning depth |
-| `memory` | Persistent memory with `user`, `project`, or `local` scope |
 
 <Note>**Auto-routing reliability:** Claude reads each agent's `description` to decide when to delegate, but auto-routing to custom agents remains unreliable. Making descriptions specific and action-oriented helps. The most reliable trigger is explicit instruction: "Use the security-reviewer agent to audit this module."</Note>
 

@@ -43,6 +43,8 @@ This repo is a **public Claude Code plugin**. Everything in `skills/` and `agent
 
 Mintlify site in `docs/`. The `docs-maintenance` skill covers editorial conventions, directory structure, voice, and component usage.
 
+**Before writing docs content:** Check the Three-Way Test in `.claude/skills/docs-maintenance/references/editorial-judgment.md` — include only Proxify-specific opinion, backlink to official Claude Code docs for mechanics, cut generic content.
+
 ## Dual-Repo Boundary
 
 | Repo | Path | Role |

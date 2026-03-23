@@ -54,3 +54,13 @@ If you're unsure whether content belongs, check:
 1. Does the official Claude Code docs already cover this? → Backlink
 2. Would this help any Claude Code user, not just Proxify engineers? → Cut
 3. Does it teach something about how Proxify specifically approaches this? → Include
+
+## Checking Upstream
+
+Before writing content about a Claude Code feature, verify what the official docs already cover. Use the `docs-reviewer` agent (`.claude/agents/docs-reviewer.md`) to compare against the local mirror at `~/.claude-code-docs/docs/`:
+
+```
+"Use the docs-reviewer agent to check this page against upstream"
+```
+
+The mirror auto-syncs from the [community docs repo](https://github.com/ericbuess/claude-code-docs). Each file maps 1:1 to an official page — e.g., `sub-agents.md` → `https://docs.anthropic.com/en/docs/claude-code/sub-agents`.

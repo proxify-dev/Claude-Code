@@ -1,55 +1,15 @@
 ---
 title: "Creating Agents"
-description: "How to create agents: frontmatter fields, system prompt design, model selection, and MCP configuration."
+description: "Opinionated tips for writing agent definitions that trigger reliably and behave well."
 ---
 
-<Tip>**Official reference** — For how sub-agents work in Claude Code, see the [official sub-agents docs](https://code.claude.com/docs/en/sub-agents).</Tip>
+<Tip>**Start here** — The [official sub-agents docs](https://docs.anthropic.com/en/docs/claude-code/sub-agents) cover file locations, all frontmatter fields, and the `/agents` command. This page adds the opinion layer: what the docs don't tell you about making agents work well.</Tip>
 
-## File Location
+## Writing Descriptions That Trigger
 
-Place agent files in the `agents/` directory of your plugin:
+The `description` field determines when Claude routes work to your agent. Generic descriptions fail silently — Claude just never picks the agent.
 
-```
-my-plugin/
-└── agents/
-    ├── code-reviewer.md
-    ├── test-generator.md
-    └── docs-writer.md
-```
-
-All `.md` files in `agents/` are auto-discovered.
-
-## Frontmatter Fields
-
-```yaml
----
-name: code-reviewer          # Required. Lowercase, hyphens, 3-50 chars.
-description: Use this agent when...  # Required. Triggering conditions + examples.
-model: inherit               # Required. inherit | sonnet | opus | haiku
-color: blue                  # Required. blue | cyan | green | yellow | magenta | red
-tools: ["Read", "Grep"]      # Optional. Restricts available tools.
-disallowedTools: ["Write"]   # Optional. Denies specific tools.
-mcpServers:                  # Optional. MCP server access.
-  - github
-permissionMode: default      # Optional. default | acceptEdits | dontAsk | bypassPermissions | plan
-maxTurns: 20                 # Optional. Limits agent turns.
-skills: ["my-skill"]         # Optional. Skills available to the agent.
-memory: project              # Optional. Persistent memory scope: user | project | local
-effort: medium               # Optional. Reasoning depth: low | medium | high | max
-background: false            # Optional. Run as background agent by default.
-isolation: worktree          # Optional. Git-isolated working directory.
----
-```
-
-<Tip>Use the `/agents` command for an interactive interface to create and manage agent definitions — it's easier than editing files manually.</Tip>
-
-### `name`
-
-Lowercase letters, numbers, and hyphens only. Must start and end with alphanumeric.
-
-### `description`
-
-The most critical field — determines when Claude triggers this agent. Must include triggering conditions and `<example>` blocks:
+**Include `<example>` blocks** with 2-4 scenarios covering different phrasings and both proactive and reactive triggers:
 
 ```
 Use this agent when [conditions]. Examples:
@@ -64,20 +24,11 @@ assistant: "[How Claude responds]"
 </example>
 ```
 
-Include 2–4 examples covering different phrasings and proactive/reactive triggering.
+<Note>**Auto-routing remains unreliable.** Even good descriptions get missed. The most reliable trigger is explicit instruction: "Use the security-reviewer agent to audit this module." Design descriptions for the best case, but tell users to invoke by name when it matters.</Note>
 
-### `model`
+## Color Semantics
 
-| Value | Use when |
-|-------|----------|
-| `inherit` | Default — uses the parent's model |
-| `sonnet` | Balanced speed and capability |
-| `opus` | Complex analysis, highest capability |
-| `haiku` | Fast and cheap, simple tasks |
-
-### `color`
-
-Visual identifier in the UI. Choose colors semantically:
+Choose colors that signal intent at a glance:
 
 | Color | Agent type |
 |-------|-----------|
@@ -87,73 +38,14 @@ Visual identifier in the UI. Choose colors semantically:
 | Red | Security, critical |
 | Magenta | Creative, transformation |
 
-### `tools`
+## System Prompt Template
 
-Restricts which tools the agent can use. Omit for full access.
-
-| Use case | Tool set |
-|----------|----------|
-| Read-only | `["Read", "Grep", "Glob"]` |
-| Code generation | `["Read", "Write", "Grep"]` |
-| Testing | `["Read", "Bash", "Grep"]` |
-
-### `disallowedTools`
-
-Explicitly denies specific tools. Useful for [builder-validator patterns](../patterns/orchestration-patterns#builder-validator-pairs) where you want near-full access minus writes:
-
-```yaml
-disallowedTools: ["Write", "Edit", "NotebookEdit"]
-```
-
-### `permissionMode`
-
-| Value | Behavior |
-|-------|----------|
-| `default` | Normal permission prompting |
-| `acceptEdits` | Auto-approves file edits, prompts for other operations |
-| `dontAsk` | Skips most permission prompts |
-| `bypassPermissions` | No permission checks |
-| `plan` | Read-only, no modifications |
-
-### `background`
-
-Set to `true` to run the agent in the background by default. You'll be notified when it completes. Useful for long-running tasks like test suites or large analysis jobs.
-
-### `isolation`
-
-Set to `"worktree"` to run the agent in a temporary git worktree. Each agent gets its own branch and working directory — essential when multiple agents might edit the same files. See [worktree isolation](../patterns/parallel-execution#worktree-isolation-on-agents).
-
-### `effort`
-
-Controls reasoning depth: `low`, `medium`, `high`, or `max`. Lower effort means faster, cheaper responses. Higher effort means more thorough analysis.
-
-### `mcpServers`
-
-**Inline** — scoped to the subagent; spins up fresh, main context never sees it:
-```yaml
-mcpServers:
-  - playwright:
-      type: stdio
-      command: npx
-      args: ["-y", "@playwright/mcp@latest"]
-```
-
-**String reference** — reuses the parent session's existing connection:
-```yaml
-mcpServers:
-  - github
-```
-
-## System Prompt
-
-The markdown body after the frontmatter becomes the agent's system prompt. Write in second person.
-
-### Template
+The markdown body after frontmatter becomes the system prompt. A structure that works:
 
 ```markdown
 You are [role] specializing in [domain].
 
-**Your Core Responsibilities:**
+**Core Responsibilities:**
 1. [Primary responsibility]
 2. [Secondary responsibility]
 
@@ -170,17 +62,14 @@ You are [role] specializing in [domain].
 - [Edge case 1]: [How to handle]
 ```
 
-### Tips
-
-- Be specific about responsibilities — avoid generic instructions
-- Define a clear step-by-step process
-- Specify the output format so results are consistent
-- Address edge cases the agent might encounter
-- Keep under 10,000 characters
+Tips:
+- Be specific about responsibilities — vague prompts produce vague agents
+- Define output format so results are consistent across invocations
+- Keep under 10,000 characters — longer prompts dilute attention
 
 ## Deep Dive
 
-For comprehensive agent development guidance including validation rules, testing strategies, and the AI-assisted generation prompt, install the [agent-development skill](../../skills/agent-development/SKILL.md):
+For comprehensive agent development guidance including validation, testing, and the AI-assisted generation prompt:
 
 ```bash
 npx skills add proxify-dev/Claude-Code@agent-development

@@ -3,9 +3,9 @@ title: "Cost & Model Routing"
 description: "How to route models strategically and control token costs across multi-agent workflows."
 ---
 
-## The Cost Reality
+<Tip>**Official reference** — The [official costs docs](https://docs.anthropic.com/en/docs/claude-code/costs) and [model configuration docs](https://docs.anthropic.com/en/docs/claude-code/model-configuration) cover pricing, caching, and the `CLAUDE_CODE_SUBAGENT_MODEL` setting. This page adds the opinionated routing strategy.</Tip>
 
-Multi-agent workflows multiply token usage. Understanding the multipliers helps you make informed trade-offs.
+## The Cost Reality
 
 | Approach | Approximate cost multiplier | When it's worth it |
 |----------|---------------------------|-------------------|
@@ -13,9 +13,7 @@ Multi-agent workflows multiply token usage. Understanding the multipliers helps 
 | Subagents | 4-7x | Parallel research, independent file edits |
 | Agent Teams | ~15x | Tasks requiring inter-agent coordination |
 
-The overhead comes from: each agent loading project context independently, every message consuming tokens in both sender's and receiver's context, and broadcasts multiplying cost by teammate count.
-
-<Note>Over 90% of tokens in heavy sessions are **prompt cache reads** at $0.50/MTok for Opus — caching provides significant relief on the per-token cost.</Note>
+The overhead comes from each agent loading project context independently, every message consuming tokens in both sender's and receiver's context, and broadcasts multiplying cost by teammate count.
 
 ## Model Routing Strategy
 
@@ -28,34 +26,10 @@ The most impactful cost optimization: use the cheapest model that can do the job
 | Architecture / coordination | **Opus** | Complex reasoning, big-picture decisions |
 | Validation | **Sonnet** | Needs to understand code, doesn't need to generate much |
 
-### Setting model per agent
-
-In agent frontmatter:
-```yaml
----
-name: researcher
-model: haiku
----
+**Example pipeline:**
 ```
-
-In natural language:
+Research (Haiku) → Plan (Opus) → Implement (Sonnet) → Validate (Sonnet, read-only)
 ```
-"Use a Haiku agent to research all the auth-related files"
-```
-
-### Global subagent default
-
-The `CLAUDE_CODE_SUBAGENT_MODEL` environment variable sets a default model for all subagents. Run your main session on Opus while routing all subagents to Sonnet:
-
-```json
-{
-  "env": {
-    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
-  }
-}
-```
-
-Override per-agent when needed via the `model` frontmatter field.
 
 ## Practical Tips
 
@@ -64,7 +38,7 @@ Override per-agent when needed via the `model` frontmatter field.
 - Use the [Explore agent](subagent-patterns/) (Haiku, read-only) for broad searches instead of having your main Opus session read dozens of files.
 
 ### Speed up test suites
-- Include `--fast` options for test suites in your CLAUDE.md — agents waste hours running full suites when a subset would suffice.
+- Include `--fast` options for test suites in your CLAUDE.md — agents waste time running full suites when a subset would suffice.
 - Route test-running agents to Sonnet; they don't need Opus-level reasoning.
 
 ### Structure CLAUDE.md for multi-agent
@@ -73,11 +47,11 @@ Override per-agent when needed via the `model` frontmatter field.
 - Mark shared files (e.g., `package.json`, `tsconfig.json`) as "coordinate before editing."
 
 ### Use `/batch` for independent work
-[`/batch`](parallel-execution#the-batch-command) is dramatically cheaper than Agent Teams for work where agents don't need to communicate. It handles decomposition, worktree isolation, parallel execution, and PR creation automatically.
+[`/batch`](parallel-execution#the-batch-command) is dramatically cheaper than Agent Teams for work where agents don't need to communicate.
 
 ## Reference: Real-World Scale
 
-For perspective on what heavy multi-agent usage looks like: Anthropic's C compiler project — 16 agents over 2,000 sessions across two weeks — consumed approximately 2 billion input tokens and 140 million output tokens. Key takeaways from that project:
+For perspective: Anthropic's C compiler project — 16 agents over 2,000 sessions across two weeks — consumed approximately 2 billion input tokens and 140 million output tokens. Key takeaways:
 
 - Write extremely high-quality tests — agents solve whatever the verifier validates
 - Minimize verbose output — context pollution degrades performance

@@ -3,6 +3,8 @@ title: "Orchestration Patterns"
 description: "Five proven patterns for coordinating multiple agents — from simple fan-out to builder-validator quality loops."
 ---
 
+<Tip>**Official reference** — The [official sub-agents docs](https://docs.anthropic.com/en/docs/claude-code/sub-agents) and [Agent Teams docs](https://docs.anthropic.com/en/docs/claude-code/agent-teams) cover the underlying mechanisms. This page is the pattern taxonomy — how to compose those primitives into workflows.</Tip>
+
 <Note>**Choosing the right tool:** Independent work → [`/batch`](parallel-execution#the-batch-command). Report-back only → [subagents](subagent-patterns/). Agents need to coordinate → [Agent Teams](agent-teams/).</Note>
 
 ## Fan-Out / Fan-In
@@ -17,7 +19,7 @@ The simplest parallel pattern. Spawn N agents, each handling an independent slic
 
 **Best for:** research across multiple areas, independent file analysis, running tests in parallel.
 
-**Key constraint:** tasks must have no shared state and clear file boundaries. If agents edit overlapping files without [worktree isolation](parallel-execution#worktree-isolation), they'll overwrite each other.
+**Key constraint:** tasks must have no shared state and clear file boundaries. If agents edit overlapping files without worktree isolation, they'll overwrite each other.
 
 With [Agent Teams](agent-teams/), the shared task list adds flexibility — teammates can self-claim unassigned tasks rather than having all work pre-assigned.
 
@@ -69,7 +71,7 @@ disallowedTools: ["Write", "Edit"]
 The main session focuses exclusively on coordination while teammates do the implementation.
 
 **How it works:**
-1. Enable [delegate mode](agent-teams#delegate-mode) so the lead can only coordinate
+1. Enable [delegate mode](agent-teams#delegate-mode-is-essential) so the lead can only coordinate
 2. The lead creates tasks, monitors progress, and redirects approaches that aren't working
 3. Teammates implement, report back, and the lead synthesizes
 
