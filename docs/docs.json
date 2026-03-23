@@ -6,7 +6,7 @@
     "light": "/logo/logo-proxify-dark.svg",
     "dark": "/logo/logo-proxify-white.svg"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/favicon.ico",
   "colors": {
     "primary": "#5258FB",
     "light": "#D5D5FE",
