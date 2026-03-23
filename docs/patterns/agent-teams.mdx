@@ -1,0 +1,121 @@
+---
+title: "Agent Teams"
+description: "Multi-session collaboration where agents message each other, share a task list, and coordinate autonomously."
+---
+
+<Warning>Agent Teams is **experimental**. Expect rough edges — no session resumption, occasional task status lag, and slow shutdown. The core patterns work, but the experience is still maturing.</Warning>
+
+## What Are Agent Teams?
+
+Agent Teams is a step beyond [subagents](subagent-patterns/). Where subagents run within your session and report back to the parent, Agent Teams spawns **independent Claude Code instances** that message each other directly through a shared mailbox and task list.
+
+| | Subagents | Agent Teams |
+|---|-----------|-------------|
+| Communication | Report results to parent only | Direct agent-to-agent messaging |
+| Context | Shares parent's session | Each teammate has its own context window |
+| Coordination | Parent orchestrates | Shared task list with dependencies |
+| Cost | ~4-7x single session | ~15x single session |
+| Best for | Independent tasks, research | Tasks requiring coordination |
+
+## Enabling Agent Teams
+
+Set the environment variable in your `settings.json`:
+
+```json
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  }
+}
+```
+
+This unlocks: **TeamCreate**, **TaskCreate**, **TaskUpdate**, **TaskList**, **TaskGet**, and **SendMessage**.
+
+## Architecture
+
+Four components work together:
+
+- **Team Lead** — your main Claude Code session. Creates the team, spawns teammates, assigns tasks, synthesizes results.
+- **Teammates** — separate Claude Code instances, each with its own independent context window.
+- **Shared Task List** — a central work queue. Tasks have states (`pending`, `in_progress`, `completed`) and support dependency chains via `blockedBy`.
+- **Mailbox** — JSON-based messaging enabling direct agent-to-agent communication.
+
+## Delegate Mode
+
+Press **Shift+Tab** to cycle into delegate mode, which restricts the lead to coordination-only tools.
+
+<Warning>**This is essential.** Without delegate mode, the lead frequently implements tasks itself instead of delegating — practitioners consistently flag this as the most common failure mode.</Warning>
+
+In delegate mode, the lead can only:
+- Create and manage tasks
+- Send messages to teammates
+- Review and approve plans
+- Synthesize results
+
+## Plan Approval
+
+You can require teammates to submit plans before implementing. The lead reviews each plan and either approves or rejects with feedback. This adds a checkpoint before any code gets written.
+
+## Keyboard Shortcuts
+
+| Shortcut | Action |
+|----------|--------|
+| **Shift+Up/Down** | Cycle through teammates |
+| **Enter** | View a teammate's full session |
+| **Escape** | Interrupt current teammate |
+| **Ctrl+T** | Toggle the task list |
+| **Ctrl+B** | Move foreground agent to background |
+| **Shift+Tab** | Cycle through modes (including delegate mode) |
+
+## Display Modes
+
+Configure via `"teammateMode"` in settings:
+
+| Mode | How it works |
+|------|-------------|
+| `auto` (default) | Chooses based on your terminal |
+| `in-process` | Teammates run within the same terminal, cycle with Shift+Up/Down |
+| `tmux` | Each teammate gets its own visible pane (requires tmux or iTerm2) |
+
+<Note>Split-pane display is not supported in VS Code's integrated terminal, Windows Terminal, or Ghostty — only native tmux and iTerm2 work.</Note>
+
+## A Typical Session
+
+```
+You: "Create a team for the auth refactor"
+Lead: Creates team, spawns 3 teammates:
+  - backend-auth (implements API changes)
+  - frontend-auth (updates UI components)
+  - auth-tests (writes integration tests, blocked by backend-auth)
+
+You: Enable delegate mode (Shift+Tab)
+Lead: Creates tasks, assigns to teammates
+Teammates: Work independently, message each other when interfaces change
+You: Monitor with Ctrl+T, review output as teammates complete
+Lead: Synthesizes results, resolves conflicts
+```
+
+## Limitations
+
+| Limitation | Workaround |
+|-----------|-----------|
+| **No session resumption** — `/resume` doesn't restore teammates | Tell the lead to spawn replacements after resuming |
+| **Task status lag** — teammates sometimes forget to mark tasks complete | Check manually with Ctrl+T, nudge via messaging |
+| **Slow shutdown** — teammates finish current request before stopping | Plan for this; don't expect instant teardown |
+| **One team per session** | Clean up current team before starting a new one |
+| **No nested teams** | Teammates cannot spawn their own teams |
+| **Permission mode fixed at spawn** | Spawn a new teammate if you need a different mode |
+
+## When to Use Agent Teams vs. Alternatives
+
+Use the [decision framework](orchestration-patterns/):
+
+- **Fully independent work** (migrations, convention enforcement) → [`/batch`](parallel-execution#the-batch-command)
+- **Tasks that report results back** (research, analysis) → [subagents](subagent-patterns/)
+- **Tasks that need to discuss and coordinate** → Agent Teams
+
+Agent Teams justifies its ~15x token cost only when agents genuinely need to share findings, challenge each other's assumptions, or self-coordinate through a shared task list.
+
+---
+
+**← Prev:** [Orchestration Patterns](orchestration-patterns/) · **Next:** [Cost & Model Routing →](cost-and-model-routing/)

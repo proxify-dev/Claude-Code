@@ -70,6 +70,35 @@ Small friction reductions compound when you're switching between 3-4 sessions th
 
 The constraint isn't compute. It's your ability to review and integrate the output.
 
+## Worktree Isolation on Agents
+
+Beyond manual worktrees, Claude Code can create worktrees automatically when spawning agents. Set `isolation: "worktree"` in agent frontmatter:
+
+```yaml
+---
+name: refactor-agent
+isolation: worktree
+background: true
+---
+```
+
+Each agent gets its own branch, working directory, and git index. If the agent makes no changes, the worktree is auto-cleaned on session end. If changes exist, you're prompted to keep or remove.
+
+<Tip>Add `.claude/worktrees/` to your `.gitignore`. Each new worktree may need its own dependency installation (`npm install`, etc.).</Tip>
+
+## The `/batch` Command
+
+The `/batch` command automates fan-out with worktree isolation. Give it a migration instruction and it:
+
+1. Decomposes the work into 5-30 self-contained units
+2. Spawns one background agent per unit in its own worktree
+3. Each agent implements, tests, commits, and opens a PR
+4. Renders a status table as agents complete
+
+**Best for:** convention enforcement, dependency swaps, code migrations across many files — any work where agents don't need to communicate.
+
+This is dramatically cheaper than [Agent Teams](agent-teams/) because it eliminates inter-agent coordination overhead entirely.
+
 ## Combining with Session Management
 
 Each worktree should be self-contained:
@@ -79,6 +108,13 @@ Each worktree should be self-contained:
 - Its own branch with regular commits
 
 When an agent finishes in one worktree, review the output, merge the branch, and clean up the worktree. Then spin up a new one for the next task.
+
+## Going Deeper
+
+For more sophisticated multi-agent coordination, see:
+- [Orchestration Patterns](orchestration-patterns/) — fan-out, pipelines, builder-validator, and more
+- [Agent Teams](agent-teams/) — multi-session collaboration with shared task lists
+- [Cost & Model Routing](cost-and-model-routing/) — controlling token costs across parallel workflows
 
 ---
 

@@ -28,10 +28,20 @@ description: Use this agent when...  # Required. Triggering conditions + example
 model: inherit               # Required. inherit | sonnet | opus | haiku
 color: blue                  # Required. blue | cyan | green | yellow | magenta | red
 tools: ["Read", "Grep"]      # Optional. Restricts available tools.
+disallowedTools: ["Write"]   # Optional. Denies specific tools.
 mcpServers:                  # Optional. MCP server access.
   - github
+permissionMode: default      # Optional. default | acceptEdits | dontAsk | bypassPermissions | plan
+maxTurns: 20                 # Optional. Limits agent turns.
+skills: ["my-skill"]         # Optional. Skills available to the agent.
+memory: project              # Optional. Persistent memory scope: user | project | local
+effort: medium               # Optional. Reasoning depth: low | medium | high | max
+background: false            # Optional. Run as background agent by default.
+isolation: worktree          # Optional. Git-isolated working directory.
 ---
 ```
+
+<Tip>Use the `/agents` command for an interactive interface to create and manage agent definitions — it's easier than editing files manually.</Tip>
 
 ### `name`
 
@@ -86,6 +96,36 @@ Restricts which tools the agent can use. Omit for full access.
 | Read-only | `["Read", "Grep", "Glob"]` |
 | Code generation | `["Read", "Write", "Grep"]` |
 | Testing | `["Read", "Bash", "Grep"]` |
+
+### `disallowedTools`
+
+Explicitly denies specific tools. Useful for [builder-validator patterns](../patterns/orchestration-patterns#builder-validator-pairs) where you want near-full access minus writes:
+
+```yaml
+disallowedTools: ["Write", "Edit", "NotebookEdit"]
+```
+
+### `permissionMode`
+
+| Value | Behavior |
+|-------|----------|
+| `default` | Normal permission prompting |
+| `acceptEdits` | Auto-approves file edits, prompts for other operations |
+| `dontAsk` | Skips most permission prompts |
+| `bypassPermissions` | No permission checks |
+| `plan` | Read-only, no modifications |
+
+### `background`
+
+Set to `true` to run the agent in the background by default. You'll be notified when it completes. Useful for long-running tasks like test suites or large analysis jobs.
+
+### `isolation`
+
+Set to `"worktree"` to run the agent in a temporary git worktree. Each agent gets its own branch and working directory — essential when multiple agents might edit the same files. See [worktree isolation](../patterns/parallel-execution#worktree-isolation-on-agents).
+
+### `effort`
+
+Controls reasoning depth: `low`, `medium`, `high`, or `max`. Lower effort means faster, cheaper responses. Higher effort means more thorough analysis.
 
 ### `mcpServers`
 

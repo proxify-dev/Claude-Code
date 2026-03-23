@@ -76,7 +76,10 @@
             "pages": [
               "patterns/autonomous-tasks",
               "patterns/self-improving-loop",
-              "patterns/subagent-patterns"
+              "patterns/subagent-patterns",
+              "patterns/orchestration-patterns",
+              "patterns/agent-teams",
+              "patterns/cost-and-model-routing"
             ]
           }
         ]

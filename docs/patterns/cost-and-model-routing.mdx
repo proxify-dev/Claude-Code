@@ -1,0 +1,89 @@
+---
+title: "Cost & Model Routing"
+description: "How to route models strategically and control token costs across multi-agent workflows."
+---
+
+## The Cost Reality
+
+Multi-agent workflows multiply token usage. Understanding the multipliers helps you make informed trade-offs.
+
+| Approach | Approximate cost multiplier | When it's worth it |
+|----------|---------------------------|-------------------|
+| Single session | 1x (baseline) | Sequential tasks, focused work |
+| Subagents | 4-7x | Parallel research, independent file edits |
+| Agent Teams | ~15x | Tasks requiring inter-agent coordination |
+
+The overhead comes from: each agent loading project context independently, every message consuming tokens in both sender's and receiver's context, and broadcasts multiplying cost by teammate count.
+
+<Note>Over 90% of tokens in heavy sessions are **prompt cache reads** at $0.50/MTok for Opus — caching provides significant relief on the per-token cost.</Note>
+
+## Model Routing Strategy
+
+The most impactful cost optimization: use the cheapest model that can do the job at each stage.
+
+| Stage | Model | Why |
+|-------|-------|-----|
+| Research / exploration | **Haiku** | Fast, cheap, only needs to read and summarize |
+| Implementation | **Sonnet** | Good balance of capability and cost |
+| Architecture / coordination | **Opus** | Complex reasoning, big-picture decisions |
+| Validation | **Sonnet** | Needs to understand code, doesn't need to generate much |
+
+### Setting model per agent
+
+In agent frontmatter:
+```yaml
+---
+name: researcher
+model: haiku
+---
+```
+
+In natural language:
+```
+"Use a Haiku agent to research all the auth-related files"
+```
+
+### Global subagent default
+
+The `CLAUDE_CODE_SUBAGENT_MODEL` environment variable sets a default model for all subagents. Run your main session on Opus while routing all subagents to Sonnet:
+
+```json
+{
+  "env": {
+    "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+  }
+}
+```
+
+Override per-agent when needed via the `model` frontmatter field.
+
+## Practical Tips
+
+### Minimize context pollution
+- Verbose output degrades agent performance and burns tokens. Keep agent prompts focused.
+- Use the [Explore agent](subagent-patterns/) (Haiku, read-only) for broad searches instead of having your main Opus session read dozens of files.
+
+### Speed up test suites
+- Include `--fast` options for test suites in your CLAUDE.md — agents waste hours running full suites when a subset would suffice.
+- Route test-running agents to Sonnet; they don't need Opus-level reasoning.
+
+### Structure CLAUDE.md for multi-agent
+- Include module boundaries so agents know which files they own.
+- List verification commands so every agent can self-check.
+- Mark shared files (e.g., `package.json`, `tsconfig.json`) as "coordinate before editing."
+
+### Use `/batch` for independent work
+[`/batch`](parallel-execution#the-batch-command) is dramatically cheaper than Agent Teams for work where agents don't need to communicate. It handles decomposition, worktree isolation, parallel execution, and PR creation automatically.
+
+## Reference: Real-World Scale
+
+For perspective on what heavy multi-agent usage looks like: Anthropic's C compiler project — 16 agents over 2,000 sessions across two weeks — consumed approximately 2 billion input tokens and 140 million output tokens. Key takeaways from that project:
+
+- Write extremely high-quality tests — agents solve whatever the verifier validates
+- Minimize verbose output — context pollution degrades performance
+- Maintain README/progress files so each fresh agent gets orientation context quickly
+- The constraint is always review bandwidth, not compute
+
+---
+
+**← Prev:** [Agent Teams](agent-teams/)

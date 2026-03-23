@@ -14,6 +14,30 @@ You don't need special syntax. Just tell Claude:
 
 Claude will decide how to split the work and coordinate the results.
 
+## Agent Tool Parameters
+
+Under the hood, Claude uses the **Agent tool** to spawn subagents. Key parameters that affect behavior:
+
+| Parameter | Purpose |
+|-----------|---------|
+| `subagent_type` | Which agent type to use (`Explore`, `Plan`, `general-purpose`, or custom) |
+| `model` | Model override: `haiku`, `sonnet`, `opus`, or `inherit` |
+| `name` | Makes the agent addressable via `SendMessage` |
+| `run_in_background` | Runs asynchronously — you get notified when it completes |
+| `isolation` | Set to `"worktree"` for git-isolated file edits |
+| `mode` | Permission level: `default`, `acceptEdits`, `dontAsk`, `bypassPermissions`, `plan` |
+
+## Built-In Agent Types
+
+| Type | Default model | Tool access | Use when |
+|------|--------------|-------------|----------|
+| **Explore** | Haiku | Read-only (Glob, Grep, Read, Bash) | Codebase navigation, finding files, understanding structure |
+| **Plan** | Inherited | Read-only | Gathering context for planning in plan mode |
+| **General-purpose** | Inherited | Full | Complex multi-step tasks requiring file edits |
+| **Bash** | Inherited | Bash only | Terminal commands in a separate context |
+
+**Explore** is the cheapest option — it runs on Haiku with read-only access. Use it for any "find me all files related to X" work. Invoke with a thoroughness level: `quick`, `medium`, or `very thorough`.
+
 ## Context Hygiene
 
 The main value of subagents is **keeping your primary context clean**. Every file read, every exploration, every dead end consumes context. Subagents take that cost on themselves and return only the results.
@@ -61,8 +85,23 @@ This is especially useful when subagents need to:
 
 Without permission routing, you'll get interrupted for every subagent action — which defeats the purpose of parallelization.
 
-<Tip>You don't need special syntax. Just tell Claude to "use subagents for this" or "parallelize this work across subagents" and it will. Start with exploration tasks — they're the easiest win.</Tip>
+## Custom Agent Types
+
+Define custom agents as Markdown files in `.claude/agents/` (project-scoped) or `~/.claude/agents/` (user-scoped). Beyond the basics covered in [Creating Agents](../agents/creating-agents/), these frontmatter fields are especially useful for subagent workflows:
+
+| Field | Purpose |
+|-------|---------|
+| `disallowedTools` | Deny specific tools (e.g., `Write, Edit` for read-only validators) |
+| `permissionMode` | Controls autonomy: `default`, `acceptEdits`, `dontAsk`, `bypassPermissions`, `plan` |
+| `background` | Set to `true` to run as a background agent by default |
+| `isolation` | Set to `"worktree"` for git-isolated work |
+| `effort` | `low`, `medium`, `high`, or `max` — controls reasoning depth |
+| `memory` | Persistent memory with `user`, `project`, or `local` scope |
+
+<Note>**Auto-routing reliability:** Claude reads each agent's `description` to decide when to delegate, but auto-routing to custom agents remains unreliable. Making descriptions specific and action-oriented helps. The most reliable trigger is explicit instruction: "Use the security-reviewer agent to audit this module."</Note>
+
+<Tip>Start with exploration tasks — they're the easiest win. For advanced multi-agent coordination, see [Orchestration Patterns](orchestration-patterns/) and [Agent Teams](agent-teams/).</Tip>
 
 ---
 
-**← Prev:** [Self-Improving Loop](self-improving-loop/)
+**← Prev:** [Self-Improving Loop](self-improving-loop/) · **Next:** [Orchestration Patterns →](orchestration-patterns/)
