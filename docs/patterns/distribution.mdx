@@ -93,16 +93,16 @@ Engineers were stuffing deep domain knowledge into CLAUDE.md. Their CLAUDE.md fi
 
 Skills solve this by loading knowledge **only when the task triggers it**. A 200-line testing framework loads when you're writing tests. It doesn't exist when you're refactoring CSS.
 
-### Why `skill-architecture` exists
+### Why skill design matters
 
-Engineers then started writing skills — but agents never triggered them. The skill existed, the knowledge was good, but:
+Engineers started writing skills — but agents never triggered them. The skill existed, the knowledge was good, but:
 - The description didn't match how people ask for help
 - The knowledge was in the wrong layer
 - Instructions were rigid rules instead of thinking prompts the agent could adapt
 
-Distribution is an architecture problem. *Where* knowledge lives determines *who* sees it. `skill-architecture` encodes this lesson — it teaches how to design knowledge so it actually reaches agents at decision time.
+Distribution is an architecture problem. *Where* knowledge lives determines *who* sees it. Designing knowledge so it actually reaches agents at decision time is the core challenge.
 
-### Why `agent-development` exists
+### Why agents exist
 
 Skills are passive — they activate when conversation matches their trigger. Agents are active — they wire skills into execution paths with specific tools, MCP connections, and system prompts. Without agents, you have knowledge. With agents, you have knowledge that *acts*.
 

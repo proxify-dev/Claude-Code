@@ -19,40 +19,33 @@ Your Claude Code knowledge lives in layers:
 
 CLAUDE.md tells Claude *about your project*. Skills teach Claude *how to work in your domain*. Together they replace the need to explain things every session.
 
-## Starter Stacks
+## Building Your Stack
 
-Pick the stack that matches your project, then add domain skills on top.
+Search for skills that match your tech stack, then install the ones that fit.
 
 <Tabs>
   <Tab title="React / Next.js">
     ```bash
-    npx skills add proxify-dev/Claude-Code@skill-architecture
-    npx skills add proxify-dev/Claude-Code@agent-development
-    # Community skills for your stack:
     npx skills search nextjs
     npx skills search tailwind
     npx skills search react-query
     ```
 
-    Good for: SPAs, Next.js apps, component libraries. The `skill-architecture` skill teaches Claude how to use other skills effectively — always include it.
+    Good for: SPAs, Next.js apps, component libraries. Look for skills that cover component patterns, styling conventions, and data fetching.
   </Tab>
   <Tab title="Node.js API">
     ```bash
-    npx skills add proxify-dev/Claude-Code@skill-architecture
     npx skills search zod
     npx skills search postgres
+    npx skills search express
     ```
 
     Good for: Express/Fastify APIs, microservices, serverless functions. Add validation and database skills that match your stack.
   </Tab>
   <Tab title="Fullstack">
-    Combine both stacks. Skills don't conflict — they load only when triggered by relevant tasks. A Tailwind skill won't fire when you're writing a database migration.
+    Combine frontend and backend skills. They don't conflict — skills load only when triggered by relevant tasks. A Tailwind skill won't fire when you're writing a database migration.
 
     ```bash
-    # Foundation
-    npx skills add proxify-dev/Claude-Code@skill-architecture
-    npx skills add proxify-dev/Claude-Code@agent-development
-
     # Frontend
     npx skills search nextjs
     npx skills search tailwind
@@ -81,7 +74,6 @@ npx skills add owner/repo@skill-name
 
 Skills are independent by design — each triggers on its own conditions. But some combinations are particularly effective:
 
-- **skill-architecture + any domain skill** — Teaches Claude how skills work, so it uses domain skills more effectively
 - **Testing skill + framework skill** — Test patterns that match your framework conventions
 - **Validation skill (Zod) + API skill** — Input validation patterns that align with your API layer
 
