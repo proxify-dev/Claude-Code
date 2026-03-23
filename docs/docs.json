@@ -90,23 +90,11 @@
         ]
       },
       {
-        "tab": "Skills & Agents",
+        "tab": "Dojo",
         "groups": [
           {
-            "group": "Skills",
-            "pages": [
-              "skills/overview",
-              "skills/using-skills",
-              "skills/creating-skills",
-              "skills/distributing-skills"
-            ]
-          },
-          {
-            "group": "Agents",
-            "pages": [
-              "agents/creating-agents",
-              "agents/agent-design"
-            ]
+            "group": "Dojo",
+            "pages": ["dojo/index"]
           }
         ]
       }
