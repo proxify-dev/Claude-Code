@@ -44,11 +44,12 @@ When running parallel sessions, color your terminal tabs to distinguish tasks at
 
 Most terminals support tab coloring (iTerm2, Ghostty, Windows Terminal). The specific colors don't matter — consistency does.
 
-## Disable Auto-Updates
+## Settings Tweaks
 
-Pin to a stable version for consistency, especially when working on long-running tasks. Add to [`~/.claude/settings.json`](https://code.claude.com/docs/en/settings):
+All added to [`~/.claude/settings.json`](https://code.claude.com/docs/en/settings):
 
-```json
+<CodeGroup>
+```json Disable auto-updates
 {
   "env": {
     "DISABLE_AUTOUPDATER": "1"
@@ -56,13 +57,7 @@ Pin to a stable version for consistency, especially when working on long-running
 }
 ```
 
-<Warning>Auto-updates can change behavior mid-project. Pin your version, test new releases on a side project first, then update deliberately.</Warning>
-
-## Lazy-Load MCP Tools
-
-MCP tool definitions load into every conversation by default, consuming context before you've typed a single prompt. Enable lazy-loading to reduce startup cost:
-
-```json
+```json Lazy-load MCP tools
 {
   "env": {
     "ENABLE_TOOL_SEARCH": "true"
@@ -70,13 +65,7 @@ MCP tool definitions load into every conversation by default, consuming context 
 }
 ```
 
-This happens automatically when MCP tool descriptions exceed 10% of context, but setting it explicitly ensures consistent behavior across projects with different MCP configurations.
-
-## Disable Attribution
-
-Cleaner commits without the `Co-Authored-By` trailer. Add to `~/.claude/settings.json`:
-
-```json
+```json Disable attribution
 {
   "attribution": {
     "commit": "",
@@ -84,8 +73,15 @@ Cleaner commits without the `Co-Authored-By` trailer. Add to `~/.claude/settings
   }
 }
 ```
+</CodeGroup>
 
-Useful when your team's commit conventions don't include AI attribution, or when you want cleaner git logs.
+**Disable auto-updates** — Pin to a stable version for consistency, especially on long-running tasks. Test new releases on a side project first.
+
+**Lazy-load MCP tools** — MCP tool definitions load into every conversation by default, consuming context before you've typed a single prompt. This happens automatically when descriptions exceed 10% of context, but setting it explicitly ensures consistent behavior.
+
+**Disable attribution** — Cleaner commits without the `Co-Authored-By` trailer. Useful when your team's commit conventions don't include AI attribution.
+
+<Warning>Auto-updates can change behavior mid-project. Pin your version and update deliberately.</Warning>
 
 ## Recommended Terminals
 

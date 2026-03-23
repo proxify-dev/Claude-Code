@@ -17,75 +17,63 @@ Mistakes engineers make when starting with Claude Code — and how to avoid them
 | [Not using `/compact`](#not-using-compact) | Compact between tasks |
 | [Too much at once](#too-much-at-once) | One task, one commit at a time |
 
----
+<AccordionGroup>
+  <Accordion title="Overloading CLAUDE.md">
+    **The mistake:** Putting everything into CLAUDE.md — full API docs, code examples, style guides, deployment procedures.
 
-## Overloading CLAUDE.md
+    **Why it hurts:** Every token in CLAUDE.md is loaded into every conversation. A 500-line CLAUDE.md eats your context budget and dilutes the important instructions.
 
-**The mistake:** Putting everything into CLAUDE.md — full API docs, code examples, style guides, deployment procedures.
+    **The fix:** Keep CLAUDE.md under 200 lines. Use the pointer pattern — one line per concern with a link to the full doc. Deep knowledge goes in skills or reference files.
+  </Accordion>
 
-**Why it hurts:** Every token in CLAUDE.md is loaded into every conversation. A 500-line CLAUDE.md eats your context budget and dilutes the important instructions.
+  <Accordion title="No CLAUDE.md at all">
+    **The mistake:** Jumping straight into using Claude Code without writing a CLAUDE.md.
 
-**The fix:** Keep CLAUDE.md under 200 lines. Use the pointer pattern — one line per concern with a link to the full doc. Deep knowledge goes in skills or reference files.
+    **Why it hurts:** Claude doesn't know your conventions, commands, or architecture. It makes assumptions that may not match your project.
 
----
+    **The fix:** Spend 15 minutes writing even a basic CLAUDE.md with your tech stack, commands, and top 3 conventions. It pays off immediately.
+  </Accordion>
 
-## No CLAUDE.md at All
+  <Accordion title="Fighting the agent">
+    **The mistake:** Repeating the same instruction when Claude goes in the wrong direction, sometimes in ALL CAPS or with "IMPORTANT!!!".
 
-**The mistake:** Jumping straight into using Claude Code without writing a CLAUDE.md.
+    **Why it hurts:** The issue is usually missing context, not missing emphasis. More exclamation marks don't help.
 
-**Why it hurts:** Claude doesn't know your conventions, commands, or architecture. It makes assumptions that may not match your project.
+    **The fix:** Step back and ask: what context is Claude missing? Provide it. If the approach is fundamentally wrong, explain why and suggest an alternative rather than insisting harder.
+  </Accordion>
 
-**The fix:** Spend 15 minutes writing even a basic CLAUDE.md with your tech stack, commands, and top 3 conventions. It pays off immediately.
+  <Accordion title="Delegating without tests">
+    **The mistake:** Asking Claude to make changes in a codebase with no tests, then hoping everything works.
 
----
+    **Why it hurts:** Without tests, neither you nor Claude can verify that changes are correct. You're flying blind.
 
-## Fighting the Agent
+    **The fix:** Write tests first (or have Claude write them). Tests are the safety net that makes delegation safe.
+  </Accordion>
 
-**The mistake:** Repeating the same instruction when Claude goes in the wrong direction, sometimes in ALL CAPS or with "IMPORTANT!!!".
+  <Accordion title="Skipping the review">
+    **The mistake:** Accepting Claude's changes without reading the diff.
 
-**Why it hurts:** The issue is usually missing context, not missing emphasis. More exclamation marks don't help.
+    **Why it hurts:** Claude may change more than you asked for, introduce subtle bugs, or make different architectural choices than you'd prefer.
 
-**The fix:** Step back and ask: what context is Claude missing? Provide it. If the approach is fundamentally wrong, explain why and suggest an alternative rather than insisting harder.
+    **The fix:** Always review diffs. Use `git diff` before committing. Treat Claude's output like a PR from a capable but new team member.
+  </Accordion>
 
----
+  <Accordion title="Not using /compact">
+    **The mistake:** Running entire work sessions in a single conversation without ever compacting.
 
-## Delegating Without Tests
+    **Why it hurts:** The context fills up, Claude starts forgetting earlier decisions, and quality degrades.
 
-**The mistake:** Asking Claude to make changes in a codebase with no tests, then hoping everything works.
+    **The fix:** `/compact` between tasks. Finished a bug fix? Compact before starting the next feature.
+  </Accordion>
 
-**Why it hurts:** Without tests, neither you nor Claude can verify that changes are correct. You're flying blind.
+  <Accordion title="Too much at once">
+    **The mistake:** "Refactor the entire auth module, add OAuth support, migrate to the new database schema, and update all the tests."
 
-**The fix:** Write tests first (or have Claude write them). Tests are the safety net that makes delegation safe.
+    **Why it hurts:** Too many moving parts. If something goes wrong, it's hard to tell which change caused it.
 
----
-
-## Skipping the Review
-
-**The mistake:** Accepting Claude's changes without reading the diff.
-
-**Why it hurts:** Claude may change more than you asked for, introduce subtle bugs, or make different architectural choices than you'd prefer.
-
-**The fix:** Always review diffs. Use `git diff` before committing. Treat Claude's output like a PR from a capable but new team member.
-
----
-
-## Not Using `/compact`
-
-**The mistake:** Running entire work sessions in a single conversation without ever compacting.
-
-**Why it hurts:** The context fills up, Claude starts forgetting earlier decisions, and quality degrades.
-
-**The fix:** `/compact` between tasks. Finished a bug fix? Compact before starting the next feature.
-
----
-
-## Too Much at Once
-
-**The mistake:** "Refactor the entire auth module, add OAuth support, migrate to the new database schema, and update all the tests."
-
-**Why it hurts:** Too many moving parts. If something goes wrong, it's hard to tell which change caused it.
-
-**The fix:** One task at a time. Commit between tasks. Each change should be reviewable on its own.
+    **The fix:** One task at a time. Commit between tasks. Each change should be reviewable on its own.
+  </Accordion>
+</AccordionGroup>
 
 ---
 
