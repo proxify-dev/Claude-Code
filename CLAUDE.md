@@ -1,68 +1,47 @@
 # Claude-Code
 
-Proxify's Claude Code acceleration plugin — skills, agents, and guides for agentic engineering.
+Proxify's Claude Code plugin — skills, agents, and guides for agentic engineering.
 
-## Mission
+`@docs/` hosts the Mintlify site.
 
-Move Proxify engineers from "AI assistance" to "delegation." The target engineer works in a brownfield codebase with real history, conventions, and tech debt. Every skill, doc, and agent in this repo should serve that shift — not AI theory, not greenfield idealism.
+## Repo Structure
 
-**The core model:** You are the architect and reviewer. The agent is the implementer. This repo exists to help engineers internalize that model and set up the context (CLAUDE.md, skills, agents) that makes it work.
+This repo is a **public Claude Code plugin**. Everything in `skills/` and `agents/` ships to engineers who install it.
 
-## Principles
+| Directory | Audience | What goes here |
+|-----------|----------|----------------|
+| `/skills/` | **Public** — distributed via `npx skills add` | Skills for engineers to install |
+| `/agents/` | **Public** — bundled with the plugin | Subagents available to all installers |
+| `/docs/` | **Public** — Mintlify site | Guides and references for engineers |
+| `/.claude/skills/` | **Internal** — repo maintainers only | Skills for maintaining this repo (not distributed) |
+| `/.claude-plugin/plugin.json` | — | Plugin manifest |
 
-- **Distribute, don't document** — content should reach engineers through `npx skills add`, not Slack links. Skills and agents are the primary delivery mechanism.
-- **Essential only** — when content becomes redundant or generic, cut it. Value is in specificity and density, not breadth.
-- **Context is the leverage point** — CLAUDE.md, skills, and agents are all context-delivery mechanisms. The goal is loading the right knowledge at the right time.
-- **Markdown-native** — all content stays `.md`. Files must render natively on GitHub. No `.mdx` unless JSX is actually required.
-- **One topic per file, self-contained** — each document covers exactly one thing and can be understood without reading others.
-- **Engineers are the audience** — brownfield reality, not greenfield idealism.
+**Do not put internal tooling in `skills/` or `agents/`.** Internal skills go in `.claude/skills/`.
 
-## Plugin Structure
-
-- `/skills/` — Distributable skills (discovered by `npx skills add`)
-- `/agents/` — Bundled subagents (future)
-- `/docs/` — Guides and references for engineers
-- `/.claude-plugin/plugin.json` — Plugin manifest
-
-## Available Skills
+## Public Skills
 
 | Skill | Install |
 |-------|---------|
 | `skill-architecture` | `npx skills add proxify-dev/Claude-Code@skill-architecture` |
 | `agent-development` | `npx skills add proxify-dev/Claude-Code@agent-development` |
 
-## Content Conventions
+## Internal Skills
 
-- All content is Markdown — one topic per file, self-contained
-- Prefer bullet points and tables over prose
-- File names: lowercase, hyphens, `.md` extension
-- Internal links use relative paths
-- Every doc file gets frontmatter: `title`, `description`, `sidebar_position`
+| Skill | Location | Purpose |
+|-------|----------|---------|
+| `docs-maintenance` | `.claude/skills/docs-maintenance/` | Editorial conventions for the Mintlify docs site |
 
-## Adding a New Skill
+## Conventions
 
-1. Create `skills/<skill-name>/SKILL.md` with valid frontmatter (`name` must match directory name)
-2. Add `references/` subdirectory for deep content if needed
-3. The skill becomes installable via `npx skills add proxify-dev/Claude-Code@<skill-name>`
-4. skills.sh auto-discovers it once pushed to GitHub
+- Docs use `.mdx` (Mintlify). Skills and agents use `.md`.
+- Non-doc content should render natively on GitHub.
+- One topic per file, self-contained.
+- File names: lowercase, hyphens.
+- Prefer bullet points and tables over prose.
 
-## Adding an Agent
+## Docs Site
 
-1. Create `agents/<agent-name>.md` with YAML frontmatter (name, description, model, color)
-2. Write the system prompt as the markdown body
-3. The agent is bundled with the plugin
-
-## Adding Documentation
-
-- Add new docs to the appropriate `/docs/` subdirectory (`setup/`, `patterns/`, `skills/`, `agents/`, `reference/`)
-- Add frontmatter (`title`, `description`, `sidebar_position`) to every doc file
-- Update README.md with a link
-
-**Include** if the content is Proxify-specific, teaches the delegation mindset, or is context an agent needs to execute a task correctly.
-
-**Backlink** if the content is better maintained upstream (official Claude Code docs, the skill itself) — reference it, don't duplicate it.
-
-**Cut** if the content would apply equally to any developer using Claude Code on any project. Generic advice belongs upstream.
+Mintlify site in `docs/`. The `docs-maintenance` skill covers editorial conventions, directory structure, voice, and component usage.
 
 ## Dual-Repo Boundary
 
@@ -73,11 +52,3 @@ Move Proxify engineers from "AI assistance" to "delegation." The target engineer
 | This org repo | This project | Proxify plugin + knowledge base. **All writes go here.** |
 
 **The boundary rule:** Read from `~/skills/`, write only to this project. To update an original skill, switch to `~/skills/`.
-
-## Reference Documents
-
-### Skill Architecture — `@skills/skill-architecture/SKILL.md`
-**Read when:** Creating or restructuring skills, deciding where knowledge should live
-
-### Agent Development — `@skills/agent-development/SKILL.md`
-**Read when:** Creating agents, writing system prompts, configuring MCP servers
