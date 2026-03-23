@@ -1,0 +1,82 @@
+---
+title: "Permutation Frameworks"
+description: "A three-phase system for consistent, repeatable code generation at scale."
+---
+
+<Note>**You'll learn:** How to move from one-off code generation to repeatable patterns that Claude can apply consistently across dozens of similar features.</Note>
+
+## The Problem
+
+Ask Claude to build 10 similar data tables and you'll get 10 slightly different implementations. Different error handling, different loading states, different prop naming. Each works individually but the codebase feels inconsistent.
+
+This isn't a model limitation — it's a prompting structure problem. Without an explicit pattern to follow, Claude makes reasonable but varied choices each time.
+
+## Three Phases
+
+### Phase 1: Manual Foundation
+
+Build the first 2-3 instances by hand (or with Claude, but review carefully). The goal is to establish the canonical implementation — the version you want replicated.
+
+```
+"Build a data table for /users with columns: name, email, role, status.
+Include loading state, empty state, error state, and pagination."
+```
+
+Review the output. Fix anything you don't like. This becomes your reference.
+
+### Phase 2: Pattern Recognition
+
+Extract the pattern from your reference implementation into CLAUDE.md or a skill:
+
+```markdown
+## Data Table Pattern
+When building data tables, follow src/components/tables/UsersTable.tsx as the reference:
+- Use the `DataTable` component from src/components/ui/data-table
+- Loading: skeleton rows matching column count
+- Empty: centered message with action button
+- Error: inline alert with retry
+- Pagination: server-side, 25 rows default
+- Column definitions in a separate `columns.tsx` file
+```
+
+Now Claude has a concrete example to follow, not just abstract instructions.
+
+### Phase 3: Automated Generation
+
+With the pattern documented, you can fan out:
+
+```
+"Create data tables for /orders, /products, and /invoices following
+the Data Table Pattern in CLAUDE.md. Reference src/components/tables/UsersTable.tsx
+for the canonical implementation."
+```
+
+Each instance follows the same structure. Differences are intentional (column definitions, filters) rather than accidental (different error handling approaches).
+
+## When to Use This
+
+| Scenario | Payoff |
+|----------|--------|
+| Building 5+ similar components (tables, forms, cards) | High — consistency across features |
+| API endpoints with shared conventions | High — uniform error handling, validation |
+| Migration patterns (v1 → v2 of an API) | High — reduces review burden |
+| One-off features | Low — the overhead isn't worth it |
+
+## When NOT to Optimize
+
+Don't build a permutation framework for code you'll write once. The 3-phase system pays off when you're generating **5+ similar things**. Below that threshold, the setup cost exceeds the consistency benefit.
+
+## Variance Testing
+
+After generating multiple instances, spot-check for drift:
+
+```
+"Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable.
+Flag any deviations from the pattern in UsersTable."
+```
+
+This is a good task for a [validator agent](orchestration-patterns#builder-validator-pairs) with read-only tools.
+
+---
+
+**← Prev:** [Orchestration Patterns](orchestration-patterns/) · **Next:** [Agent Teams →](agent-teams/)

@@ -53,6 +53,8 @@
             "pages": [
               "patterns/agentic-engineering",
               "patterns/maturity-ladder",
+              "patterns/robots-first",
+              "patterns/system-evolution",
               "patterns/distribution"
             ]
           }
@@ -76,9 +78,12 @@
             "pages": [
               "patterns/autonomous-tasks",
               "patterns/self-improving-loop",
+              "patterns/invocation-quality",
               "patterns/subagent-patterns",
               "patterns/orchestration-patterns",
+              "patterns/permutation-frameworks",
               "patterns/agent-teams",
+              "patterns/permission-modes",
               "patterns/cost-and-model-routing"
             ]
           }
@@ -99,7 +104,8 @@
           {
             "group": "Agents",
             "pages": [
-              "agents/creating-agents"
+              "agents/creating-agents",
+              "agents/agent-design"
             ]
           }
         ]

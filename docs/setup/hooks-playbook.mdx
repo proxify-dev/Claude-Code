@@ -114,6 +114,30 @@ Hooks go in your settings files:
 
 Team hooks (linting, test runs, security blocks) go in `.claude/settings.json`. Personal preferences go in local or user settings.
 
+## Beyond the Essential Five
+
+<Tip>**Official reference** — For the full lifecycle event taxonomy, exit code semantics, matcher syntax, and HTTP/agent hooks, see the [official hooks docs](https://code.claude.com/docs/en/hooks). Below is the quick map of what's available.</Tip>
+
+Hooks fire on 12 lifecycle events — not just `PreToolUse` and `PostToolUse`:
+
+| Event | When it fires | Use for |
+|-------|---------------|---------|
+| `SessionStart` | Session begins (new, resume, or post-clear) | Load context, run diagnostics |
+| `UserPromptSubmit` | Before Claude processes your message | Skill activation, input validation |
+| `PreToolUse` | Before a tool executes | **Block dangerous actions** |
+| `PermissionRequest` | When Claude requests permission | Automated approval/denial |
+| `PostToolUse` | After a tool executes | **Auto-lint, auto-format, run tests** |
+| `PostToolUseFailure` | After a tool fails | Error reporting, fallback logic |
+| `SubagentStart` / `SubagentStop` | Agent lifecycle | Agent monitoring, logging |
+| `Stop` | Before Claude finishes responding | **Enforce completion conditions** (all tests pass, all tasks done) |
+| `PreCompact` | Before context compaction | Backup critical state |
+| `Setup` | During initial setup | Onboarding automation |
+| `SessionEnd` | Session closes | Cleanup, transcript backup |
+
+**Exit codes:** `0` = allow, `1` = block the action, `2` = force Claude to continue (useful for Stop hooks that enforce quality gates).
+
+**Setup hooks** can run in deterministic mode (fast, CI-friendly) or agentic mode (supervised, with diagnostics). **HTTP hooks** POST events to endpoints instead of running local scripts — useful for centralized logging and remote validation.
+
 ## Hook Design Principles
 
 - **Fast hooks only.** Hooks run synchronously — a slow hook slows every action. Keep them under 2 seconds.

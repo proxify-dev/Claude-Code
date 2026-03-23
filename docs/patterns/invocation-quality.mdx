@@ -1,0 +1,74 @@
+---
+title: "Invocation Quality"
+description: "Most subagent failures are bad prompts, not bad agents. How to write invocations that succeed."
+---
+
+<Note>**You'll learn:** Why agent invocations fail, the anatomy of a good invocation, and a checklist to use before spawning any agent.</Note>
+
+## The Invocation Gap
+
+When an agent produces wrong output, the instinct is to blame the model or the tooling. In practice, the majority of failures trace back to the invocation — what you told the agent to do.
+
+| Invocation | Outcome |
+|------------|---------|
+| "Fix authentication" | Agent guesses at scope, edits wrong files, misses the actual bug |
+| "Fix the OAuth redirect loop where login succeeds but redirects back to `/login` instead of `/dashboard`. See `src/lib/auth.ts:47`" | Agent finds the exact issue and fixes it |
+
+The difference isn't model capability — it's input quality. The agent has no context beyond what you provide.
+
+## Anatomy of a Good Invocation
+
+Every subagent invocation should answer five questions:
+
+| Question | What to include |
+|----------|----------------|
+| **What?** | Concrete task with a clear deliverable |
+| **Where?** | Specific file paths, directories, or modules |
+| **Why?** | Enough context to make good judgment calls at decision points |
+| **How to verify?** | A success condition the agent can check (`npm test`, output format, specific behavior) |
+| **What not to do?** | Boundaries — files to avoid, approaches to skip, scope limits |
+
+**Good invocation example:**
+```
+Refactor the payment processing in src/billing/processor.ts to use the
+new Stripe SDK v4 API. The current code uses v2 patterns (callbacks).
+
+Files to modify: src/billing/processor.ts, src/billing/processor.test.ts
+Do not modify: src/billing/types.ts (shared types, other modules depend on it)
+
+Success condition: `npm test -- --testPathPattern=billing` passes with zero failures.
+```
+
+## Common Failure Modes
+
+**Vague goals:** "Improve the code" gives the agent no target. It will make changes, but not the ones you wanted.
+
+**Missing file paths:** The agent wastes tokens exploring the codebase to find what you already know. Worse, it might find the wrong file and edit it confidently.
+
+**No success condition:** Without a verifiable endpoint, the agent decides when it's "done" — often prematurely.
+
+**Assumed context:** The agent doesn't share your conversation history. Referencing "the approach we discussed" or "the pattern from earlier" fails silently — the agent proceeds with its own interpretation.
+
+**Scope leakage:** "Fix X and while you're at it, also clean up Y" turns a focused task into an unbounded one. One task per invocation.
+
+## The Invocation Checklist
+
+Before spawning any agent, verify:
+
+- [ ] **Task is concrete** — could a human contractor execute this without follow-up questions?
+- [ ] **File paths are explicit** — the agent knows exactly where to look and what to modify
+- [ ] **Success condition is verifiable** — a command, test, or observable behavior the agent can check
+- [ ] **Boundaries are stated** — what's out of scope, what files are off-limits
+- [ ] **Context is self-contained** — no references to earlier conversation the agent can't see
+
+If you can't check all five boxes, the invocation needs more work — not a better model.
+
+## Invocation Quality Scales with Agents
+
+This matters more as you add agents. One bad invocation with a single agent costs a few minutes. Ten bad invocations across a fan-out of agents waste significant tokens and produce a mess that's harder to fix than doing the work manually.
+
+The pattern in [orchestration](orchestration-patterns/) and [subagent design](subagent-patterns/) assumes high-quality invocations. If those patterns aren't working for you, check invocation quality before adding complexity.
+
+---
+
+**← Prev:** [Self-Improving Loop](self-improving-loop/) · **Next:** [Subagent Patterns →](subagent-patterns/)

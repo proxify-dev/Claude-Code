@@ -56,6 +56,18 @@ This keeps CLAUDE.md lean while making deep docs accessible on demand. Supports 
 
 When you notice these, `/compact` and refocus.
 
+## Context as Infrastructure
+
+<Tip>**Official reference** — For compaction mechanics, the 1M context window, and `CLAUDE_AUTOCOMPACT_PCT_OVERRIDE`, see the [official context docs](https://docs.anthropic.com/en/docs/claude-code/context-window). What follows is the operational mindset.</Tip>
+
+Context isn't just "how much Claude remembers" — it's infrastructure you architect around. Auto-compaction triggers at ~83.5% capacity with a ~33K token buffer. For long-running agentic sessions, this means:
+
+- **Front-load high-leverage context** (CLAUDE.md, skills) — they survive compaction and get re-injected
+- **Keep tool output concise** — verbose `npm test` output burns context that could hold conversation state
+- **Compact between tasks, not mid-task** — compaction mid-flow loses decisions and rationale
+
+For multi-agent work, each agent gets its own context window. Three agents reading the same 50-file codebase means paying for that context three times. Use the Explore agent (Haiku, read-only) for broad searches instead of having your main Opus session do it.
+
 ## The Token Budget Mental Model
 
 Think of context as a budget:
@@ -65,6 +77,8 @@ Think of context as a budget:
 - **Expensive:** Pasting large files into the chat (burns fast, not reusable)
 
 The goal is to front-load context efficiently at launch and let skills handle the rest on demand.
+
+<Tip>Claude Code has three memory layers — CLAUDE.md (persistent conventions), auto memory (learned cross-session), and session memory (current conversation). CLAUDE.md is the only one you control directly; the others accumulate automatically. Keep CLAUDE.md lean and let the other layers handle session-specific knowledge.</Tip>
 
 ---
 

@@ -1,0 +1,59 @@
+---
+title: "Permission Modes"
+description: "Five permission modes as workflow optimization — not just security settings."
+---
+
+<Tip>**Official reference** — For permission configuration syntax and managed settings, see the [official permissions docs](https://code.claude.com/docs/en/permissions). This page is about *when* to use each mode, not *how* to configure them.</Tip>
+
+## Modes as Workflow Levers
+
+Most engineers pick a permission mode once and forget about it. But switching modes mid-session — via **Shift+Tab** — is a workflow optimization tool.
+
+| Mode | What it does | When to use |
+|------|-------------|-------------|
+| **Normal** | Asks for approval on most tool calls | Early exploration, unfamiliar code, high-risk changes |
+| **Auto-accept** | Approves safe operations automatically | Active implementation after you've validated the approach |
+| **Plan** | Claude plans but doesn't execute until you approve | Architecture decisions, risky refactors, database changes |
+| **Don't ask** | Like auto-accept but suppresses all prompts | Background agents, CI/CD, well-defined tasks with strong hooks |
+| **Bypass permissions** | No restrictions at all | **Containers only.** Never on your host machine. |
+
+## The Trust Progression
+
+Permission modes map to trust — and trust should increase as guardrails do:
+
+```
+Start a feature   →  Normal (explore, understand the code)
+Validated approach →  Auto-accept (implement with confidence)
+Risky refactor     →  Plan (review before execution)
+Background agent   →  Don't ask (hooks enforce safety)
+```
+
+The key insight: you don't need the same permission level for the entire session. **Shift+Tab** lets you tighten or loosen controls as the risk profile changes.
+
+## Modes and Multi-Agent Work
+
+For [Agent Teams](agent-teams/) and [subagents](subagent-patterns/), permission modes interact:
+
+- **Teammates** inherit the lead's permission mode by default
+- **Subagents** can be spawned with explicit modes via the `mode` parameter
+- **Background agents** prompt for permissions before launching — set to `dontAsk` if your hooks handle safety
+
+If an agent stalls, it's often waiting for a permission prompt you can't see. Route background agents to `dontAsk` mode with [hooks](../setup/hooks-playbook/) providing the safety layer.
+
+## Sandboxing for Autonomous Work
+
+<Tip>**Official reference** — For OS-level sandboxing (macOS Seatbelt, Linux bubblewrap), filesystem isolation, and network restrictions, see the [official sandboxing docs](https://code.claude.com/docs/en/security#sandboxing).</Tip>
+
+When running agents with `dontAsk` or `bypassPermissions`, sandboxing provides the safety net that permissions would normally give. The tradeoff: you lose fine-grained control but gain a hard boundary that can't be bypassed by prompt injection.
+
+| Layer | What it restricts |
+|-------|------------------|
+| Filesystem sandbox | Read/write only within project directory |
+| Network sandbox | Outbound only to allowed domains |
+| Container isolation | Full OS-level boundary (Docker, devcontainers) |
+
+For overnight autonomy, the combination of `dontAsk` + OS-level sandboxing + [stop hooks](../setup/hooks-playbook/) is the production-grade safety stack.
+
+---
+
+**← Prev:** [Agent Teams](agent-teams/) · **Next:** [Cost & Model Routing →](cost-and-model-routing/)

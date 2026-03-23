@@ -1,0 +1,63 @@
+---
+title: "Robots-First Engineering"
+description: "Designing specs, code, and workflows for agent execution — not human execution."
+---
+
+<Note>**You'll learn:** How to restructure your engineering artifacts so agents can execute them reliably — and why this benefits human engineers too.</Note>
+
+## The Shift
+
+Most engineering artifacts — specs, code conventions, architecture docs — are written for humans to interpret. Agents can interpret them too, but they miss nuance, read between lines poorly, and make different assumptions than you would.
+
+Robots-first engineering means structuring your artifacts so they're **unambiguous to an agent** while remaining readable to humans. This isn't dumbing things down — it's making implicit knowledge explicit.
+
+## Specs as Lookup Tables
+
+Narrative specs ("the system should gracefully handle edge cases") produce inconsistent agent output. Structured specs produce consistent output.
+
+| Narrative (agent guesses) | Structured (agent looks up) |
+|---------------------------|----------------------------|
+| "Handle errors appropriately" | "4xx → return error message from response body. 5xx → retry 3x with exponential backoff, then throw `ServiceUnavailableError`" |
+| "Follow our naming conventions" | "Files: kebab-case. Components: PascalCase. Hooks: camelCase with `use` prefix. Types: PascalCase with no suffix." |
+| "Make it performant" | "Target: under 200ms p95 latency. Use database indexes on all foreign keys. Paginate queries over 100 rows." |
+
+The pattern: replace adjectives with conditions. Replace "appropriate" with a decision table.
+
+## Code Conventions That Reduce Ambiguity
+
+Structure your CLAUDE.md so agents don't need judgment calls on recurring decisions:
+
+```markdown
+## Import Order
+1. Node builtins
+2. External packages
+3. Internal packages (@company/*)
+4. Relative imports (../ then ./)
+Blank line between each group.
+
+## Error Handling
+- API routes: catch at handler level, return structured error response
+- Services: throw typed errors (NotFoundError, ValidationError)
+- Never swallow errors silently — log at minimum
+```
+
+Every convention that's implicit in your team's culture but not written down is a source of agent inconsistency. Write it down once, enforce via [hooks](../setup/hooks-playbook/) where possible.
+
+## Repo Structure for Parallelization
+
+Agents work in parallel best when they have clear ownership boundaries. Design your directory structure to support this:
+
+- **One concern per directory** — `src/features/billing/` owns billing, nothing else touches it
+- **Barrel exports** — each directory exposes its public interface via `index.ts`
+- **Shared types in a shared location** — `src/types/` is the contract layer
+- **No cross-feature imports** — features communicate through shared types, not direct imports
+
+This structure lets you give each agent a directory and say "you own this, don't touch anything outside it." See [Contract Chains](orchestration-patterns#contract-chains--wave-execution) for how this enables reliable parallel execution.
+
+## The Compound Effect
+
+Robots-first conventions compound: every spec you restructure, every convention you make explicit, every directory boundary you enforce makes *every future agent session* more reliable. This is the [system evolution](system-evolution/) mindset applied to engineering artifacts.
+
+---
+
+**← Prev:** [Maturity Ladder](maturity-ladder/) · **Next:** [System Evolution →](system-evolution/)

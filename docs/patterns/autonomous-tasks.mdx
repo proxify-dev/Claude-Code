@@ -73,6 +73,32 @@ Run a second Claude session that continuously tests your app while you work on f
 
 You get continuous regression feedback without interrupting your flow.
 
+## Designing for Overnight Autonomy
+
+The Write-Test Cycle works for minutes. For hours-long autonomous runs, you need more structure.
+
+**Verification-first architecture:** Define the success condition before the agent starts. The agent loops on implementation until verification passes — not until it "feels done."
+
+```
+"Implement the data pipeline. After each change, run `make test-pipeline && make lint`.
+Do not stop until both pass with zero errors. If stuck after 3 attempts on the same
+error, create a TODO with the blocker and move to the next task."
+```
+
+**Back-pressure patterns:**
+- **Stop hooks** can enforce completion conditions — the agent can't finish until tests pass or tasks are marked done. See the [hooks playbook](../setup/hooks-playbook/).
+- **Escape hatches** prevent infinite loops: cap retries, time-box exploration, create TODOs for blockers instead of spinning.
+- **Progress files** (e.g., `PROGRESS.md`) let fresh agents resume where the last one left off after context compaction.
+
+**The overnight checklist:**
+1. Commit current state (rollback point)
+2. Branch for the autonomous work
+3. Define verifiable success conditions
+4. Set escape hatches (max retries, TODO-on-block)
+5. Use hooks to enforce quality gates
+
+<Tip>**Scheduled tasks** in Claude Desktop can run agents on a cadence (hourly, daily) — useful for monitoring, audits, and recurring maintenance without interactive sessions.</Tip>
+
 ## Safety Rails
 
 Autonomous agents are powerful but need guardrails. Before delegating unsupervised work:

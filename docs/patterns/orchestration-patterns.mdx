@@ -1,6 +1,6 @@
 ---
 title: "Orchestration Patterns"
-description: "Five proven patterns for coordinating multiple agents — from simple fan-out to builder-validator quality loops."
+description: "Six proven patterns for coordinating multiple agents — from simple fan-out to contract chains for reliable parallel integration."
 ---
 
 <Tip>**Official reference** — The [official sub-agents docs](https://docs.anthropic.com/en/docs/claude-code/sub-agents) and [Agent Teams docs](https://docs.anthropic.com/en/docs/claude-code/agent-teams) cover the underlying mechanisms. This page is the pattern taxonomy — how to compose those primitives into workflows.</Tip>
@@ -95,6 +95,34 @@ Fire-and-forget agents for tasks that don't block your current work.
 
 <Tip>Background agents prompt for tool permissions before launching, preventing them from stalling on permission requests while running invisibly.</Tip>
 
+## Contract Chains / Wave Execution
+
+The pattern for parallel work that **must integrate cleanly**. Run work in waves — each wave's concrete outputs become the contracts for the next wave's agents.
+
+**How it works:**
+1. **Wave 1** (sequential): Build the foundation — database schema, API contracts, shared types
+2. Extract concrete artifacts from Wave 1 output (the actual interface, not assumptions about it)
+3. **Wave 2+** (parallel): Spawn agents that receive the upstream contracts injected into their prompts, plus their own file ownership boundaries
+4. Each agent also gets downstream obligations — "your component must export these props"
+
+**Example prompt for a Wave 2 agent:**
+```
+You own src/features/billing/.
+
+Upstream contract (from Wave 1):
+- DB schema: see migrations/004_billing.sql
+- API types: see src/types/billing.ts
+
+Downstream obligation:
+- Export BillingDashboard from src/features/billing/index.ts matching the props in src/types/billing.ts
+
+Do not edit files outside your directory.
+```
+
+**Why this beats naive fan-out:** Parallel agents that each *assume* the interface will look a certain way produce code that individually passes tests but fails integration. Contract injection eliminates assumption drift — agents build against verified artifacts, not guesses.
+
+**Best for:** multi-component features, full-stack implementations, any work where parallel agents must produce code that connects at boundaries.
+
 ---
 
-**← Prev:** [Self-Improving Loop](self-improving-loop/) · **Next:** [Agent Teams →](agent-teams/)
+**← Prev:** [Subagent Patterns](subagent-patterns/) · **Next:** [Permutation Frameworks →](permutation-frameworks/)

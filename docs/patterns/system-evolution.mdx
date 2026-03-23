@@ -1,0 +1,64 @@
+---
+title: "System Evolution"
+description: "Every bug teaches your system something. Trace, patch, never repeat."
+---
+
+<Note>**You'll learn:** How to treat CLAUDE.md and hooks as a system that improves with every session — and why feedback loops are the primary skill of agentic engineering.</Note>
+
+## The Discipline
+
+When Claude makes a mistake, you have two choices:
+
+1. **Fix the instance** — correct the output, move on
+2. **Fix the system** — trace *why* Claude made the mistake, then patch CLAUDE.md or hooks so it can't happen again
+
+Option 2 is slower in the moment but compounds over time. After a few weeks of consistent system-level fixes, Claude stops making the same classes of mistakes.
+
+## Trace, Patch, Never Repeat
+
+The workflow:
+
+1. **Notice** — Claude uses relative imports when your project uses `@/` path aliases
+2. **Trace** — CLAUDE.md says nothing about import conventions
+3. **Patch** — Add to CLAUDE.md: `"Always use @/ path aliases for imports. Never use relative paths (../) for cross-directory imports."`
+4. **Verify** — Future sessions follow the convention
+
+Every correction is a signal. The question isn't "how do I fix this output?" but "what's missing from my system that let this happen?"
+
+## What to Patch Where
+
+| Signal | Patch target | Example |
+|--------|-------------|---------|
+| Claude keeps making the same formatting mistake | CLAUDE.md convention | "Use single quotes for strings" |
+| Claude does something dangerous | Hook (hard block) | Block `git push --force` via PreToolUse hook |
+| Claude's approach to a task type is consistently wrong | Skill | Create a skill for database migrations with your patterns |
+| Claude forgets cross-cutting concerns | `.claude/rules/` file scoped to the relevant path | Testing requirements for `src/api/` |
+
+CLAUDE.md handles conventions. Hooks enforce safety. Skills encode complex workflows. Rules scope context to specific areas. Use the right tool for the signal.
+
+## Feedback Loops as Primary Skill
+
+The core skill of agentic engineering isn't prompting — it's designing tight validation loops. The tighter the loop, the faster Claude self-corrects.
+
+| Loop tightness | Example | Feedback speed |
+|----------------|---------|---------------|
+| **Tightest** | PostToolUse hook runs linter after every edit | Seconds |
+| **Tight** | "Run `npm test` after each change" in the prompt | Minutes |
+| **Loose** | Review at the end of a session | Could be too late |
+
+The tightest loops are automated (hooks). The next tightest are embedded in the task prompt. The loosest require your attention — reserve those for judgment calls that can't be automated.
+
+## The Compounding Effect
+
+A well-maintained system produces a flywheel:
+
+```
+Better CLAUDE.md → fewer mistakes → less correction time →
+more time for system improvements → even better CLAUDE.md
+```
+
+Engineers who invest in system evolution consistently report that Claude "gets better" over weeks. The model isn't improving — their system is. This is the [self-improving loop](self-improving-loop/) at the practice level.
+
+---
+
+**← Prev:** [Robots-First](robots-first/) · **Next:** [Distribution →](distribution/)

@@ -25,6 +25,10 @@ Don't just accept the first output. Push back:
 - **"Knowing everything you know now, scrap this and implement the elegant solution."** — After Claude has explored the problem space, ask it to restart with full context. The second attempt is almost always better.
 - **"What are three ways this could break in production?"** — Surfaces failure modes you haven't considered.
 
+## Pre-Planning: Reduce Assumptions First
+
+Before jumping into a plan, ask Claude to research the codebase and surface 5-10 clarifying questions. This eliminates assumption drift — especially critical for [multi-agent work](orchestration-patterns/) where two agents assuming different things produces code that individually passes tests but fails integration.
+
 ## Self-Reflection Loops
 
 This is a Level 4 technique from the [maturity ladder](maturity-ladder/). Ask Claude to check its own work:
@@ -56,6 +60,21 @@ Every time you correct Claude, tell it:
 > "Update CLAUDE.md so you don't make that mistake again."
 
 Claude is good at writing rules for itself. Over time, your CLAUDE.md accumulates project-specific knowledge that prevents repeated mistakes. This is the compounding advantage of agentic engineering — the context improves with every session.
+
+## Behavior Injection for Agents
+
+Agent *behavior* affects output quality as much as the prompt content. A "thinks methodically" debugging agent produces different results than a "moves fast" prototyping agent.
+
+Set behavioral constraints in agent definitions or CLAUDE.md sections:
+
+| Context | Behavior to inject | Why |
+|---------|-------------------|-----|
+| Debugging | "Think step-by-step. Verify each hypothesis before moving on." | Prevents shotgun fixes |
+| Architecture | "Consider three approaches before recommending one. Explain tradeoffs." | Forces exploration |
+| Code review | "Be skeptical. Assume bugs exist. Check edge cases." | Counteracts optimism bias |
+| Prototyping | "Favor speed over perfection. Use placeholders for non-critical details." | Prevents over-engineering |
+
+This isn't "prompt engineering tricks" — it's designing agent personas that match the task. A validator agent should be skeptical by default. A builder agent should be decisive. Encode these traits in the agent's system context so they're consistent across invocations.
 
 ## Voice Input
 

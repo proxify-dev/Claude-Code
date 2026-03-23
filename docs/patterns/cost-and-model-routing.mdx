@@ -31,6 +31,21 @@ The most impactful cost optimization: use the cheapest model that can do the job
 Research (Haiku) → Plan (Opus) → Implement (Sonnet) → Validate (Sonnet, read-only)
 ```
 
+## The opusplan Pattern
+
+<Tip>**Official reference** — For model aliases, `/model` switching, and `CLAUDE_CODE_SUBAGENT_MODEL`, see the [official model configuration docs](https://docs.anthropic.com/en/docs/claude-code/model-configuration). This section covers the routing strategy.</Tip>
+
+The highest-leverage cost optimization: **Opus plans, Sonnet executes.** Use Opus for architecture decisions and coordination, then route implementation to Sonnet agents. This cuts 60-80% of token costs while maintaining quality where it matters.
+
+| Technique | How | Savings |
+|-----------|-----|---------|
+| opusplan | Opus plans + Sonnet implements | 60-80% |
+| Mid-session `/model` switch | Start with Opus, switch to Sonnet for execution | 40-60% |
+| `think harder` / `ultrathink` | Extended thinking on Sonnet instead of switching to Opus | ~80% vs Opus |
+| Haiku for research | Route exploration agents to Haiku via `model: haiku` in agent frontmatter | 90%+ vs Opus |
+
+The key insight: model choice is a **per-task** decision, not a per-session one. Switch models as the work shifts from reasoning to execution.
+
 ## Practical Tips
 
 ### Minimize context pollution
