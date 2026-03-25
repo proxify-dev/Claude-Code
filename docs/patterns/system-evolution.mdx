@@ -9,6 +9,8 @@ sources:
 
 <Note>**You'll learn:** How to treat CLAUDE.md and hooks as a system that improves with every session — and why feedback loops are the primary skill of agentic engineering.</Note>
 
+<Tip>**Official reference** — For hook event types and configuration, see the [official hooks docs](https://docs.anthropic.com/en/docs/claude-code/hooks). For ready-made recipes, see our [Hooks Playbook](../setup/hooks-playbook/).</Tip>
+
 ## The Discipline
 
 When Claude makes a mistake, you have two choices:
@@ -16,18 +18,42 @@ When Claude makes a mistake, you have two choices:
 1. **Fix the instance** — correct the output, move on
 2. **Fix the system** — trace *why* Claude made the mistake, then patch CLAUDE.md or hooks so it can't happen again
 
-Option 2 is slower in the moment but compounds over time. After a few weeks of consistent system-level fixes, Claude stops making the same classes of mistakes.
+The difference compounds fast:
+
+| Mistake | Fix the instance | Fix the system |
+|---------|-----------------|----------------|
+| Claude uses relative imports | Find-replace `../../` → `@/` in this file | Add to CLAUDE.md: "Always use `@/` path aliases. Never relative paths for cross-directory imports." |
+| Claude skips tests before push | Remember to prompt "run tests" next time | Add a mandatory test step to your task prompt or command template |
+| Claude implements JWT-in-cookies instead of bearer tokens | Correct the auth code manually | Create `.claude/skills/auth/SKILL.md` with your token format and middleware patterns |
+
+Option 2 is slower in the moment. After a few weeks of consistent system-level fixes, entire classes of mistakes disappear.
 
 ## Trace, Patch, Never Repeat
 
-The workflow:
+The workflow has four steps. Here's the first example:
 
 1. **Notice** — Claude uses relative imports when your project uses `@/` path aliases
 2. **Trace** — CLAUDE.md says nothing about import conventions
 3. **Patch** — Add to CLAUDE.md: `"Always use @/ path aliases for imports. Never use relative paths (../) for cross-directory imports."`
 4. **Verify** — Future sessions follow the convention
 
+The same pattern applies to any recurring mistake:
+
+**Tests never run locally:**
+1. Notice — CI fails because tests weren't run before push
+2. Trace — nothing in CLAUDE.md or the task prompt requires a test step
+3. Patch — add to CLAUDE.md: "Run the full test suite before marking any task complete"
+4. Verify — next session ends with a passing test run
+
+**Wrong auth pattern:**
+1. Notice — Claude implements cookie-based JWT when you use bearer tokens
+2. Trace — no reference document for auth patterns exists
+3. Patch — create `.claude/skills/auth/SKILL.md` with token format, header conventions, and middleware patterns
+4. Verify — next auth task loads the skill and follows the correct pattern automatically
+
 Every correction is a signal. The question isn't "how do I fix this output?" but "what's missing from my system that let this happen?"
+
+A useful shorthand after any correction: tell Claude *"Update CLAUDE.md so you don't make that mistake again."* Claude is good at writing rules for itself — keep iterating until the mistake rate drops.
 
 ## What to Patch Where
 
@@ -40,28 +66,52 @@ Every correction is a signal. The question isn't "how do I fix this output?" but
 
 CLAUDE.md handles conventions. Hooks enforce safety. Skills encode complex workflows. Rules scope context to specific areas. Use the right tool for the signal.
 
-## Feedback Loops as Primary Skill
+When in doubt, start with CLAUDE.md. If you find yourself adding the same rule to multiple projects, promote it to a skill. If a rule keeps getting violated, promote it to a hook. The progression: **suggestion** (CLAUDE.md) → **scoped context** (`.claude/rules/`) → **encoded workflow** (skill) → **enforced constraint** (hook).
+
+## Feedback Loops
 
 The core skill of agentic engineering isn't prompting — it's designing tight validation loops. The tighter the loop, the faster Claude self-corrects.
 
-| Loop tightness | Example | Feedback speed |
-|----------------|---------|---------------|
-| **Tightest** | PostToolUse hook runs linter after every edit | Seconds |
-| **Tight** | "Run `npm test` after each change" in the prompt | Minutes |
-| **Loose** | Review at the end of a session | Could be too late |
+| Loop | Mechanism | Feedback speed |
+|------|-----------|---------------|
+| **Micro** | PostToolUse hook runs linter after every edit | Seconds |
+| **Macro** | Stop hook checks structural requirements when agent finishes | Minutes |
+| **Team** | Validator agent reviews output with fresh context | End of task |
+| **Manual** | You review at the end of a session | Could be too late |
 
-The tightest loops are automated (hooks). The next tightest are embedded in the task prompt. The loosest require your attention — reserve those for judgment calls that can't be automated.
+A PostToolUse hook in practice — add this to your `.claude/settings.json`:
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "command": "npx eslint --fix \"$CLAUDE_FILE_PATH\" 2>&1 || true"
+      }
+    ]
+  }
+}
+```
+
+Every file Claude writes gets linted immediately. Claude sees the linter output and fixes issues in the same turn instead of accumulating them. For more recipes, see the [Hooks Playbook](../setup/hooks-playbook/).
+
+An agent with embedded PostToolUse hooks and a Stop script handles 90% of quality issues before a human ever reviews the output. The manual review layer then focuses on integration concerns and architectural correctness — not catching lint errors.
 
 ## The Compounding Effect
 
-A well-maintained system produces a flywheel:
+A real system evolution over weeks:
 
-```
-Better CLAUDE.md → fewer mistakes → less correction time →
-more time for system improvements → even better CLAUDE.md
-```
+| Week | What went wrong | System patch | Cumulative effect |
+|------|----------------|-------------|-------------------|
+| 1 | Wrong imports, skipped tests, inconsistent naming | 3 CLAUDE.md rules | Claude follows basic conventions |
+| 2 | Missing barrel exports, wrong error format | 2 more rules + PostToolUse lint hook | Formatting auto-fixes; structural issues caught in review |
+| 3 | Wrong auth pattern, missing input validation | Auth skill + API validation skill | Domain patterns load automatically |
+| 4 | Agent delivers incomplete output | Stop hook checks required files and exports | Agent cannot declare "done" prematurely |
+| 6 | Rare edge cases only | Validator agent for critical paths | 90% of issues caught before human review |
 
-Engineers who invest in system evolution consistently report that Claude "gets better" over weeks. The model isn't improving — their system is. This is the [self-improving loop](self-improving-loop/) at the practice level.
+After finishing each feature, ask Claude: *"Read CLAUDE.md and the commands we used. What rules would have prevented the issues we hit?"* This turns system evolution from an afterthought into a routine step.
+
+Engineers who invest in this consistently report that Claude "gets better" over weeks. The model isn't improving — their system is. This is the [self-improving loop](self-improving-loop/) at the practice level.
 
 ---
-
