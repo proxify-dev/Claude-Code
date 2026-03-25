@@ -3,6 +3,16 @@
 export const ScrollVideo = ({ src, alt }) => {
   const ref = React.useRef(null);
   const [hasPlayed, setHasPlayed] = React.useState(false);
+  const [isLight, setIsLight] = React.useState(false);
+
+  React.useEffect(() => {
+    const html = document.documentElement;
+    const check = () => setIsLight(html.style.colorScheme !== 'dark');
+    check();
+    const obs = new MutationObserver(check);
+    obs.observe(html, { attributes: true, attributeFilter: ['style'] });
+    return () => obs.disconnect();
+  }, []);
 
   React.useEffect(() => {
     const video = ref.current;
@@ -35,7 +45,11 @@ export const ScrollVideo = ({ src, alt }) => {
         playsInline
         preload="auto"
         aria-label={alt}
-        style={{ width: "100%", display: "block" }}
+        style={{
+          width: "100%",
+          display: "block",
+          filter: isLight ? "invert(1) hue-rotate(180deg) contrast(1) saturate(1)" : "none",
+        }}
       >
         <source src={`${base}.webm`} type="video/webm" />
       </video>
