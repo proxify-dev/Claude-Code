@@ -53,9 +53,7 @@ Different doc types serve different purposes and use different voice, structure,
 **Structure:**
 - One-line description
 - "At a Glance" table (quick reference with anchored links)
-- `---` separator
 - One `##` section per item, each following: the mistake → why it hurts → the fix
-- `---` between sections
 
 ### Checklist docs (`reference/`)
 

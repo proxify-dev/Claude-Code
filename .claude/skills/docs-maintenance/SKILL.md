@@ -14,3 +14,5 @@ Editorial conventions for the Mintlify docs site at `docs/`. The site teaches br
 - **Deciding whether to write, backlink, or cut content?** Read [editorial-judgment.md](references/editorial-judgment.md) — the include/backlink/cut framework with worked examples, upstream boundaries, and the density test.
 
 - **Writing or editing a specific doc type?** Read [voice-by-doc-type.md](references/voice-by-doc-type.md) — how setup docs, pattern docs, reference docs, and checklists each have a different voice, opener, and structure.
+
+- **Formatting content or reviewing typography?** Read [typography-rules.md](references/typography-rules.md) — component-level rules for lists, callouts, code formatting, and Mintlify-specific patterns.
