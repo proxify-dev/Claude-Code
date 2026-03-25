@@ -51,22 +51,27 @@ Small friction reductions compound when you're switching between 3-4 sessions th
 
 The constraint isn't compute. It's your ability to review and integrate the output.
 
+<Note>Each parallel session loads context independently — 3 sessions ≈ 3× the token cost. Route implementation to Sonnet and reserve Opus for planning. See [Cost & Model Routing](cost-and-model-routing/) for the full strategy.</Note>
+
 ## Combining with Session Management
 
 Each worktree should be self-contained:
 
 - Its own Claude session
-- Its own `HANDOFF.md` if you need to pause and resume
+- Its own [`HANDOFF.md`](session-management#the-handoff-pattern) if you need to pause and resume — a structured note capturing progress, decisions, and next steps so a fresh agent can pick up where the last left off
 - Its own branch with regular commits
 
 When an agent finishes in one worktree, review the output, merge the branch, and clean up the worktree. Then spin up a new one for the next task.
 
 ## Going Deeper
 
-For more sophisticated multi-agent coordination, see:
-- [Orchestration Patterns](orchestration-patterns/) — fan-out, pipelines, builder-validator, and more
-- [Agent Teams](agent-teams/) — multi-session collaboration with shared task lists
-- [Cost & Model Routing](cost-and-model-routing/) — controlling token costs across parallel workflows
+Once parallel sessions are second nature, the next question is how much coordination your tasks actually need:
+
+| Need | Go to | Example |
+|------|-------|---------|
+| Independent tasks, no coordination | [Orchestration Patterns](orchestration-patterns/) | Fan-out migrations, convention sweeps |
+| Tasks that share findings or coordinate | [Agent Teams](agent-teams/) | Auth refactor across frontend + backend + tests |
+| Controlling what all of this costs | [Cost & Model Routing](cost-and-model-routing/) | Opus plans, Sonnet implements |
 
 ---
 
