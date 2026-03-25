@@ -41,8 +41,7 @@
               "setup/claude-md",
               "setup/skills-stack",
               "setup/hooks-playbook",
-              "setup/mcp-wiring",
-              "setup/terminal-setup"
+              "setup/mcp-wiring"
             ]
           },
           {
