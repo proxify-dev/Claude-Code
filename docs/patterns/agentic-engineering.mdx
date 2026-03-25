@@ -5,6 +5,8 @@ sources:
   - "claude-code-tips/content/spectrum-of-agentic-coding.md"
   - "claudefa.st/blog/guide/development/agentic-engineering-best-practices.md"
   - "claudefa.st/blog/guide/mechanics/robots-first-engineering.md"
+  - "claudefa.st/blog/guide/mechanics/thread-based-engineering.md"
+  - "claudefa.st/blog/guide/mechanics/autonomous-agent-loops.md"
 ---
 
 <Note>**You'll learn:** the mindset shift, how to size tasks for delegation, when to step in, and how to match autonomy to risk.</Note>
@@ -13,15 +15,33 @@ The shift from "coding with AI assistance" to "delegating work to AI agents" —
 
 ## Mindset
 
-Traditional AI assistance: you write code, AI suggests completions or answers questions.
+Most engineers treat Claude Code like a chatbot. Vague request in, vague result out, blame the tool. The engineers getting 10x results are doing something different — they've stopped writing code and started designing systems that write code reliably.
 
-Agentic engineering: **you define the task, the agent executes, you review the output.**
+### The job changed
 
-Your role shifts from implementer to architect and reviewer:
+**Software development** — writing code, running tests, committing changes — is now automated. An agent does it for ~$10/hour, 24/7, without getting tired.
 
-- **Defining clear tasks** — enough context for autonomous execution
-- **Setting up guardrails** — CLAUDE.md, hooks, tests that keep the agent in bounds
-- **Reviewing output** — with the rigor you'd apply to a junior developer's PR
+**Software engineering** — designing the systems that keep automated development reliable — is not. Building rails. Managing failure domains. Creating verification loops. Engineering back-pressure.
+
+You're a locomotive engineer, not a cargo carrier. The cargo still moves — you're just not carrying it by hand anymore.
+
+### The questions change
+
+| Before | After |
+|--------|-------|
+| How do I write this code? | How do I specify this so an agent writes it correctly? |
+| How do I review this PR? | How do I build verification that catches issues before review? |
+| How do I debug this issue? | How do I patch my system so this class of issue stops happening? |
+
+Every question shifts from **"how do I do X?"** to **"how do I design a system that does X reliably?"** That's the whole mindset in one sentence.
+
+### Earn trust through engineering
+
+Every objection to agent autonomy — "what if it breaks production?", "what if it makes bad decisions?" — is an engineering problem, not a reason to avoid delegation. Engineer rollback mechanisms. Engineer verification loops. Engineer back-pressure. The job is to [engineer away the concerns](robots-first/).
+
+But don't reach for the jackhammer before you've mastered the screwdriver. Start manual, understand why things work, then graduate to [higher autonomy](maturity-ladder/). If you skip straight to full automation without understanding the fundamentals, you'll get terrible results.
+
+<Note>**User vs. practitioner** — The user fixes bugs. The practitioner fixes the system that produced the bug. Every correction is a signal: what's missing from my system that let this happen? That discipline is what compounds. See [system evolution](system-evolution/).</Note>
 
 ## Delegation Levels
 
