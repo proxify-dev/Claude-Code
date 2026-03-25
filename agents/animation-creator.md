@@ -135,7 +135,7 @@ The React component. Transparent background. Uses `P` palette.
 
 ### 2. `animations/src/Root.tsx`
 
-Register two compositions — the base and a `*Dark` wrapper:
+Register one composition (transparent — no background wrapper):
 
 ```tsx
 <Composition
@@ -146,31 +146,23 @@ Register two compositions — the base and a `*Dark` wrapper:
   width={1200}
   height={680}
 />
-<Composition
-  id="MyAnimationDark"
-  component={() => (
-    <AbsoluteFill style={{ background: P.bg }}>
-      <MyAnimation />
-    </AbsoluteFill>
-  )}
-  durationInFrames={80}
-  fps={30}
-  width={1200}
-  height={680}
-/>
 ```
 
 ### 3. `animations/package.json`
 
-Append render commands for the `*Dark` composition to both `render:webm` and `render:mp4` scripts. Output to `../docs/videos/my-animation.webm` and `.mp4`.
+Append a render command to the `render` script. Output format is **webm only** with alpha transparency:
+
+```
+npx remotion render src/index.ts MyAnimation ../docs/videos/my-animation.webm --pixel-format yuva420p
+```
+
+Chain onto the existing command with `&&`.
 
 ### 4. Embedding in MDX
 
 ```mdx
-<ScrollVideo src="/videos/my-animation.mp4" alt="Short description of what the animation shows" />
+<ScrollVideo src="/videos/my-animation.webm" alt="Short description of what the animation shows" />
 ```
-
-(`ScrollVideo` strips the extension and serves `.webm` first, `.mp4` as fallback.)
 
 ---
 
@@ -180,7 +172,8 @@ Append render commands for the `*Dark` composition to both `render:webm` and `re
 2. **Study existing work.** Read at least one existing animation component as a style reference.
 3. **Design.** Work through the five gates above. Write out your reasoning: metaphor, single takeaway, reading order. Define the visual elements and their entrance sequence.
 4. **Build.** Write the component, register in Root.tsx, add render scripts.
-5. **Deliver.** Output the embed snippet and tell the lead agent to run `cd animations && npm run render`.
+5. **Render.** Run `cd animations && npm run render` to produce `.webm` files. You have Bash access — do this yourself, don't punt it to the lead agent.
+6. **Verify.** Confirm the `.webm` files exist in `docs/videos/` with updated timestamps. If the animation is for an existing docs page, check that the `<ScrollVideo>` embed references the correct filename. If it's new, output the embed snippet.
 
 ---
 
@@ -197,7 +190,8 @@ Append render commands for the `*Dark` composition to both `render:webm` and `re
 - [ ] Node labels and key text at 22px+ canvas size
 - [ ] Total duration ≤ 90 frames
 - [ ] No hardcoded hex colors — all from `P`
-- [ ] Root `<AbsoluteFill>` has `backgroundColor: "transparent"`
-- [ ] Both `MyAnimation` and `MyAnimationDark` registered in Root.tsx
-- [ ] Render commands added to both `render:webm` and `render:mp4`
-- [ ] Embed snippet provided
+- [ ] Root `<AbsoluteFill>` has `backgroundColor: "transparent"` — never add a background wrapper
+- [ ] Composition registered in Root.tsx (one composition per animation, no `*Dark` variants)
+- [ ] Render command appended to `render` script in package.json (webm with `--pixel-format yuva420p`)
+- [ ] Rendered — `.webm` exists in `docs/videos/` with fresh timestamp
+- [ ] Embed snippet provided (new animations) or existing embed verified (rewrites)

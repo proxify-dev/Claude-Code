@@ -38,7 +38,6 @@ export const ScrollVideo = ({ src, alt }) => {
         style={{ width: "100%", display: "block" }}
       >
         <source src={`${base}.webm`} type="video/webm" />
-        <source src={`${base}.mp4`} type="video/mp4" />
       </video>
     </div>
   );

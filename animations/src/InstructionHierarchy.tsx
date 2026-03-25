@@ -4,93 +4,129 @@ import {
   spring,
   useCurrentFrame,
   useVideoConfig,
-  Easing,
 } from "remotion";
 import { P } from "./palette";
+
+/*
+ * Instruction Hierarchy — visual metaphor: pyramid stack + attention gauge.
+ *
+ * Layers appear top-to-bottom (highest priority first, widest).
+ * Each layer's entrance incrementally fills an attention gauge on the right,
+ * showing the finite budget being consumed. The gauge shifts from green
+ * to amber to rose as it fills, ending with a warning label.
+ *
+ * 90 frames @ 30fps = 3s total.
+ */
 
 const LAYERS = [
   {
     label: "System Prompt",
-    meta: "Priority 1",
-    detail: "Always loaded, cannot be overridden",
+    detail: "Always loaded, highest priority",
     accent: P.indigo,
-    widthPct: 92,
+    widthPct: 95,
+    weight: 0.15,
   },
   {
     label: "Tool Descriptions",
-    meta: "Priority 2",
-    detail: "Loaded per tool",
+    detail: "Loaded per tool call",
     accent: P.indigoMuted,
-    widthPct: 84,
+    widthPct: 85,
+    weight: 0.2,
   },
   {
     label: "CLAUDE.md",
-    meta: "Priority 3",
     detail: "Every session, loaded at launch",
     accent: P.lavender,
-    widthPct: 76,
+    widthPct: 75,
+    weight: 0.25,
   },
   {
     label: "Skills",
-    meta: "Priority 3",
     detail: "On trigger, pay-per-use",
     accent: P.mint,
-    widthPct: 68,
+    widthPct: 65,
+    weight: 0.2,
   },
   {
     label: "User Messages",
-    meta: "Priority 4",
     detail: "Single turn, ephemeral",
-    accent: P.textMuted,
-    widthPct: 60,
+    accent: P.textSecondary,
+    widthPct: 55,
+    weight: 0.2,
   },
 ];
 
-const LAYER_H = 72;
+const FONT =
+  '"SF Pro Display", "SF Pro", -apple-system, BlinkMacSystemFont, sans-serif';
+
+const LAYER_H = 76;
 const GAP = 10;
 
-const staggerDelay = (i: number) => {
-  const gaps = [0, 18, 32, 50, 72];
-  return gaps[i] ?? i * 18;
+// Tight stagger: layers appear fast, each 10 frames apart
+const layerDelay = (i: number) => 4 + i * 10;
+
+// Gauge color interpolation based on fill level
+const gaugeColor = (fill: number): string => {
+  if (fill < 0.4) return P.mint;
+  if (fill < 0.7) return P.amber;
+  return P.rose;
 };
 
 export const InstructionHierarchy = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const totalH = LAYERS.length * LAYER_H + (LAYERS.length - 1) * GAP;
-  const originY = (640 - totalH) / 2;
+  const totalStackH = LAYERS.length * LAYER_H + (LAYERS.length - 1) * GAP;
+  const stackOriginY = (680 - totalStackH) / 2;
 
-  const attStart = staggerDelay(4) + 50;
-  const attProgress = spring({
-    frame: frame - attStart,
+  // --- Gauge state: accumulates as each layer enters ---
+  let gaugeFill = 0;
+  const layerEntrances = LAYERS.map((_, i) => {
+    const entrance = spring({
+      frame: frame - layerDelay(i),
+      fps,
+      config: { damping: 14, stiffness: 90, mass: 0.7 },
+    });
+    return entrance;
+  });
+
+  for (let i = 0; i < LAYERS.length; i++) {
+    gaugeFill += layerEntrances[i] * LAYERS[i].weight;
+  }
+
+  // Warning label appears after last layer is mostly in
+  const warningDelay = layerDelay(LAYERS.length - 1) + 20;
+  const warningOpacity = spring({
+    frame: frame - warningDelay,
     fps,
     config: { damping: 30, stiffness: 60 },
   });
-  const attFill = interpolate(
-    frame - attStart, [0, 80], [0, 1],
-    { extrapolateLeft: "clamp", extrapolateRight: "clamp", easing: Easing.inOut(Easing.quad) },
-  );
+
+  // Gauge bar dimensions
+  const gaugeX = 1060;
+  const gaugeW = 24;
+  const gaugeTop = stackOriginY + 10;
+  const gaugeH = totalStackH - 20;
 
   return (
     <AbsoluteFill
       style={{
         backgroundColor: "transparent",
-        fontFamily: '"SF Pro Display", "SF Pro", -apple-system, BlinkMacSystemFont, sans-serif',
+        fontFamily: FONT,
       }}
     >
+      {/* --- Layer stack --- */}
       {LAYERS.map((layer, i) => {
-        const delay = staggerDelay(i) + 10;
-        const entrance = spring({
-          frame: frame - delay,
-          fps,
-          config: { damping: 14, stiffness: 80, mass: 0.8 },
+        const entrance = layerEntrances[i];
+        const opacity = interpolate(entrance, [0, 0.3], [0, 1], {
+          extrapolateRight: "clamp",
         });
-
-        const opacity = interpolate(entrance, [0, 0.3], [0, 1], { extrapolateRight: "clamp" });
-        const translateY = interpolate(entrance, [0, 1], [24, 0]);
+        const translateY = interpolate(entrance, [0, 1], [18, 0]);
         const scale = interpolate(entrance, [0, 1], [0.97, 1]);
-        const y = originY + i * (LAYER_H + GAP);
+        const y = stackOriginY + i * (LAYER_H + GAP);
+
+        // Priority number
+        const priorityNum = i <= 1 ? i + 1 : i <= 3 ? 3 : 4;
 
         return (
           <div
@@ -98,8 +134,8 @@ export const InstructionHierarchy = () => {
             style={{
               position: "absolute",
               top: y,
-              left: `${(100 - layer.widthPct) / 2}%`,
-              width: `${layer.widthPct}%`,
+              left: 40,
+              width: `${layer.widthPct - 15}%`,
               height: LAYER_H,
               opacity,
               transform: `translateY(${translateY}px) scale(${scale})`,
@@ -114,56 +150,149 @@ export const InstructionHierarchy = () => {
                 background: `${layer.accent}0C`,
                 display: "flex",
                 alignItems: "center",
-                padding: "0 28px",
-                gap: 16,
+                padding: "0 24px",
+                gap: 14,
               }}
             >
+              {/* Priority badge */}
               <div
                 style={{
-                  width: 4,
-                  height: 28,
-                  borderRadius: 2,
-                  background: layer.accent,
-                  opacity: 0.7,
+                  width: 36,
+                  height: 36,
+                  borderRadius: 9,
+                  background: `${layer.accent}18`,
+                  border: `1px solid ${layer.accent}30`,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
                   flexShrink: 0,
                 }}
-              />
-              <div style={{ flex: 1, display: "flex", alignItems: "baseline", gap: 12 }}>
-                <span style={{ color: P.textPrimary, fontSize: 19, fontWeight: 600, letterSpacing: -0.3 }}>
-                  {layer.label}
-                </span>
-                <span style={{ color: layer.accent, fontSize: 11, fontWeight: 600, letterSpacing: 1, textTransform: "uppercase" as const, opacity: 0.7 }}>
-                  {layer.meta}
+              >
+                <span
+                  style={{
+                    color: layer.accent,
+                    fontSize: 22,
+                    fontWeight: 700,
+                  }}
+                >
+                  {priorityNum}
                 </span>
               </div>
-              <span style={{ color: P.textSecondary, fontSize: 13, fontWeight: 400, opacity: 0.7 }}>
-                {layer.detail}
-              </span>
+
+              {/* Label + detail */}
+              <div
+                style={{
+                  flex: 1,
+                  display: "flex",
+                  flexDirection: "column" as const,
+                  gap: 2,
+                }}
+              >
+                <span
+                  style={{
+                    color: P.textPrimary,
+                    fontSize: 24,
+                    fontWeight: 600,
+                    letterSpacing: -0.3,
+                  }}
+                >
+                  {layer.label}
+                </span>
+                <span
+                  style={{
+                    color: P.textSecondary,
+                    fontSize: 19,
+                    fontWeight: 400,
+                  }}
+                >
+                  {layer.detail}
+                </span>
+              </div>
             </div>
           </div>
         );
       })}
 
-      {/* Attention budget */}
-      <div style={{ position: "absolute", bottom: 20, left: "8%", right: "8%", opacity: attProgress }}>
-        <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-          <span style={{ color: P.textMuted, fontSize: 11, letterSpacing: 1.5, textTransform: "uppercase" as const }}>
-            Attention Budget
-          </span>
-          <span style={{
-            color: P.rose, fontSize: 11, fontWeight: 500,
-            opacity: interpolate(attFill, [0.5, 1], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
-          }}>
-            Every instruction dilutes the others
-          </span>
+      {/* --- Attention gauge (vertical bar on right) --- */}
+      <div
+        style={{
+          position: "absolute",
+          left: gaugeX,
+          top: gaugeTop,
+          width: gaugeW,
+          height: gaugeH,
+        }}
+      >
+        {/* Track */}
+        <div
+          style={{
+            width: "100%",
+            height: "100%",
+            borderRadius: gaugeW / 2,
+            background: `${P.textMuted}18`,
+            overflow: "hidden",
+            position: "relative",
+          }}
+        >
+          {/* Fill — grows from bottom */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              width: "100%",
+              height: `${gaugeFill * 100}%`,
+              borderRadius: gaugeW / 2,
+              background: gaugeColor(gaugeFill),
+              transition: "background 0.3s",
+            }}
+          />
         </div>
-        <div style={{ height: 4, borderRadius: 2, background: `${P.textMuted}22`, overflow: "hidden" }}>
-          <div style={{
-            height: "100%", borderRadius: 2,
-            width: `${attFill * 100}%`,
-            background: `linear-gradient(90deg, ${P.indigo}, ${P.rose})`,
-          }} />
-        </div>
+      </div>
+
+      {/* Gauge label — top */}
+      <div
+        style={{
+          position: "absolute",
+          left: gaugeX - 30,
+          top: gaugeTop - 34,
+          width: gaugeW + 60,
+          textAlign: "center" as const,
+        }}
+      >
+        <span
+          style={{
+            color: P.textMuted,
+            fontSize: 16,
+            letterSpacing: 1.2,
+            textTransform: "uppercase" as const,
+            fontWeight: 600,
+          }}
+        >
+          Budget
+        </span>
+      </div>
+
+      {/* Warning label — below gauge */}
+      <div
+        style={{
+          position: "absolute",
+          left: gaugeX - 80,
+          top: gaugeTop + gaugeH + 16,
+          width: gaugeW + 160,
+          textAlign: "center" as const,
+          opacity: warningOpacity,
+        }}
+      >
+        <span
+          style={{
+            color: P.rose,
+            fontSize: 16,
+            fontWeight: 500,
+          }}
+        >
+          Every instruction dilutes
+        </span>
       </div>
     </AbsoluteFill>
   );

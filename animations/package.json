@@ -4,9 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "render:webm": "npx remotion render src/index.ts InstructionHierarchy ../docs/videos/instruction-hierarchy.webm --pixel-format yuva420p && npx remotion render src/index.ts RoutingDecision ../docs/videos/routing-decision.webm --pixel-format yuva420p && npx remotion render src/index.ts OnDemandLoading ../docs/videos/on-demand-loading.webm --pixel-format yuva420p",
-    "render:mp4": "npx remotion render src/index.ts InstructionHierarchyDark ../docs/videos/instruction-hierarchy.mp4 && npx remotion render src/index.ts RoutingDecisionDark ../docs/videos/routing-decision.mp4 && npx remotion render src/index.ts OnDemandLoadingDark ../docs/videos/on-demand-loading.mp4",
-    "render": "npm run render:webm && npm run render:mp4"
+    "render": "npx remotion render src/index.ts InstructionHierarchy ../docs/videos/instruction-hierarchy.webm --pixel-format yuva420p && npx remotion render src/index.ts RoutingDecision ../docs/videos/routing-decision.webm --pixel-format yuva420p && npx remotion render src/index.ts OnDemandLoading ../docs/videos/on-demand-loading.webm --pixel-format yuva420p"
   },
   "keywords": [],
   "author": "",
