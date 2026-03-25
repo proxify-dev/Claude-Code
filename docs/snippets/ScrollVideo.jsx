@@ -24,22 +24,22 @@ export const ScrollVideo = ({ src, alt }) => {
     return () => observer.disconnect();
   }, [hasPlayed]);
 
+  const base = src.replace(/\.[^.]+$/, '');
+
   return (
-    <video
-      ref={ref}
-      muted
-      playsInline
-      preload="auto"
-      aria-label={alt}
-      style={{
-        width: "100%",
-        borderRadius: 10,
-        marginTop: 8,
-        marginBottom: 8,
-        display: "block",
-      }}
-    >
-      <source src={src} type={src.endsWith('.webm') ? 'video/webm' : 'video/mp4'} />
-    </video>
+    // Note: we use NO background here because we want the video to be transparent and blend in with the background.
+    <div style={{ borderRadius: 10, overflow: 'hidden', marginTop: 8, marginBottom: 8 }}>  
+      <video
+        ref={ref}
+        muted
+        playsInline
+        preload="auto"
+        aria-label={alt}
+        style={{ width: "100%", display: "block" }}
+      >
+        <source src={`${base}.webm`} type="video/webm" />
+        <source src={`${base}.mp4`} type="video/mp4" />
+      </video>
+    </div>
   );
 };
