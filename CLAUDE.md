@@ -32,6 +32,7 @@ This repo is also a **public Claude Code plugin**. Everything in `skills/` and `
 | `docs-architect` | `.claude/agents/docs-architect.md` | User journey, nav structure, gap analysis, content placement |
 | `docs-researcher` | `.claude/agents/docs-researcher.md` | Mine `references/` for content on a topic |
 | `docs-reviewer` | `.claude/agents/docs-reviewer.md` | Three-Way Test against upstream official docs |
+| `docs-provenance` | `.claude/agents/docs-provenance.md` | Track which reference files informed each docs page |
 
 ## Docs Workflow
 
@@ -39,8 +40,10 @@ When working on docs, follow this pipeline:
 
 1. **Architect** — Run `docs-architect` to understand structure, find gaps, or decide where content goes
 2. **Research** — Run `docs-researcher` to mine `references/` for raw material on the topic
-3. **Write** — Use the `docs-maintenance` skill for voice, openers, and editorial judgment
+3. **Write** — Use the `docs-maintenance` skill for voice, openers, editorial judgment, and **provenance recording** (the skill enforces adding `sources:` to frontmatter and updating the provenance index)
 4. **Review** — Run `docs-reviewer` to check the result against upstream official docs
+
+**Provenance audits:** Run `docs-provenance` for batch operations — retroactive source identification, coverage reports, and reverse lookups (which docs cite a given reference).
 
 Not every task needs all four steps. Editing voice? Skip to step 3. Adding a new page? Start at step 1.
 
