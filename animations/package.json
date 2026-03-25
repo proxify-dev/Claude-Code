@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "render": "npx remotion render src/index.ts InstructionHierarchy ../docs/videos/instruction-hierarchy.webm --pixel-format yuva420p && npx remotion render src/index.ts RoutingDecision ../docs/videos/routing-decision.webm --pixel-format yuva420p && npx remotion render src/index.ts OnDemandLoading ../docs/videos/on-demand-loading.webm --pixel-format yuva420p"
+    "render": "npx remotion render src/index.ts InstructionHierarchy ../docs/videos/instruction-hierarchy.webm --pixel-format yuva420p --video-bitrate 5M && npx remotion render src/index.ts RoutingDecision ../docs/videos/routing-decision.webm --pixel-format yuva420p --video-bitrate 5M && npx remotion render src/index.ts BloatedClaudeMd ../docs/videos/bloated-claude-md.webm --pixel-format yuva420p --video-bitrate 5M && npx remotion render src/index.ts OnDemandLoading ../docs/videos/on-demand-loading.webm --pixel-format yuva420p --video-bitrate 5M"
   },
   "keywords": [],
   "author": "",

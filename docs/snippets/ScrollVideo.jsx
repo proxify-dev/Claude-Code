@@ -1,6 +1,6 @@
 "use client";
 
-export const ScrollVideo = ({ src, alt }) => {
+export const ScrollVideo = ({ src, alt, loop = false }) => {
   const ref = React.useRef(null);
   const [hasPlayed, setHasPlayed] = React.useState(false);
   const [isLight, setIsLight] = React.useState(false);
@@ -18,6 +18,21 @@ export const ScrollVideo = ({ src, alt }) => {
     const video = ref.current;
     if (!video) return;
 
+    if (loop) {
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            video.play().catch(() => {});
+          } else {
+            video.pause();
+          }
+        },
+        { threshold: 0.4 }
+      );
+      observer.observe(video);
+      return () => observer.disconnect();
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting && !hasPlayed) {
@@ -32,18 +47,19 @@ export const ScrollVideo = ({ src, alt }) => {
 
     observer.observe(video);
     return () => observer.disconnect();
-  }, [hasPlayed]);
+  }, [hasPlayed, loop]);
 
   const base = src.replace(/\.[^.]+$/, '');
 
   return (
     // Note: we use NO background here because we want the video to be transparent and blend in with the background.
-    <div style={{ borderRadius: 10, overflow: 'hidden', marginTop: 8, marginBottom: 8 }}>  
+    <div style={{ borderRadius: 10, overflow: 'hidden', marginTop: 8, marginBottom: 8 }}>
       <video
         ref={ref}
         muted
         playsInline
         preload="auto"
+        loop={loop}
         aria-label={alt}
         style={{
           width: "100%",

@@ -85,6 +85,35 @@ When you learn something that should persist, pick the right vehicle:
 
 **The wrong choice isn't "no knowledge." It's knowledge in the wrong place.** A React testing framework in CLAUDE.md wastes 40 lines of budget on every non-React conversation. The same framework as a skill costs zero when irrelevant and loads fully when needed.
 
+## How Skills Trigger
+
+Skills have two loading phases:
+
+**Descriptions** — always in context. Claude loads every available skill's `description` frontmatter field at startup and uses it as a routing signal. This is cheap: just text.
+
+**Bodies** — loaded on demand. The full skill content only enters context when Claude decides the task matches the description, or you invoke it directly with `/skill-name`.
+
+```yaml
+---
+name: react-testing
+description: React testing patterns. Use when writing tests, setting up test infrastructure, or debugging failing tests.
+---
+
+# 200 lines of framework, examples, and patterns
+# None of this exists in context until triggered
+```
+
+The consequence: **the `description` field is a routing rule, not documentation.** Claude pattern-matches incoming requests against it. "Testing things" never triggers. "Use when writing tests, debugging failing test output, or setting up test infrastructure" fires exactly when needed — and costs nothing when you're writing a migration.
+
+This is why description quality matters more than skill quality. A 200-line testing framework with a vague description sits in your filesystem and does nothing. The same framework with sharp "use when" language loads precisely at decision time.
+
+Two frontmatter flags control invocation:
+
+- **`disable-model-invocation: true`** — removes the description from context entirely. Claude doesn't know the skill exists. Use for side-effectful workflows you control: `/deploy`, `/commit`, `/send-message`.
+- **`user-invocable: false`** — keeps the description in context (Claude auto-triggers) but hides it from the `/` menu. Use for background knowledge that isn't a meaningful user command.
+
+The full frontmatter reference is in the [official skills docs](https://docs.anthropic.com/en/docs/claude-code/skills#frontmatter-reference).
+
 ## The Duplication Trap
 
 If a principle lives in a skill, CLAUDE.md should point to it — not restate it.
@@ -132,4 +161,4 @@ A 200-line CLAUDE.md with sharp pointers, a handful of well-triggered skills, an
 
 ---
 
-**← Prev:** [System Evolution](system-evolution/) · **Next:** [CLAUDE.md Guide →](../setup/claude-md/)
+**← Prev:** [Agentic Engineering](agentic-engineering/) · **Next:** [Maturity Ladder →](maturity-ladder/)

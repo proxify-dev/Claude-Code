@@ -22,8 +22,18 @@
         "tab": "Quickstart",
         "groups": [
           {
-            "group": "Overview",
+            "group": "Introduction",
             "pages": ["index"]
+          },
+          {
+            "group": "Mindset",
+            "pages": [
+              "patterns/agentic-engineering",
+              "patterns/distribution",
+              "patterns/maturity-ladder",
+              "patterns/robots-first",
+              "patterns/system-evolution"
+            ]
           },
           {
             "group": "Setup",
@@ -41,21 +51,6 @@
               "reference/onboarding-checklist",
               "reference/common-pitfalls",
               "reference/links"
-            ]
-          }
-        ]
-      },
-      {
-        "tab": "Mindset",
-        "groups": [
-          {
-            "group": "Mindset",
-            "pages": [
-              "patterns/agentic-engineering",
-              "patterns/maturity-ladder",
-              "patterns/robots-first",
-              "patterns/system-evolution",
-              "patterns/distribution"
             ]
           }
         ]
@@ -105,46 +100,6 @@
           {
             "group": "Dojo",
             "pages": ["dojo/index"]
-          }
-        ]
-      },
-      {
-        "tab": "Style Library",
-        "groups": [
-          {
-            "group": "Style Library",
-            "pages": ["patterns/permutation-frameworks/overview"]
-          },
-          {
-            "group": "Prose Styles",
-            "pages": [
-              "patterns/permutation-frameworks/quick-win",
-              "patterns/permutation-frameworks/narrative",
-              "patterns/permutation-frameworks/socratic",
-              "patterns/permutation-frameworks/opinionated-take",
-              "patterns/permutation-frameworks/pair-programming",
-              "patterns/permutation-frameworks/war-story"
-            ]
-          },
-          {
-            "group": "Structured Styles",
-            "pages": [
-              "patterns/permutation-frameworks/cookbook",
-              "patterns/permutation-frameworks/reference-dense",
-              "patterns/permutation-frameworks/cheatsheet",
-              "patterns/permutation-frameworks/checklist-only",
-              "patterns/permutation-frameworks/before-after-diff",
-              "patterns/permutation-frameworks/anti-pattern-first"
-            ]
-          },
-          {
-            "group": "Interactive Styles",
-            "pages": [
-              "patterns/permutation-frameworks/decision-tree",
-              "patterns/permutation-frameworks/progressive-disclosure",
-              "patterns/permutation-frameworks/annotated-example",
-              "patterns/permutation-frameworks/mentors-margin-notes"
-            ]
           }
         ]
       }
