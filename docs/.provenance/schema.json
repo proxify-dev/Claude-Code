@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Docs Provenance Index",
+  "description": "Tracks which reference files informed each docs page.",
+  "type": "object",
+  "required": ["version", "pages"],
+  "properties": {
+    "$schema": { "type": "string" },
+    "version": { "type": "string", "const": "1.0" },
+    "pages": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["sources", "confidence", "last_audited"],
+        "properties": {
+          "sources": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["ref"],
+              "properties": {
+                "ref": {
+                  "type": "string",
+                  "description": "Path relative to references/"
+                },
+                "sections": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "Specific sections within the reference that were used"
+                },
+                "quality": {
+                  "type": "string",
+                  "enum": ["high", "medium", "low"]
+                },
+                "usage": {
+                  "type": "string",
+                  "enum": ["primary", "supporting", "minor"]
+                },
+                "notes": {
+                  "type": "string",
+                  "description": "What this source contributed to the page"
+                }
+              },
+              "additionalProperties": false
+            }
+          },
+          "confidence": {
+            "type": "string",
+            "enum": ["verified", "inferred", "unaudited"]
+          },
+          "last_audited": {
+            "type": "string",
+            "format": "date",
+            "description": "ISO date when provenance was last checked"
+          },
+          "notes": {
+            "type": "string",
+            "description": "Page-level notes (e.g., 'Original content')"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  },
+  "additionalProperties": false
+}
