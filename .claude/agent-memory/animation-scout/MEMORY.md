@@ -1,1 +1,0 @@
-- [project_animation_context.md](project_animation_context.md) — Mintlify MDX stack, ScrollVideo component is the only animation infra, constraints for new work
