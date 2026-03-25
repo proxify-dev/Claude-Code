@@ -1,0 +1,27 @@
+---
+title: "Fan-Out / Fan-In"
+description: "Spawn N independent agents in parallel, then synthesize their results."
+---
+
+The simplest parallel pattern. Spawn N agents, each handling an independent slice, then synthesize results.
+
+**How it works:**
+1. Break work into independent units (by file, module, or concern)
+2. Spawn one agent per unit with `run_in_background: true`
+3. Each agent works autonomously and returns results
+4. The parent synthesizes when all complete
+
+**Best for:** research across multiple areas, independent file analysis, running tests in parallel.
+
+**Key constraint:** tasks must have no shared state and clear file boundaries. If agents edit overlapping files without worktree isolation, they'll overwrite each other.
+
+<Tip>**Context budget:** Keep the orchestrator at ~10-15% of its context window. Have subagents write outputs directly to disk and return only a brief confirmation — this gives each subagent a fresh, full context window with no accumulated noise.</Tip>
+
+With [Agent Teams](../agent-teams), the shared task list adds flexibility — teammates can self-claim unassigned tasks rather than having all work pre-assigned.
+
+## Examples in the wild
+
+| Example | What it shows |
+|---------|---------------|
+| [planning-coordinator](https://github.com/FlorianBruniaux/claude-code-ultimate-guide/blob/main/examples/agents/planning-coordinator.md) | 4 parallel researcher agents (code-explorer, arch-researcher, database-analyst, security-analyst) fan into a single plan. Explicit file ownership per agent. |
+| [deep-research](https://github.com/affaan-m/everything-claude-code/blob/main/.agents/skills/deep-research/SKILL.md) | Breaks a topic into sub-questions, one agent per sub-question, synthesizes into a report. Write-to-disk / return-confirmation-only in practice. |

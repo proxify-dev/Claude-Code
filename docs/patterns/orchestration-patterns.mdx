@@ -1,135 +1,23 @@
 ---
 title: "Orchestration Patterns"
-description: "Six proven patterns for coordinating multiple agents — from simple fan-out to contract chains for reliable parallel integration."
+description: "Proven patterns for coordinating multiple agents — from simple fan-out to contract chains for reliable parallel integration."
 sources:
   - claudefa.st/blog/guide/agents/agent-patterns.md
   - claudefa.st/blog/guide/agents/agent-teams-workflow.md
   - claudefa.st/blog/guide/agents/team-orchestration.md
   - claudefa.st/blog/tools/hooks/self-validating-agents.md
   - claude-code-tips/README.md
+  - get-shit-done/README.md
 ---
 
-<Note>**You'll learn:** six orchestration patterns for coordinating multiple agents — from simple fan-out to contract chains — and when each one fits.</Note>
-
-<Tip>**Official reference** — The [official sub-agents docs](https://docs.anthropic.com/en/docs/claude-code/sub-agents) and [Agent Teams docs](https://docs.anthropic.com/en/docs/claude-code/agent-teams) cover the underlying mechanisms. This page is the pattern taxonomy — how to compose those primitives into workflows.</Tip>
+| Pattern | Best for | Key constraint |
+|---------|----------|----------------|
+| [Fan-Out / Fan-In](orchestration-patterns/fan-out-fan-in) | Research, independent file analysis, parallel tests | No shared state between agents |
+| [Pipeline Chains](orchestration-patterns/pipeline-chains) | Research → implementation, multi-stage migrations | Each stage must produce structured output |
+| [Builder-Validator Pairs](orchestration-patterns/builder-validator) | Correctness-critical work — APIs, security, migrations | Validator must be read-only |
+| [Supervisor / Team Lead](orchestration-patterns/supervisor) | Complex multi-component features | Requires [delegate mode](agent-teams#delegate-mode-is-essential) |
+| [Contract Chains / Wave Execution](orchestration-patterns/contract-chains) | Full-stack features, parallel work that must integrate | Wave 1 must complete before Wave 2 |
 
 <Tip>**Choosing the right tool:** Independent work → [`/batch`](parallel-execution#the-batch-command). Report-back only → [subagents](subagent-patterns/). Agents need to coordinate → [Agent Teams](agent-teams/).</Tip>
 
-## Fan-Out / Fan-In
-
-The simplest parallel pattern. Spawn N agents, each handling an independent slice, then synthesize results.
-
-**How it works:**
-1. Break work into independent units (by file, module, or concern)
-2. Spawn one agent per unit with `run_in_background: true`
-3. Each agent works autonomously and returns results
-4. The parent synthesizes when all complete
-
-**Best for:** research across multiple areas, independent file analysis, running tests in parallel.
-
-**Key constraint:** tasks must have no shared state and clear file boundaries. If agents edit overlapping files without worktree isolation, they'll overwrite each other.
-
-With [Agent Teams](agent-teams/), the shared task list adds flexibility — teammates can self-claim unassigned tasks rather than having all work pre-assigned.
-
-## Pipeline Chains
-
-Sequential stages where each phase's output feeds the next, with context reset between stages.
-
-**How it works:**
-1. Create tasks with dependencies: the validator task is blocked by the builder task
-2. Each handoff resets context — research noise doesn't leak into implementation
-3. Each stage writes structured output that the next stage consumes
-
-**Best for:** research → implementation flows, multi-stage migrations, any workflow where earlier context would bias later steps.
-
-**Example flow:**
-```
-Research (Haiku) → Plan (Opus) → Implement (Sonnet) → Validate (Sonnet, read-only)
-```
-
-Each stage uses the cheapest model that can do the job. See [cost and model routing](cost-and-model-routing/) for guidance.
-
-## Builder-Validator Pairs
-
-The highest-impact pattern for quality. A builder implements changes; a validator with **read-only tools** checks the work.
-
-**How it works:**
-1. The builder agent has full tool access and implements changes
-2. The validator agent has only read-only tools (`Read`, `Grep`, `Glob`, `Bash`) — it **cannot** write or edit code
-3. When the validator flags issues, it creates a fix task for a new builder
-4. The cycle repeats, progressively narrowing scope until the work is correct
-
-**Why read-only matters:** if the validator can edit code, it silently "fixes" things instead of surfacing problems. Restricting tools forces it to articulate issues clearly, which produces better fixes.
-
-**Agent definition for a validator:**
-```yaml
----
-name: validator
-description: Reviews implementation against acceptance criteria. Read-only.
-model: sonnet
-tools: ["Read", "Grep", "Glob", "Bash"]
-disallowedTools: ["Write", "Edit"]
----
-```
-
-**Best for:** any work where correctness matters more than speed — API changes, security-sensitive code, data migrations.
-
-## Supervisor / Team Lead
-
-The main session focuses exclusively on coordination while teammates do the implementation.
-
-**How it works:**
-1. Enable [delegate mode](agent-teams#delegate-mode-is-essential) so the lead can only coordinate
-2. The lead creates tasks, monitors progress, and redirects approaches that aren't working
-3. Teammates implement, report back, and the lead synthesizes
-
-**Best for:** complex multi-component features where someone needs to maintain the big picture.
-
-<Warning>Without delegate mode, the lead frequently implements tasks itself instead of delegating. This is the most common Agent Teams failure mode.</Warning>
-
-**Sweet spot:** 3-5 teammates. Fewer underutilizes parallelism; more creates coordination overhead that exceeds the throughput gain.
-
-## Background Workers with Notification
-
-Fire-and-forget agents for tasks that don't block your current work.
-
-**How it works:**
-1. Spawn an agent with `run_in_background: true` (or set `background: true` in agent frontmatter)
-2. Continue working in your main session
-3. When the background agent completes, you receive a notification
-4. Press **Ctrl+B** during a foreground agent's execution to move it to background on the fly
-
-**Best for:** running test suites, linting large codebases, generating documentation, any long-running task you don't need to watch.
-
-<Tip>Background agents prompt for tool permissions before launching, preventing them from stalling on permission requests while running invisibly.</Tip>
-
-## Contract Chains / Wave Execution
-
-The pattern for parallel work that **must integrate cleanly**. Run work in waves — each wave's concrete outputs become the contracts for the next wave's agents.
-
-**How it works:**
-1. **Wave 1** (sequential): Build the foundation — database schema, API contracts, shared types
-2. Extract concrete artifacts from Wave 1 output (the actual interface, not assumptions about it)
-3. **Wave 2+** (parallel): Spawn agents that receive the upstream contracts injected into their prompts, plus their own file ownership boundaries
-4. Each agent also gets downstream obligations — "your component must export these props"
-
-**Example prompt for a Wave 2 agent:**
-```
-You own src/features/billing/.
-
-Upstream contract (from Wave 1):
-- DB schema: see migrations/004_billing.sql
-- API types: see src/types/billing.ts
-
-Downstream obligation:
-- Export BillingDashboard from src/features/billing/index.ts matching the props in src/types/billing.ts
-
-Do not edit files outside your directory.
-```
-
-**Why this beats naive fan-out:** Parallel agents that each *assume* the interface will look a certain way produce code that individually passes tests but fails integration. Contract injection eliminates assumption drift — agents build against verified artifacts, not guesses.
-
-**Best for:** multi-component features, full-stack implementations, any work where parallel agents must produce code that connects at boundaries.
-
----
-
+<Tip>**Official reference** — The [official sub-agents docs](https://docs.anthropic.com/en/docs/claude-code/sub-agents) and [Agent Teams docs](https://docs.anthropic.com/en/docs/claude-code/agent-teams) cover the underlying mechanisms. This page is the pattern taxonomy.</Tip>

@@ -1,0 +1,70 @@
+---
+title: "Builder-Validator Pairs"
+description: "A builder implements; a read-only validator checks. Restricting tools forces issues to be surfaced, not silently fixed."
+---
+
+A builder implements changes; a validator with **read-only tools** checks the work.
+
+**How it works:**
+1. The builder agent has full tool access and implements changes
+2. The validator agent has only read-only tools (`Read`, `Grep`, `Glob`, `Bash`) — it **cannot** write or edit code
+3. When the validator flags issues, it creates a fix task for a new builder
+4. The cycle repeats with a hard cap of 3 iterations — after that, escalate to a human
+
+**Why read-only matters:** if the validator can edit code, it silently "fixes" things instead of surfacing problems. Restricting tools forces it to articulate issues clearly, which produces better fixes.
+
+**Agent definition for a validator:**
+```yaml
+---
+name: validator
+description: Reviews implementation against acceptance criteria. Read-only.
+model: sonnet
+tools: ["Read", "Grep", "Glob", "Bash"]
+disallowedTools: ["Write", "Edit"]
+---
+```
+
+**Best for:** any work where correctness matters more than speed — API changes, security-sensitive code, data migrations.
+
+## Iteration loop
+
+```
+Builder → Validator → (issues?) → Builder (revision) → Validator → ... (max 3)
+```
+
+**Scope thresholds per agent:**
+
+| Tasks per agent | Status |
+|-----------------|--------|
+| 2-3 | Good |
+| 4 | Warning |
+| 5+ | Split required |
+
+## Verification depth
+
+Don't stop at "file exists." Most failures hide between Substantive and Wired — the file exists and looks real, but nothing calls it.
+
+| Level | Question |
+|-------|----------|
+| Exists | Is the file at the expected path? |
+| Substantive | Real implementation, not a stub? |
+| Wired | Imported and called by the system? |
+| Functional | Actually works when invoked? |
+
+## Self-Validating Agents
+
+A lighter variant: embed validation directly in agent definitions using [PostToolUse hooks](https://docs.anthropic.com/en/docs/claude-code/hooks). Every file the agent writes gets checked automatically.
+
+Three tiers:
+- **Micro** — PostToolUse hook runs a linter/formatter after every write
+- **Macro** — Stop hook checks required files exist + tests pass before "done"
+- **Team** — Separate read-only validator (the standard pattern above)
+
+<Warning>Inline hooks catch syntax issues. They don't replace a read-only validator for semantic correctness — a linter won't catch a component that exists but is never imported.</Warning>
+
+## Examples in the wild
+
+| Example | What it shows |
+|---------|---------------|
+| [plan-challenger](https://github.com/FlorianBruniaux/claude-code-ultimate-guide/blob/main/examples/agents/plan-challenger.md) | Adversarial validator: attacks a plan on 5 dimensions, then *refutes* each challenge before flagging it. Output: blockers, concerns, nitpicks. |
+| [gsd-plan-checker](https://github.com/gsd-build/get-shit-done/blob/main/agents/gsd-plan-checker.md) | Goal-backward plan verification before any code is written. Loops with the planner up to 3 times. |

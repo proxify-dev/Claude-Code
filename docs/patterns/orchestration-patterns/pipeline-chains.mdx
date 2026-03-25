@@ -1,0 +1,38 @@
+---
+title: "Pipeline Chains"
+description: "Sequential stages where each phase's output feeds the next, with context reset between stages."
+---
+
+Sequential stages where each phase's output feeds the next, with context reset between stages.
+
+**How it works:**
+1. Create tasks with dependencies: each stage is blocked by the previous
+2. Each handoff resets context — research noise doesn't leak into implementation
+3. Each stage writes structured output that the next stage consumes
+
+**Best for:** research → implementation flows, multi-stage migrations, any workflow where earlier context would bias later steps.
+
+**A typical four-stage pipeline:**
+```
+Research (Haiku) → Plan (Opus) → Implement (Sonnet) → Validate (Sonnet, read-only)
+```
+
+Each stage uses the cheapest model that can do the job — see [cost and model routing](../cost-and-model-routing).
+
+**Division of labor:**
+
+| Stage | Orchestrator | Agents |
+|-------|-------------|--------|
+| Research | Coordinates topics | 3-4 parallel researchers |
+| Planning | Manages revision loop | Planner + checker until pass |
+| Execution | Groups into waves, tracks | Executors in parallel, fresh context each |
+| Verification | Routes next step | Verifier checks code against goals |
+
+The orchestrator never does heavy lifting — it spawns, waits, integrates, routes.
+
+## Examples in the wild
+
+| Example | What it shows |
+|---------|---------------|
+| [cyber-defense-team](https://github.com/FlorianBruniaux/claude-code-ultimate-guide/blob/main/examples/skills/cyber-defense-team/SKILL.md) | 4-stage pipeline: log-ingestor → anomaly-detector → risk-classifier → threat-reporter. Each agent reads the previous stage's JSON and writes new JSON. Includes cost estimates per stage. |
+| [gsd:quick](https://github.com/gsd-build/get-shit-done) | Composable pipeline: `--discuss`, `--research`, `--full` each add a stage. Omit what you don't need. |

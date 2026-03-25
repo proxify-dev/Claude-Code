@@ -1,0 +1,24 @@
+---
+title: "Supervisor / Team Lead"
+description: "The main session coordinates exclusively while teammates implement."
+---
+
+The main session focuses exclusively on coordination while teammates do the implementation.
+
+**How it works:**
+1. Enable [delegate mode](../agent-teams#delegate-mode-is-essential) so the lead can only coordinate
+2. The lead creates tasks, monitors progress, and redirects approaches that aren't working
+3. Teammates implement, report back, and the lead synthesizes
+
+**Best for:** complex multi-component features where someone needs to maintain the big picture.
+
+<Warning>Without delegate mode, the lead frequently implements tasks itself instead of delegating. This is the most common Agent Teams failure mode.</Warning>
+
+**Sweet spot:** 3-5 teammates. Fewer underutilizes parallelism; more creates coordination overhead that exceeds the throughput gain.
+
+## Examples in the wild
+
+| Example | What it shows |
+|---------|---------------|
+| [dmux-workflows](https://github.com/affaan-m/everything-claude-code/blob/main/.agents/skills/dmux-workflows/SKILL.md) | tmux pane manager: agents in separate panes (schema, API, UI), merge back to main. Pattern 5 is a 3-agent parallel code review pipeline. |
+| [gsd:execute-phase](https://github.com/gsd-build/get-shit-done/blob/main/get-shit-done/workflows/execute-phase.md) | Orchestrator at ~10-15% context, executors in parallel. Tracks waves via `STATE.md`, never writes code itself. |

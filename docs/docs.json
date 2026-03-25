@@ -80,7 +80,17 @@
             "pages": [
               "patterns/invocation-quality",
               "patterns/subagent-patterns",
-              "patterns/orchestration-patterns",
+              {
+                "group": "Orchestration Patterns",
+                "pages": [
+                  "patterns/orchestration-patterns",
+                  "patterns/orchestration-patterns/fan-out-fan-in",
+                  "patterns/orchestration-patterns/pipeline-chains",
+                  "patterns/orchestration-patterns/builder-validator",
+                  "patterns/orchestration-patterns/supervisor",
+                  "patterns/orchestration-patterns/contract-chains"
+                ]
+              },
               "patterns/agent-teams"
             ]
           },
