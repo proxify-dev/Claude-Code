@@ -16,3 +16,5 @@ Editorial conventions for the Mintlify docs site at `docs/`. The site teaches br
 - **Writing or editing a specific doc type?** Read [voice-by-doc-type.md](references/voice-by-doc-type.md) — how setup docs, pattern docs, reference docs, and checklists each have a different voice, opener, and structure.
 
 - **Formatting content or reviewing typography?** Read [typography-rules.md](references/typography-rules.md) — component-level rules for lists, callouts, code formatting, and Mintlify-specific patterns.
+
+- **Recording provenance for a page you're writing?** Read [provenance-protocol.md](references/provenance-protocol.md) — how to add sources to frontmatter and update the provenance index. **This is mandatory for every page write or edit.**
