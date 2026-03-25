@@ -16,11 +16,11 @@ Start with one instance. Not a scaffold, not a stub — a complete, reviewed imp
 "Build a data table for /users with columns: name, email, role, status.
 Include loading state, empty state, error state, and pagination."
 ```
+</Frame>
 
 <Note>
 This prompt becomes permanent. Every word you include here shapes the pattern that gets applied to the 9 tables that follow. "Error state" with no qualifier means Claude will choose how to handle errors — and it will choose differently next time. Specify now; you won't get another chance to be cheap about it.
 </Note>
-</Frame>
 
 Review the output. Fix the error handling style, the prop naming, the file structure — whatever you'd need to change before you'd be happy seeing this repeated across the codebase. That work happens once. It does not happen again.
 
@@ -41,11 +41,11 @@ When building data tables, follow src/components/tables/UsersTable.tsx as the re
 - Pagination: server-side, 25 rows default
 - Column definitions in a separate `columns.tsx` file
 ```
+</Frame>
 
 <Note>
 The entry points to a file, not a concept. "Follow UsersTable.tsx" outperforms "use consistent error handling" because Claude reads examples the way engineers do — as ground truth, not as guidelines. Abstract rules have interpretation gaps. A file path does not.
 </Note>
-</Frame>
 
 Keep this under 15 lines. If the pattern entry needs more than that, the pattern itself is too complex to automate reliably yet.
 
@@ -61,11 +61,11 @@ With the reference defined and the pattern documented, generation becomes a sing
 the Data Table Pattern in CLAUDE.md. Reference src/components/tables/UsersTable.tsx
 for the canonical implementation."
 ```
+</Frame>
 
 <Note>
 "Following" is doing real work here. It's not asking Claude to be inspired by the pattern — it's anchoring generation to a specific contract. The phrase constrains the output space; Claude treats an explicit reference as a hard constraint, not a suggestion. Without it, you get 3 tables that each drift slightly from the reference and slightly from each other.
 </Note>
-</Frame>
 
 Generate 2–3 instances, review, then continue. Catching drift in a batch of 3 is one fix. Catching it in a batch of 10 is a refactor.
 
@@ -78,11 +78,11 @@ Generate 2–3 instances, review, then continue. Catching drift in a batch of 3 
 "Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable.
 Flag any deviations from the pattern in UsersTable."
 ```
+</Frame>
 
 <Note>
 Claude won't surface drift unprompted. This variance check closes the loop — it turns the reference table into an active constraint instead of a passive example. When you find a deviation, fix it in CLAUDE.md first, then in the file. If you fix only the file, the next generation recreates the deviation.
 </Note>
-</Frame>
 
 ---
 
