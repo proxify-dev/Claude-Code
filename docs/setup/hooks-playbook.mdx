@@ -1,150 +1,173 @@
 ---
 title: "Hooks Playbook"
-description: "Essential hooks every project should have — enforcing what CLAUDE.md can only suggest."
+description: "Hook composition patterns, governance strategies, and the enforcement ladder — the opinion layer on top of the official docs."
 sources:
-  - claudefa.st/blog/tools/hooks/hooks-guide.md
   - everything-claude-code/hooks/README.md
   - everything-claude-code/the-shortform-guide.md
+  - everything-claude-code/the-longform-guide.md
+  - everything-claude-code/the-security-guide.md
+  - everything-claude-code/skills/plankton-code-quality/SKILL.md
 ---
 
-Here's the thing about CLAUDE.md: it's a suggestion. Claude *usually* follows it, but nothing enforces compliance. Hooks are different. Hooks are code — they execute automatically on specific events and can block, modify, or extend Claude's behavior. If CLAUDE.md is a polite request, hooks are a locked door.
+<Tip>**New to hooks?** — Start with the [official hooks guide](https://code.claude.com/docs/en/hooks) for the full API, event types, matchers, and configuration syntax. This page is the opinionated playbook for making hooks work *together*.</Tip>
 
-<Tip>**Official reference** — For the full hooks API, event types, and configuration options, see the [official hooks docs](https://code.claude.com/docs/en/hooks). This page gives you the five hooks worth setting up first.</Tip>
+## The Enforcement Ladder
 
-## The Essential Five
+Claude Code has three enforcement layers. Most teams only use one or two — using all three is what makes guardrails airtight.
 
-<Tabs>
-  <Tab title="Auto-lint">
-    Run your linter after every file edit so Claude sees and fixes issues immediately.
+| Layer | Mechanism | Strength | Example |
+|-------|-----------|----------|---------|
+| **CLAUDE.md** | Natural language instructions | Suggestion — Claude *usually* follows it | "Don't commit .env files" |
+| **Hooks** | Code that runs on lifecycle events | Enforcement — blocks or modifies actions | `PreToolUse` hook exits with code 2 if `.env` is staged |
+| **Permissions** | `allowedTools` and permission mode | Access control — tools can't execute at all | Bash restricted to specific commands only |
 
-    ```json
-    {
-      "hooks": {
-        "PostToolUse": [
+CLAUDE.md is a polite request. Hooks are a locked door. Permissions mean the door doesn't exist.
+
+**The rule:** If you've written it in CLAUDE.md and it *matters*, back it up with a hook. If it's a security boundary, enforce it at the permissions layer too. Each layer catches what the one above misses.
+
+## Composition Patterns
+
+Individual hooks are well-documented upstream. The real power is in hooks that work *together* across lifecycle phases.
+
+### The Quality Gate
+
+Three hooks that form a closed feedback loop: Claude edits code, sees lint errors immediately, and can't declare "done" until tests pass.
+
+```json
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
           {
-            "matcher": "Write|Edit",
-            "command": "npx eslint --fix $CLAUDE_FILE_PATH 2>&1 || true"
+            "type": "command",
+            "command": ".claude/hooks/lint-and-format.sh"
           }
         ]
       }
-    }
-    ```
-
-    **Why:** Catches style violations in real-time instead of accumulating them. Claude sees the linter output and self-corrects on the next edit.
-  </Tab>
-  <Tab title="Block .env">
-    Prevent Claude from ever staging sensitive files.
-
-    ```json
-    {
-      "hooks": {
-        "PreToolUse": [
+    ],
+    "Stop": [
+      {
+        "hooks": [
           {
-            "matcher": "Bash",
-            "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE 'git add.*\\.env'; then echo 'BLOCKED: Never commit .env files' >&2; exit 1; fi"
+            "type": "command",
+            "command": ".claude/hooks/verify-tests-pass.sh"
           }
         ]
       }
-    }
-    ```
+    ]
+  }
+}
+```
 
-    **Why:** CLAUDE.md says "don't commit .env" — this makes it impossible. The hook exits with code 1, which blocks the action entirely.
-  </Tab>
-  <Tab title="Run tests">
-    Automatically run your test suite after implementation changes.
+**How it works:**
+- `PostToolUse` runs your linter and formatter after every edit — Claude sees violations in real-time and self-corrects
+- `Stop` runs your test suite before Claude finishes responding — if tests fail, exit code 2 forces Claude to continue and fix them
 
-    ```json
-    {
-      "hooks": {
-        "PostToolUse": [
+The `Stop` hook is the key piece most setups miss. Without it, Claude can write broken code and cheerfully tell you it's done.
+
+### Context Preservation
+
+Three hooks that give Claude memory across context compactions and sessions.
+
+| Phase | Event | What it does |
+|-------|-------|-------------|
+| Save before compaction | `PreCompact` | Writes critical state (current task, decisions made, blockers) to a scratch file |
+| Save on session end | `Stop` | Persists learnings and progress to a file |
+| Restore on session start | `SessionStart` | Loads the saved context back into Claude's window |
+
+This pattern matters for long tasks where context compaction would otherwise erase important state. The `PreCompact` hook fires *before* the compaction happens — your last chance to save what matters.
+
+### The Config Guardian
+
+Two hooks that prevent Claude from gaming your toolchain instead of writing correct code.
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
           {
-            "matcher": "Write|Edit",
-            "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE '\\.(ts|tsx|js|jsx)$'; then npm test --silent 2>&1 | tail -5; fi"
+            "type": "command",
+            "command": ".claude/hooks/protect-configs.sh"
           }
         ]
       }
-    }
-    ```
-
-    **Why:** Claude gets immediate test feedback and can self-correct without you intervening. The `tail -5` keeps output concise.
-  </Tab>
-  <Tab title="Guard config">
-    Warn before Claude edits sensitive configuration files.
-
-    ```json
-    {
-      "hooks": {
-        "PreToolUse": [
+    ],
+    "Stop": [
+      {
+        "hooks": [
           {
-            "matcher": "Write|Edit",
-            "command": "if echo \"$CLAUDE_FILE_PATH\" | grep -qE '(package\\.json|tsconfig|docker-compose|\\.github/)'; then echo 'WARNING: Editing config file — review carefully' >&2; fi"
+            "type": "command",
+            "command": ".claude/hooks/audit-config-changes.sh"
           }
         ]
       }
-    }
-    ```
+    ]
+  }
+}
+```
 
-    **Why:** Not all files are equal. Config changes have outsized blast radius. This warns but doesn't block — adjust to `exit 1` if you want a hard stop.
-  </Tab>
-  <Tab title="Auto-format">
-    Run Prettier (or your formatter) after every write.
+**Why this exists:** Claude will sometimes modify `.ruff.toml`, `biome.json`, or `tsconfig.json` to *disable rules* rather than fix violations. The `PreToolUse` hook blocks edits to linter configs before they happen. The `Stop` hook runs `git diff` to catch any config changes that slipped through.
 
-    ```json
-    {
-      "hooks": {
-        "PostToolUse": [
-          {
-            "matcher": "Write|Edit",
-            "command": "npx prettier --write $CLAUDE_FILE_PATH 2>/dev/null || true"
-          }
-        ]
-      }
-    }
-    ```
+## Choosing the Right Event
 
-    **Why:** Keeps diffs clean and prevents style nits in code review. The `|| true` ensures a missing Prettier config doesn't halt Claude's workflow.
-  </Tab>
-</Tabs>
+The official docs list 20+ lifecycle events. Here's when to actually reach for the less obvious ones:
 
-## Where to Configure
+| Instead of... | Consider... | Why |
+|--------------|-------------|-----|
+| `UserPromptSubmit` for learning hooks | `Stop` | `UserPromptSubmit` fires on *every* message and adds latency to each prompt. `Stop` fires once per response — lightweight. |
+| `PostToolUse` for security blocks | `PreToolUse` | Post is too late — the action already happened. Pre blocks it before execution. |
+| `Stop` for observation/telemetry | `PostToolUse` | `Stop` is less reliable for continuous observation. `PostToolUse` fires on every tool call at 100% reliability. |
+| `SessionEnd` for saving state | `Stop` + `PreCompact` | `SessionEnd` has a 1.5s timeout by default. `Stop` and `PreCompact` have full execution time. |
 
-Hooks go in your settings files:
+## Hook Types Beyond Command
 
-| File | Scope |
-|------|-------|
-| `.claude/settings.json` | Team-shared (commit to git) |
-| `.claude/settings.local.json` | Personal (gitignored) |
-| `~/.claude/settings.json` | All your projects |
+The official docs cover four hook types. Here's when to reach for each:
 
-Team hooks (linting, test runs, security blocks) go in `.claude/settings.json`. Personal preferences go in local or user settings.
+| Type | Best for | Trade-off |
+|------|----------|-----------|
+| **Command** | Most hooks — lint, format, block, audit | Requires a script file. Fast. |
+| **HTTP** | Centralized logging, remote validation, team dashboards | Adds network latency. Non-2xx fails open. |
+| **Prompt** | Yes/no decisions that need judgment ("is this command safe?") | Uses an LLM call — slower, costs tokens. |
+| **Agent** | Verification that requires tool use ("does this file exist?", "does this match the schema?") | Spawns a subagent — slowest option. |
 
-## Beyond the Essential Five
+**Command** should be your default. Only reach for prompt or agent hooks when the decision genuinely requires reasoning, not just pattern matching.
 
-<Tip>**Official reference** — For the full lifecycle event taxonomy, exit code semantics, matcher syntax, and HTTP/agent hooks, see the [official hooks docs](https://code.claude.com/docs/en/hooks). Below is the quick map of what's available.</Tip>
+## Team Hook Governance
 
-Hooks fire on 12 lifecycle events — not just `PreToolUse` and `PostToolUse`:
+### What to commit vs. keep personal
 
-| Event | When it fires | Use for |
-|-------|---------------|---------|
-| `SessionStart` | Session begins (new, resume, or post-clear) | Load context, run diagnostics |
-| `UserPromptSubmit` | Before Claude processes your message | Skill activation, input validation |
-| `PreToolUse` | Before a tool executes | **Block dangerous actions** |
-| `PermissionRequest` | When Claude requests permission | Automated approval/denial |
-| `PostToolUse` | After a tool executes | **Auto-lint, auto-format, run tests** |
-| `PostToolUseFailure` | After a tool fails | Error reporting, fallback logic |
-| `SubagentStart` / `SubagentStop` | Agent lifecycle | Agent monitoring, logging |
-| `Stop` | Before Claude finishes responding | **Enforce completion conditions** (all tests pass, all tasks done) |
-| `PreCompact` | Before context compaction | Backup critical state |
-| `Setup` | During initial setup | Onboarding automation |
-| `SessionEnd` | Session closes | Cleanup, transcript backup |
+| Commit to `.claude/settings.json` | Keep in `.claude/settings.local.json` or `~/.claude/settings.json` |
+|---|---|
+| Security blocks (`.env`, force-push, `rm -rf`) | Auto-format (team may use different formatters) |
+| Linting (team standard) | Editor-specific hooks |
+| Test runners | Notification preferences |
+| Config protection | Experimental hooks you're testing |
 
-**Exit codes:** `0` = allow, `1` = block the action, `2` = force Claude to continue (useful for Stop hooks that enforce quality gates).
+**The principle:** If bypassing the hook would break the build or leak secrets, it's a team hook. If it's a workflow preference, it's personal.
 
-**Setup hooks** can run in deterministic mode (fast, CI-friendly) or agentic mode (supervised, with diagnostics). **HTTP hooks** POST events to endpoints instead of running local scripts — useful for centralized logging and remote validation.
+### Personal overrides without editing team files
 
-## Hook Design Principles
+When team hooks are too aggressive for exploratory work, override at the user level rather than commenting out committed hooks. User-level settings in `~/.claude/settings.json` can disable specific hooks without touching the project config.
 
-- **Fast hooks only.** Hooks run synchronously — a slow hook slows every action. Keep them under 2 seconds.
-- **Fail open for warnings, fail closed for security.** Lint warnings shouldn't block work. `.env` protection must.
-- **Use `|| true` for non-critical hooks.** A crashing linter shouldn't halt Claude's workflow.
-- **Test your hooks manually first.** Run the command yourself before adding it as a hook.
+## Anti-Patterns
+
+**Inline one-liners.** Long shell commands jammed into the `"command"` field are fragile, hard to test, and impossible to debug. Use dedicated script files in `.claude/hooks/` instead.
+
+```json
+// Don't do this
+{ "command": "if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE 'git add.*\\.env'; then echo 'BLOCKED' >&2; exit 1; fi" }
+
+// Do this
+{ "type": "command", "command": ".claude/hooks/block-env-staging.sh" }
+```
+
+**LLM config gaming.** Claude will modify linter configs to disable rules rather than fix code. If you auto-lint with a `PostToolUse` hook but don't protect the linter config with a `PreToolUse` hook, you have a hole.
+
+**Trusting community hooks blindly.** Hooks execute arbitrary code. A malicious `PostToolUse` hook can silently exfiltrate environment variables — including API keys — after every Bash execution. When reviewing PRs or installing community configs, audit hook changes with the same scrutiny you'd give a `postinstall` script.
+
+**Duplicating what permissions already handle.** If you want to block a tool entirely, use `allowedTools` in settings — don't write a `PreToolUse` hook that always exits with code 2 for that tool. Hooks are for *conditional* logic. Permissions are for *absolute* access control.
