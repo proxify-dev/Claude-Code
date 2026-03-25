@@ -60,3 +60,5 @@ Not every task needs all four steps. Editing voice? Skip to step 3. Adding a new
 Mintlify site in `docs/`. See **Docs Workflow** above for the full pipeline. The nav config is `docs/docs.json` — the `docs-architect` agent reads it live.
 
 **Before writing docs content:** Check the Three-Way Test in `.claude/skills/docs-maintenance/references/editorial-judgment.md` — include only Proxify-specific opinion, backlink to official Claude Code docs for mechanics, cut generic content.
+
+Do not run the dev server.
