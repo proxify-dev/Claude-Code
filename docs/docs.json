@@ -74,15 +74,25 @@
             ]
           },
           {
-            "group": "Advanced",
+            "group": "Autonomous Work",
             "pages": [
               "patterns/autonomous-tasks",
-              "patterns/self-improving-loop",
+              "patterns/self-improving-loop"
+            ]
+          },
+          {
+            "group": "Multi-Agent",
+            "pages": [
               "patterns/invocation-quality",
               "patterns/subagent-patterns",
               "patterns/orchestration-patterns",
+              "patterns/agent-teams"
+            ]
+          },
+          {
+            "group": "Operations",
+            "pages": [
               "patterns/permutation-frameworks",
-              "patterns/agent-teams",
               "patterns/permission-modes",
               "patterns/cost-and-model-routing"
             ]
