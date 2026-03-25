@@ -8,7 +8,7 @@ sources:
 
 <Tip>**Official reference** — For how skills work under the hood, see the [official skills docs](https://code.claude.com/docs/en/skills). This page is about picking the right ones and making them work together.</Tip>
 
-Skills are reusable knowledge packages that load on demand. A skills stack is the set you install for a project — chosen to match your tech stack and workflow.
+Skills are reusable knowledge packages that load on demand. A skills stack is the set you install for a project — chosen to match your tech stack and workflow. For why skills exist and how they fit into the broader instruction hierarchy, see [Context Distribution](/patterns/distribution).
 
 ## The Layered System
 
@@ -79,6 +79,32 @@ Skills are independent by design — each triggers on its own conditions. But so
 
 - **Testing skill + framework skill** — Test patterns that match your framework conventions
 - **Validation skill (Zod) + API skill** — Input validation patterns that align with your API layer
+
+## Writing Effective Descriptions
+
+Skills have two loading phases. **Descriptions** are always in context — Claude loads every skill's `description` frontmatter at startup as a routing signal. **Bodies** load on demand — the full content only enters context when the task matches.
+
+```yaml
+---
+name: react-testing
+description: React testing patterns. Use when writing tests, setting up test infrastructure, or debugging failing tests.
+---
+
+# 200 lines of framework, examples, and patterns
+# None of this exists in context until triggered
+```
+
+This means description quality matters more than skill quality. A great skill with a vague description sits in your filesystem doing nothing. Write descriptions as "use when" rules, not documentation:
+
+- **Bad:** "Testing things" — too vague, rarely triggers
+- **Good:** "Use when writing tests, debugging failing test output, or setting up test infrastructure" — matches how people actually ask for help
+
+Two frontmatter flags control invocation:
+
+- **`disable-model-invocation: true`** — removes the description from context entirely. Claude doesn't know the skill exists. Use for side-effectful workflows you control: `/deploy`, `/commit`.
+- **`user-invocable: false`** — keeps the description in context (Claude auto-triggers) but hides it from the `/` menu. Use for background knowledge that isn't a meaningful user command.
+
+See the [official frontmatter reference](https://docs.anthropic.com/en/docs/claude-code/skills#frontmatter-reference) for the full list of fields.
 
 ## When to Create Your Own
 
