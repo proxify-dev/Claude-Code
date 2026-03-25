@@ -1,6 +1,10 @@
 ---
 title: "Context Distribution"
 description: "How knowledge reaches agents at the right time — the layered architecture behind CLAUDE.md, skills, agents, and why each exists."
+sources:
+  - claudefa.st/blog/guide/mechanics/claude-skills-guide.md
+  - claudefa.st/blog/guide/mechanics/claude-md-mastery.md
+  - claudefa.st/blog/guide/agents/custom-agents.md
 ---
 
 import { ScrollVideo } from "/snippets/ScrollVideo.jsx";
@@ -97,9 +101,11 @@ This isn't abstract design. The tools in this repo exist because of specific dis
 
 Engineers were stuffing deep domain knowledge into CLAUDE.md. Their CLAUDE.md files grew to 400+ lines. Claude's instruction-following degraded. They'd add more emphasis ("ALWAYS do X", "NEVER do Y") but the problem wasn't emphasis — it was attention budget.
 
+<ScrollVideo src="/videos/bloated-claude-md.webm" alt="Animated visualization of a bloated CLAUDE.md where everything competes for attention" />
+
 Skills solve this by loading knowledge **only when the task triggers it**. A 200-line testing framework loads when you're writing tests. It doesn't exist when you're refactoring CSS.
 
-<ScrollVideo src="/videos/on-demand-loading.webm" alt="Animated comparison of bloated CLAUDE.md versus distributed skill loading" />
+<ScrollVideo src="/videos/on-demand-loading.webm" alt="Animated visualization of distributed skill loading with on-demand triggers" loop />
 
 ### Why skill design matters
 
