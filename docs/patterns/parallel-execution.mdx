@@ -1,41 +1,113 @@
 ---
 title: "Parallel Execution"
-description: "Running multiple Claude sessions simultaneously — the single biggest productivity unlock."
+description: "Running multiple Claude agents on the same project — worktree isolation, scoping strategies, and conflict resolution."
+sources:
+  - everything-claude-code/the-longform-guide.md
+  - everything-claude-code/the-shortform-guide.md
+  - everything-claude-code/skills/autonomous-loops/SKILL.md
+  - everything-claude-code/skills/dmux-workflows/SKILL.md
+  - claude-code-ultimate-guide/guide/workflows/dual-instance-planning.md
+  - claude-code-ultimate-guide/docs/resource-evaluations/2026-02-22-boris-cherny-worktree-tips-reddit.md
+  - claude-code-ultimate-guide/docs/resource-evaluations/2026-02-22-guillaume-moigneu-worktree-linkedin.md
+  - claude-code-tips/content/boris-claude-code-tips.md
+  - claude-code-tips/content/10-tips-for-newer-users.md
 ---
 
-<Tip>**Official reference** — The [official parallel execution docs](https://docs.anthropic.com/en/docs/claude-code/parallel-execution) cover git worktrees, the `/batch` command, and worktree isolation mechanics. This page adds the opinionated workflow.</Tip>
+<Tip>**Official reference** — The [official parallel execution docs](https://docs.anthropic.com/en/docs/claude-code/parallel-execution) cover `claude --worktree`, the `/batch` command, and worktree isolation mechanics. This page is the opinionated playbook for making parallelism work in practice.</Tip>
 
-## Why Parallel?
+## The Core Idea
 
-One agent handles one task at a time. While it's writing tests, it's not implementing the next feature. The fix: run multiple agents. This is the single biggest productivity unlock in agentic engineering.
+One agent handles one task at a time. While it's writing tests, it's not implementing the next feature. The fix: run multiple agents on the same project, each in its own isolated workspace.
 
-## The Cascade
+The goal isn't "run as many instances as possible." It's **maximum output from minimum viable parallelization.** Every additional session is a review burden. Add one when you have a clear, scoped task — not because you have a free terminal.
 
-The workflow:
+## When You Need Worktrees
+
+Not every parallel session needs a worktree. The trigger condition is specific:
+
+| Situation | Worktree needed? |
+|-----------|-----------------|
+| Agents edit **different files** | No — same directory is fine |
+| Agents edit **overlapping files** | Yes — isolation prevents write conflicts |
+| One agent codes, the other researches | No — the researcher isn't writing files |
+| Multiple features with shared config | Yes — config changes will collide |
+
+```bash
+# Launch a session in its own worktree (auto-cleans if no changes)
+claude --worktree
+
+# Or create worktrees manually for longer-lived branches
+git worktree add ../my-app-auth feat/auth
+git worktree add ../my-app-perf feat/perf
+```
+
+Use `/rename auth-refactor` to name each session — when you're switching between 3-4 terminals, unnamed sessions become unmanageable.
+
+## Scoping Parallel Work
+
+The hardest part of parallelism isn't the tooling — it's deciding what each agent should own. Two rules:
+
+**1. Main session writes code, forks answer questions.**
+
+Keep code changes in your primary session. Use `/fork` for research: "What does the auth middleware do?" or "How does the billing API handle retries?" Forks read the codebase without changing it, so there's zero conflict risk.
+
+**2. Scope by file ownership, not by step.**
+
+Don't split "implement feature X" into "write the code" and "write the tests" — that creates dependencies. Instead, split by **module boundaries**: one agent owns `auth/`, another owns `billing/`, each writes its own implementation and tests.
+
+<Warning>**Never split implementation from its tests.** Keep them in the same agent, same worktree. An agent that writes code without running tests produces untested code. An agent that writes tests without seeing the implementation produces wrong tests.</Warning>
+
+## Starter Patterns
+
+### Dual-Instance Kickoff
+
+When starting a new feature or project, run two agents simultaneously:
+
+| Instance | Role | Does | Doesn't |
+|----------|------|------|---------|
+| **Agent 1: Scaffolder** | Structure | Creates directories, configs, boilerplate, CLAUDE.md | Research external APIs |
+| **Agent 2: Researcher** | Context | Reads existing code, external docs, writes a design brief | Touch project files |
+
+The scaffolder gives the researcher a structure to reference. The researcher gives the scaffolder context for the next round. Merge their outputs and start the real implementation with a fully prepared workspace.
+
+### The Cascade
+
+For ongoing parallel work across multiple sessions:
 
 1. Open a new terminal tab for each task
 2. Arrange tabs left-to-right in priority order
 3. Kick off each agent with a clear, scoped prompt
-4. Sweep left to right to review output as agents finish
+4. Sweep left to right — review output from oldest to newest
 
-<Warning>**Cap at 3-4 active sessions** — Beyond that, your context-switching cost as the reviewer starts outweighing the throughput gain. You become the bottleneck, not the agents.</Warning>
+Each worktree should be self-contained: its own session, its own branch with regular commits, and its own [`HANDOFF.md`](session-management#the-handoff-pattern) if you need to pause and resume.
 
-## Shell Aliases for Rapid Switching
+## Conflict Resolution
 
-Set up short aliases to jump between worktrees and launch sessions fast:
+When parallel branches merge, conflicts happen. The mental model:
 
-```bash
-# Quick directory jumps
-alias za="cd ~/projects/my-app"
-alias zb="cd ~/projects/my-app-feat-a"
-alias zc="cd ~/projects/my-app-feat-b"
-
-# Quick Claude launches
-alias c="claude"
-alias ch="claude --with-chrome"  # Claude with browser MCP
+```
+Agent branch
+    │
+    ├─ Rebase onto main
+    │   └─ Conflict? → Fix or re-scope
+    │
+    ├─ Run build + tests
+    │   └─ Fail? → Fix before merging
+    │
+    └─ Pass → Fast-forward main
 ```
 
-Small friction reductions compound when you're switching between 3-4 sessions throughout the day.
+**Non-overlapping work** (agents owned different files): land branches in any order. No conflicts possible.
+
+**Overlapping work** (agents touched shared files): land sequentially. Merge the highest-priority branch first, then rebase the next branch onto the updated main. If a rebase produces conflicts, feed the conflict context back to the agent:
+
+```
+Read HANDOFF.md and continue. Your previous changes conflicted with
+another branch that landed first. The conflicting files are: [list].
+Restructure your changes to work with the updated main branch.
+```
+
+This isn't a failure state — it's the expected cost of parallelism on shared code. Budget for it.
 
 ## How Many Is Too Many?
 
@@ -43,28 +115,29 @@ Small friction reductions compound when you're switching between 3-4 sessions th
 |----------|---------|
 | 1 | Baseline — you're serializing work |
 | 2-3 | Sweet spot for most engineers |
-| 4-5 | Effective if tasks are independent and well-scoped |
+| 4-5 | Effective if tasks are truly independent |
 | 6+ | Diminishing returns — you can't review fast enough |
 
-The constraint isn't compute. It's your ability to review and integrate the output.
+The constraint isn't compute. It's your ability to review and integrate the output. Each parallel session also loads context independently — 3 sessions ≈ 3× the token cost. See [Cost & Model Routing](cost-and-model-routing/) for optimization strategies.
 
-## Combining with Session Management
+## Subagent Isolation
 
-Each worktree should be self-contained:
+For programmatic parallelism (not just terminal tabs), agents can spawn subagents with built-in worktree isolation:
 
-- Its own Claude session
-- Its own `HANDOFF.md` if you need to pause and resume
-- Its own branch with regular commits
+```yaml
+# In an agent definition
+isolation: worktree    # Each invocation gets its own worktree
+background: true
+```
 
-When an agent finishes in one worktree, review the output, merge the branch, and clean up the worktree. Then spin up a new one for the next task.
+This is the bridge between manual parallel sessions and the orchestration patterns below. See [Subagent Patterns](subagent-patterns/) for the full guide.
 
 ## Going Deeper
 
-For more sophisticated multi-agent coordination, see:
-- [Orchestration Patterns](orchestration-patterns/) — fan-out, pipelines, builder-validator, and more
-- [Agent Teams](agent-teams/) — multi-session collaboration with shared task lists
-- [Cost & Model Routing](cost-and-model-routing/) — controlling token costs across parallel workflows
+Once parallel sessions are second nature, the next question is how much coordination your tasks actually need:
 
----
-
-**← Prev:** [Session Management](session-management/) · **Next:** [Prompting Craft →](prompting-craft/)
+| Need | Go to | Example |
+|------|-------|---------|
+| Independent tasks, no coordination | [Orchestration Patterns](orchestration-patterns/) | Fan-out migrations, convention sweeps |
+| Tasks that share findings or coordinate | [Agent Teams](agent-teams/) | Auth refactor across frontend + backend + tests |
+| Controlling what all of this costs | [Cost & Model Routing](cost-and-model-routing/) | Opus plans, Sonnet implements |

@@ -1,0 +1,130 @@
+---
+title: "Reference Style"
+description: "Definition, phases, and decision table. Everything you need, nothing you don't."
+---
+
+**TL;DR**
+- Build 1 canonical instance by hand → codify it in `CLAUDE.md` → fan out to N in one prompt
+- Without a concrete file reference, Claude reconstructs "reasonable" from scratch each time — variance compounds
+- Break-even: 5 similar things. Below that, skip it
+
+---
+
+**Permutation Framework** — a 3-phase prompting structure that anchors repeated code generation to a single canonical implementation, eliminating structural variance across similar components.
+
+---
+
+## Phases
+
+| Phase | Action | Output |
+|-------|--------|--------|
+| 1 — Manual Foundation | Build first 1–2 instances by hand; review every line | Canonical reference file |
+| 2 — Pattern Recognition | Extract rules + file pointer into `CLAUDE.md` | Reachable constraint |
+| 3 — Automated Generation | Fan out N remaining instances in one prompt | Consistent batch |
+
+---
+
+## Phase 1 — Canonical Instance
+
+**Prompt — builds the reference:**
+```
+"Build a data table for /users with columns: name, email, role, status.
+Include loading state, empty state, error state, and pagination."
+```
+Produces: `src/components/tables/UsersTable.tsx` — the file everything else will point at.
+
+**In practice:** Review every line. Rename props. Adjust copy. This file is permanent.
+
+<Warning>
+Don't skip Phase 1. An abstract description in CLAUDE.md drifts. A concrete file does not.
+</Warning>
+
+---
+
+## Phase 2 — Pattern Document
+
+**CLAUDE.md entry — codifies the constraint:**
+```markdown
+## Data Table Pattern
+When building data tables, follow src/components/tables/UsersTable.tsx as the reference:
+- Use the `DataTable` component from src/components/ui/data-table
+- Loading: skeleton rows matching column count
+- Empty: centered message with action button
+- Error: inline alert with retry
+- Pagination: server-side, 25 rows default
+- Column definitions in a separate `columns.tsx` file
+```
+Produces: a reachable constraint that travels with every subsequent prompt.
+
+**In practice:** The file pointer (`UsersTable.tsx`) does more work than the bullet list.
+
+---
+
+## Phase 3 — Fan Out
+
+**Prompt — generates the batch:**
+```
+"Create data tables for /orders, /products, and /invoices following
+the Data Table Pattern in CLAUDE.md. Reference src/components/tables/UsersTable.tsx."
+```
+Produces: N implementations with identical structure, data-specific differences only.
+
+**In practice:** A diff between any two output files should show only column names, endpoints, and field types.
+
+---
+
+## Variance Check
+
+**Prompt — catches drift post-generation:**
+```
+"Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable.
+Flag any deviations from the pattern in UsersTable."
+```
+
+**In practice:** Best delegated to a validator agent with read-only tools.
+
+---
+
+## When to Use
+
+| Scenario | Payoff |
+|----------|--------|
+| 5+ similar components (tables, forms, cards) | High |
+| API endpoints with shared conventions | High |
+| Migration patterns across many files | High |
+| 2–4 instances | Marginal |
+| One-off features | Skip it |
+
+---
+
+## Tradeoffs
+
+| Factor | Cost | Benefit |
+|--------|------|---------|
+| Setup | Phase 1–2 takes 30–60 min | Eliminated per-instance review |
+| Maintenance | Canonical file must stay accurate | Single source to update |
+| Flexibility | Pattern constrains output | Consistency across the codebase |
+
+<Note>
+The pattern document isn't documentation — it's a constraint that travels with the prompt. Engineers maintaining the codebase months later benefit too.
+</Note>
+
+---
+
+## See Also
+
+<CardGroup cols={3}>
+  <Card title="Permutation Frameworks overview" href="/patterns/permutation-frameworks">
+    When and why this structure works
+  </Card>
+  <Card title="Quick Win style" href="/patterns/permutation-frameworks/quick-win">
+    Narrative walkthrough of the same technique
+  </Card>
+  <Card title="CLAUDE.md setup" href="/setup/claude-md">
+    Where to put the pattern document
+  </Card>
+</CardGroup>
+
+---
+
+**← Back to [Style Library](index)**

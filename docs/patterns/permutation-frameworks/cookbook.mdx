@@ -1,0 +1,115 @@
+---
+title: "Cookbook Style"
+description: "Ingredients, method, and done. Build consistent code at scale."
+---
+
+**Serves:** Engineering teams building 5+ similar features — tables, endpoints, forms, migrations.
+
+**Prep time:** 30–45 min (Phases 1–2) &nbsp;·&nbsp; **Cook time:** 5 min per additional instance &nbsp;·&nbsp; **Total time:** Pays off at feature #5.
+
+---
+
+## Ingredients
+
+- 1 feature built carefully by hand (your reference implementation)
+- A `CLAUDE.md` file (or a dedicated skill file) with write access
+- 30 minutes of focused review time before you automate anything
+- 2–3 similar features queued up and ready to generate
+
+<Warning>Do not skip the hand-built reference. Automating before you have a canonical example produces 10 slightly wrong things instead of 1.</Warning>
+
+---
+
+## Method
+
+### Phase 1 — Build the Reference
+
+**1. Pick one instance and build it properly.** Use Claude if you like, but review every line.
+
+```
+"Build a data table for /users with columns: name, email, role, status.
+Include loading state, empty state, error state, and pagination."
+```
+
+**2. Fix anything you don't like** — error handling style, prop naming, file structure. This is the one time you have full control before the pattern locks in.
+
+**3. Declare it canonical.** Don't move on until you'd be happy seeing this exact shape repeated across 10 files.
+
+<Check>You have one complete, reviewed, working implementation. You know exactly what you want cloned.</Check>
+
+---
+
+### Phase 2 — Extract the Pattern
+
+**4. Write the pattern into `CLAUDE.md`** (or a dedicated skill file if it's large). Reference the concrete file, not an abstract description.
+
+```markdown
+## Data Table Pattern
+When building data tables, follow src/components/tables/UsersTable.tsx as the reference:
+- Use the `DataTable` component from src/components/ui/data-table
+- Loading: skeleton rows matching column count
+- Empty: centered message with action button
+- Error: inline alert with retry
+- Pagination: server-side, 25 rows default
+- Column definitions in a separate `columns.tsx` file
+```
+
+**5. Point to the file, not the concept.** `"follow UsersTable.tsx"` outperforms `"use consistent error handling"` every time. Claude follows examples more reliably than instructions.
+
+<Tip>Keep the pattern entry under 15 lines. If it needs more, the pattern itself is too complex to automate yet.</Tip>
+
+<Check>CLAUDE.md contains a named pattern section with a concrete file reference and explicit decisions about the non-obvious parts (loading, empty, error states).</Check>
+
+---
+
+### Phase 3 — Fan Out
+
+**6. Generate the remaining instances in one prompt** (or a small batch).
+
+```
+"Create data tables for /orders, /products, and /invoices following
+the Data Table Pattern in CLAUDE.md. Reference src/components/tables/UsersTable.tsx
+for the canonical implementation."
+```
+
+**7. Spot-check for drift.** Run a variance check after the first batch:
+
+```
+"Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable.
+Flag any deviations from the pattern in UsersTable."
+```
+
+**8. Fix drift in the pattern, not just the file.** If Claude deviated somewhere, update `CLAUDE.md` to make that decision explicit. Each fix sharpens every future generation.
+
+<Check>All generated files pass a side-by-side comparison. Any deviations are intentional and documented.</Check>
+
+---
+
+## Done
+
+You now have a repeatable, consistent implementation pattern. Every future instance of this feature type starts from the same foundation.
+
+---
+
+## When to Use
+
+| Situation | Worth it? |
+|-----------|-----------|
+| 5+ similar components | Yes — high payoff |
+| API endpoints with shared conventions | Yes — high payoff |
+| Migration patterns across a codebase | Yes — high payoff |
+| One-off features | No — setup cost exceeds benefit |
+
+---
+
+## Common Mistakes
+
+- **Automating too early.** If Phase 1 isn't solid, you're scaling inconsistency, not consistency.
+- **Abstract pattern descriptions.** "Use consistent loading states" is not a pattern. A file path is a pattern.
+- **Skipping the variance check.** Drift is subtle. Claude won't tell you it deviated — you have to ask.
+- **Updating generated files without updating the pattern.** The fix disappears the next time you generate. Always propagate fixes upstream to `CLAUDE.md`.
+- **One giant batch.** Generate 2–3, spot-check, then continue. Catching drift early is cheaper than fixing 10 files.
+
+---
+
+**← Back to [Style Library](index)**

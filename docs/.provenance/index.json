@@ -1,0 +1,707 @@
+{
+  "$schema": "./schema.json",
+  "version": "1.0",
+  "pages": {
+    "patterns/maturity-ladder": {
+      "sources": [
+        {
+          "ref": "claude-code-tips/content/spectrum-of-agentic-coding.md",
+          "sections": [],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claude-code-tips/content/boris-claude-code-tips.md",
+          "sections": [],
+          "quality": "high",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "verified",
+      "last_audited": "2026-03-25"
+    },
+    "setup/terminal-setup": {
+      "sources": [
+        {
+          "ref": "claude-code-tips/README.md",
+          "sections": [
+            "Tips 0, 7"
+          ],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claude-code-tips/content/boris-claude-code-tips.md",
+          "sections": [
+            "Tip 7"
+          ],
+          "quality": "high",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "verified",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/session-management": {
+      "sources": [
+        {
+          "ref": "claude-code-tips/content/5-new-tips.md",
+          "sections": [
+            "Tip 3"
+          ],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claude-code-tips/README.md",
+          "sections": [
+            "Tips 5, 8, 14"
+          ],
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claude-code-tips/skills/handoff/SKILL.md",
+          "sections": [],
+          "quality": "high",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "verified",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/parallel-execution": {
+      "sources": [
+        {
+          "ref": "everything-claude-code/the-longform-guide.md",
+          "sections": [
+            "Parallelization philosophy",
+            "Worktree trigger conditions",
+            "Cascade method",
+            "Two-instance kickoff",
+            "Main chat vs fork scoping"
+          ],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "everything-claude-code/skills/autonomous-loops/SKILL.md",
+          "sections": [
+            "Merge queue",
+            "Eviction recovery",
+            "File overlap intelligence"
+          ],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claude-code-ultimate-guide/guide/workflows/dual-instance-planning.md",
+          "sections": [
+            "Claude Zero / Claude One pattern"
+          ],
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claude-code-ultimate-guide/docs/resource-evaluations/2026-02-22-boris-cherny-worktree-tips-reddit.md",
+          "sections": [
+            "claude --worktree flag",
+            "Per-worktree settings",
+            "Integration branch pattern"
+          ],
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claude-code-ultimate-guide/docs/resource-evaluations/2026-02-22-guillaume-moigneu-worktree-linkedin.md",
+          "sections": [
+            "isolation: worktree declarative",
+            "Subagent worktree combo"
+          ],
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claude-code-tips/content/boris-claude-code-tips.md",
+          "sections": [
+            "Tip 1"
+          ],
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claude-code-tips/content/10-tips-for-newer-users.md",
+          "sections": [
+            "Tips 10-11"
+          ],
+          "quality": "high",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "verified",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/prompting-craft": {
+      "sources": [
+        {
+          "ref": "claude-code-tips/content/boris-claude-code-tips.md",
+          "sections": [
+            "Tips 2, 6"
+          ],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claude-code-tips/README.md",
+          "sections": [
+            "Tips 2, 3"
+          ],
+          "quality": "high",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "verified",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/autonomous-tasks": {
+      "sources": [
+        {
+          "ref": "claude-code-tips/README.md",
+          "sections": [
+            "Tip 9"
+          ],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "proposals/everything-claude-code.md",
+          "sections": [
+            "#1"
+          ],
+          "quality": "high",
+          "usage": "supporting",
+          "note": "proposals/ path, not references/"
+        }
+      ],
+      "confidence": "verified",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/self-improving-loop": {
+      "sources": [
+        {
+          "ref": "claude-code-tips/content/boris-claude-code-tips.md",
+          "sections": [
+            "Tips 3, 4, 9"
+          ],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claude-code-tips/content/5-new-tips.md",
+          "sections": [
+            "Tip 4"
+          ],
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claude-code-tips/skills/review-claudemd/SKILL.md",
+          "sections": [],
+          "quality": "high",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "verified",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/subagent-patterns": {
+      "sources": [
+        {
+          "ref": "claude-code-tips/content/boris-claude-code-tips.md",
+          "sections": [
+            "Tip 8"
+          ],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "proposals/everything-claude-code.md",
+          "sections": [
+            "#6"
+          ],
+          "quality": "high",
+          "usage": "supporting",
+          "note": "proposals/ path, not references/"
+        }
+      ],
+      "confidence": "verified",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/orchestration-patterns": {
+      "sources": [
+        {
+          "ref": "claudefa.st/blog/guide/agents/agent-patterns.md",
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/agents/agent-teams-workflow.md",
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/agents/team-orchestration.md",
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claudefa.st/blog/tools/hooks/self-validating-agents.md",
+          "quality": "medium",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claude-code-tips/README.md",
+          "quality": "medium",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/agent-teams": {
+      "sources": [
+        {
+          "ref": "claudefa.st/blog/guide/agents/agent-teams-best-practices.md",
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/agents/agent-teams-controls.md",
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/agents/agent-teams.md",
+          "quality": "medium",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/invocation-quality": {
+      "sources": [
+        {
+          "ref": "claudefa.st/blog/guide/agents/sub-agent-best-practices.md",
+          "quality": "high",
+          "usage": "primary"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/permission-modes": {
+      "sources": [
+        {
+          "ref": "claudefa.st/blog/guide/development/permission-management.md",
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/mechanics/planning-modes.md",
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/sandboxing-guide.md",
+          "quality": "medium",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/cost-and-model-routing": {
+      "sources": [
+        {
+          "ref": "claudefa.st/blog/guide/development/usage-optimization.md",
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claudefa.st/blog/models/model-selection.md",
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claude-code-ultimate-guide/guide/workflows/agent-teams.md",
+          "quality": "medium",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/system-evolution": {
+      "sources": [
+        {
+          "ref": "claudefa.st/blog/guide/development/agentic-engineering-best-practices.md",
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claude-code-tips/content/boris-claude-code-tips.md",
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claudefa.st/blog/tools/hooks/self-validating-agents.md",
+          "quality": "medium",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/workflow-patterns": {
+      "sources": [
+        {
+          "ref": "claude-code-tips/README.md",
+          "sections": [
+            "Tips 34, 39, 9, 5"
+          ],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claude-code-tips/content/boris-claude-code-tips.md",
+          "sections": [
+            "Tip 2"
+          ],
+          "quality": "medium",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/mechanics/planning-modes.md",
+          "sections": [],
+          "quality": "medium",
+          "usage": "supporting"
+        },
+        {
+          "ref": "everything-claude-code/.agents/skills/tdd-workflow/SKILL.md",
+          "sections": [],
+          "quality": "medium",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/context-management": {
+      "sources": [
+        {
+          "ref": "claudefa.st/blog/guide/mechanics/context-management.md",
+          "sections": [],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/mechanics/context-buffer-management.md",
+          "sections": [],
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claude-code-tips/README.md",
+          "sections": [
+            "Tips 5, 8"
+          ],
+          "quality": "medium",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/distribution": {
+      "sources": [
+        {
+          "ref": "claudefa.st/blog/guide/mechanics/claude-skills-guide.md",
+          "sections": [],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/mechanics/claude-md-mastery.md",
+          "sections": [],
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/agents/custom-agents.md",
+          "sections": [],
+          "quality": "medium",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    },
+    "setup/mcp-wiring": {
+      "sources": [
+        {
+          "ref": "claudefa.st/blog/tools/mcp-extensions/mcp-basics.md",
+          "sections": [
+            "Essential MCP Servers to Install",
+            "Configuration Process"
+          ],
+          "quality": "medium",
+          "usage": "primary"
+        },
+        {
+          "ref": "claudefa.st/blog/tools/mcp-extensions/best-addons.md",
+          "sections": [
+            "GitHub MCP Server",
+            "PostgreSQL MCP"
+          ],
+          "quality": "medium",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/settings-reference.md",
+          "sections": [
+            "MCP servers"
+          ],
+          "quality": "low",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    },
+    "setup/hooks-playbook": {
+      "sources": [
+        {
+          "ref": "claudefa.st/blog/tools/hooks/hooks-guide.md",
+          "sections": [
+            "The 12 Hook Lifecycle Events",
+            "Exit Codes",
+            "Hook 1: Auto-Format on Save",
+            "Hook 3: Security Blocking",
+            "Configuration Locations",
+            "Start With One Hook"
+          ],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "everything-claude-code/hooks/README.md",
+          "sections": [
+            "PostToolUse Hooks",
+            "PreToolUse Hooks"
+          ],
+          "quality": "medium",
+          "usage": "supporting"
+        },
+        {
+          "ref": "everything-claude-code/the-shortform-guide.md",
+          "sections": [
+            "Hooks"
+          ],
+          "quality": "medium",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    },
+    "setup/skills-stack": {
+      "sources": [
+        {
+          "ref": "claudefa.st/blog/guide/mechanics/claude-skills-guide.md",
+          "sections": [
+            "What Are Skills?",
+            "How Progressive Disclosure Works",
+            "Skills vs Everything Else",
+            "When to Create a Skill"
+          ],
+          "quality": "medium",
+          "usage": "primary"
+        },
+        {
+          "ref": "claude-code-tips/README.md",
+          "sections": [
+            "Tip 25"
+          ],
+          "quality": "medium",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    },
+    "setup/claude-md": {
+      "sources": [
+        {
+          "ref": "claudefa.st/blog/guide/mechanics/memory-optimization.md",
+          "sections": [
+            "CLAUDE.md is Your Memory System",
+            "Directory Crawling: Hierarchical Memory",
+            "@import Syntax: Composable Memory"
+          ],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/mechanics/claude-md-mastery.md",
+          "sections": [
+            "The Instruction Priority Hierarchy",
+            "@import Syntax: A Simpler Alternative",
+            "CLAUDE.local.md"
+          ],
+          "quality": "medium",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claude-code-tips/README.md",
+          "sections": [
+            "Tip 25",
+            "Tip 30"
+          ],
+          "quality": "medium",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claude-code-tips/content/boris-claude-code-tips.md",
+          "sections": [
+            "Tip 3"
+          ],
+          "quality": "medium",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    },
+    "reference/common-pitfalls": {
+      "sources": [
+        {
+          "ref": "claudefa.st/blog/guide/development/agentic-engineering-best-practices.md",
+          "sections": [
+            "Modular Rules Architecture"
+          ],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claude-code-tips/README.md",
+          "sections": [
+            "Tips 8, 30, 34, 3"
+          ],
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claude-code-ultimate-guide/guide/ultimate-guide.md",
+          "sections": [
+            "Modular Context Architecture",
+            "bloated CLAUDE.md anti-pattern"
+          ],
+          "quality": "medium",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    },
+    "reference/onboarding-checklist": {
+      "sources": [
+        {
+          "ref": "claude-code-tips/README.md",
+          "sections": [
+            "Tips 0, 7, 8, 14"
+          ],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claude-code-tips/content/boris-claude-code-tips.md",
+          "sections": [
+            "Tips 1, 7"
+          ],
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/development/agentic-engineering-best-practices.md",
+          "sections": [
+            "PRD-First Development",
+            "Modular Rules Architecture"
+          ],
+          "quality": "medium",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/agentic-engineering": {
+      "sources": [
+        {
+          "ref": "claude-code-tips/content/spectrum-of-agentic-coding.md",
+          "sections": [
+            "Four levels of agentic/vibe coding"
+          ],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/development/agentic-engineering-best-practices.md",
+          "sections": [
+            "PRD-First Development",
+            "Modular Rules Architecture",
+            "System Evolution Mindset"
+          ],
+          "quality": "high",
+          "usage": "supporting"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/mechanics/robots-first-engineering.md",
+          "sections": [
+            "Development vs Engineering",
+            "The Mindset"
+          ],
+          "quality": "medium",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    },
+    "patterns/robots-first": {
+      "sources": [
+        {
+          "ref": "claudefa.st/blog/guide/mechanics/robots-first-engineering.md",
+          "sections": [
+            "Specs as Lookup Tables",
+            "Development vs Engineering",
+            "The Mindset"
+          ],
+          "quality": "high",
+          "usage": "primary"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/agents/agent-teams-workflow.md",
+          "sections": [
+            "Brownfield Codebases",
+            "file ownership boundaries"
+          ],
+          "quality": "medium",
+          "usage": "supporting"
+        }
+      ],
+      "confidence": "inferred",
+      "last_audited": "2026-03-25"
+    }
+  }
+}

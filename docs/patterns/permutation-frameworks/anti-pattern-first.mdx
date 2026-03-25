@@ -1,0 +1,83 @@
+---
+title: "Anti-Pattern First Style"
+description: "Here's what goes wrong. Here's the fix."
+---
+
+<Warning title="The Anti-Pattern">
+You need 10 data tables. You ask Claude for all of them in one go — or in 10 separate prompts with no shared reference. Claude delivers 10 tables.
+
+They are not consistent.
+
+- `OrdersTable` uses a full-page error boundary. `ProductsTable` uses an inline alert. `InvoicesTable` swallows errors silently.
+- `onPageChange` in one file. `handlePageChange` in another. `onChange` in a third.
+- Three different empty state layouts, none of them matching the design system.
+
+This is not a model failure. Claude generated exactly what each prompt asked for. The problem is that 10 prompts with no shared reference produce 10 independent interpretations. Inconsistency is the default outcome without a framework.
+</Warning>
+
+## Here's the fix.
+
+<Steps>
+  <Step title="Build one canonical instance">
+    Pick one table and build it properly. Use Claude if you like, but review every line before moving on.
+
+    ```
+    "Build a data table for /users with columns: name, email, role, status.
+    Include loading state, empty state, error state, and pagination."
+    ```
+
+    Fix what you don't like — prop naming, error handling style, file structure. This is the only time you have full control. Once this becomes the reference, changes propagate to every future instance, so get it right once rather than correcting it ten times.
+  </Step>
+
+  <Step title="Extract the pattern into CLAUDE.md">
+    Write the pattern as a pointer to the canonical file, not as a list of abstract rules.
+
+    ```markdown
+    ## Data Table Pattern
+    When building data tables, follow src/components/tables/UsersTable.tsx as the reference:
+    - Use the `DataTable` component from src/components/ui/data-table
+    - Loading: skeleton rows matching column count
+    - Empty: centered message with action button
+    - Error: inline alert with retry
+    - Pagination: server-side, 25 rows default
+    - Column definitions in a separate `columns.tsx` file
+    ```
+
+    "Follow UsersTable.tsx" is a hard constraint. "Use consistent error handling" is a suggestion Claude will interpret differently each time. Concrete file references eliminate interpretation gaps.
+
+    <Check>
+    CLAUDE.md has a named pattern section with a file path reference. Every non-obvious decision — loading, empty, error, pagination — is spelled out explicitly. You'd be comfortable showing this to a new engineer as the canonical implementation.
+    </Check>
+  </Step>
+
+  <Step title="Fan out with the pattern anchored">
+    Generate the remaining instances in a single prompt that names the pattern and the reference file.
+
+    ```
+    "Create data tables for /orders, /products, and /invoices following
+    the Data Table Pattern in CLAUDE.md. Reference src/components/tables/UsersTable.tsx
+    for the canonical implementation."
+    ```
+
+    After the first batch, run a variance check:
+
+    ```
+    "Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable.
+    Flag any deviations from the pattern in UsersTable."
+    ```
+
+    When Claude finds a deviation, fix the pattern in CLAUDE.md first, then fix the file. Fixing only the file means the next generation recreates the same deviation.
+
+    <Check>
+    All generated tables pass a side-by-side comparison against UsersTable. Any differences are intentional. CLAUDE.md is the source of truth, not the individual files.
+    </Check>
+  </Step>
+</Steps>
+
+<Note>
+This setup takes 30–45 minutes across Phases 1 and 2. It pays off at instance number 5. Below that threshold — one or two similar components — the overhead isn't worth it. Use the framework when you're building at scale, not as a default for every feature.
+</Note>
+
+---
+
+**← Back to [Style Library](/patterns/permutation-frameworks/overview)**

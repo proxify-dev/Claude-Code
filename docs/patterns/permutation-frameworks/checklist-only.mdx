@@ -1,0 +1,49 @@
+---
+title: "Checklist Style"
+description: "Run through this before every batch generation."
+---
+
+## Phase 1 Preflight
+
+<Check>You prompted for all required states: loading, empty, error, pagination.</Check>
+<Check>You reviewed every line of the output.</Check>
+<Check>You fixed anything you wouldn't want repeated across 10 files.</Check>
+
+- [ ] Would you point to this file as the canonical reference?
+- [ ] Is the file committed and at a stable path before you move to Phase 2?
+
+---
+
+## Phase 2 Preflight
+
+<Check>The pattern entry points to a specific file path, not an abstract rule.</Check>
+<Check>The entry is under 15 lines.</Check>
+
+- [ ] Is the pattern entry in `CLAUDE.md` or the correct skill file?
+- [ ] Does the entry name the component library to use (not just "use a component")?
+- [ ] Does it spell out each state (loading, empty, error, pagination) explicitly?
+
+---
+
+## Phase 3 Preflight
+
+<Check>The prompt names the pattern entry by its exact heading (e.g., "Data Table Pattern").</Check>
+<Check>The prompt includes the reference file path (e.g., `src/components/tables/UsersTable.tsx`).</Check>
+
+- [ ] Are you generating all instances in one prompt, not one at a time?
+- [ ] Have you confirmed you're generating 5+ instances (otherwise Phase 1–2 wasn't worth it)?
+
+---
+
+## Variance Check
+
+<Check>Run this after every batch.</Check>
+
+```
+"Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable.
+Flag any deviations from the pattern in UsersTable."
+```
+
+---
+
+**← Back to [Style Library](/patterns/permutation-frameworks/overview)**

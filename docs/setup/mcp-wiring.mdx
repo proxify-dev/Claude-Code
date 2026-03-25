@@ -1,87 +1,81 @@
 ---
 title: "MCP Wiring"
-description: "Connect Claude Code to your external tools — GitHub, databases, project management, and more."
+description: "How MCP connections compose with CLAUDE.md, skills, and hooks — the opinion layer on top of the official docs."
+sources:
+  - claudefa.st/blog/tools/mcp-extensions/mcp-basics.md
+  - claudefa.st/blog/tools/mcp-extensions/best-addons.md
+  - claudefa.st/blog/guide/settings-reference.md
 ---
 
-This is where Claude Code goes from "smart editor" to "team member with access." MCP (Model Context Protocol) connects Claude to your external tools and data sources — GitHub, databases, project management, Slack, and more. No more copy-pasting context. Claude reads the issue, queries the schema, writes the code, and opens the PR.
+<Tip>**Official reference** — For installation, transports, scoping, and the server registry, see the [official MCP docs](https://code.claude.com/docs/en/mcp). This page is about making MCP connections work *with* your CLAUDE.md, skills, and hooks.</Tip>
 
-<Tip>**Official reference** — For the full MCP API, authentication flows, and server registry, see the [official MCP docs](https://code.claude.com/docs/en/mcp). This page covers the three connections worth setting up first.</Tip>
+MCP is the "reach" layer. Your other setup layers give Claude context, knowledge, and guardrails — MCP gives Claude hands. Without it, Claude reasons about your project but can't touch anything outside the repo. With it, the other layers guide *how* Claude uses that reach.
 
-## The Three Most Impactful Connections
+This page covers [composition patterns](#composition-patterns), [scoping strategy](#scoping-strategy), and [next steps](#next-steps). For how all four layers fit together, see [Context Distribution](/patterns/distribution).
 
-<Tabs>
-<Tab title="GitHub">
-The highest-ROI MCP connection. Claude can read issues, understand requirements, write code, and create PRs in a single flow.
+## Composition Patterns
 
-```bash
-claude mcp add --transport http github https://api.githubcopilot.com/mcp/
-```
+<AccordionGroup>
+  <Accordion title="MCP + CLAUDE.md — Directing Reach">
+    [CLAUDE.md](/setup/claude-md) tells Claude *when* to use which MCP connection and in what order. Without it, Claude has access but no workflow.
 
-**What it enables:**
-- "Implement the feature described in issue #42 and open a PR"
-- "Review the comments on PR #15 and address them"
-- "Search for related issues before implementing this change"
+    ```markdown
+    # In your CLAUDE.md
 
-This alone transforms the workflow. Start here.
-</Tab>
-<Tab title="Database">
-Give Claude read access to your dev database so it can understand your schema and data when implementing features.
+    ## Workflow
+    - Check Linear for requirements before implementing any feature
+    - Always query the staging database, never production
+    - When creating PRs, link the Linear ticket in the description
+    ```
 
-```bash
-# PostgreSQL via Supabase MCP
-claude mcp add supabase-local -- npx -y @supabase/mcp-server-supabase
-```
+    Three lines transform MCP from "Claude can access Linear" to "Claude reads the ticket, implements against the spec, and links the ticket when opening the PR." The connection provides the capability; CLAUDE.md provides the sequence.
+  </Accordion>
+  <Accordion title="MCP + Hooks — Guardrailed Reach">
+    [Hooks](/setup/hooks-playbook) enforce rules on MCP-powered workflows. MCP opens the door; hooks make sure Claude walks through it correctly.
 
-**What it enables:**
-- "Look at the users table schema and add a migration for the new role field"
-- "Check what data exists before writing the seed script"
-- "Write a query that joins orders with customers"
+    ```json
+    {
+      "hooks": {
+        "Stop": [
+          {
+            "hooks": [
+              {
+                "type": "command",
+                "command": ".claude/hooks/verify-pr-quality.sh"
+              }
+            ]
+          }
+        ]
+      }
+    }
+    ```
 
-Start with read-only access. Expand permissions as trust grows.
-</Tab>
-<Tab title="Project Mgmt">
-Pull in task context so Claude understands the *why* behind what you're building.
+    - **`Stop` verifies MCP output** — checks that the PR has a description, links the ticket, and CI is green before Claude declares done
+    - **`PreToolUse` for access control** — matcher on MCP tools that blocks write operations to production systems
+    - **`PostToolUse` for audit** — logs every MCP interaction for compliance or debugging
+  </Accordion>
+  <Accordion title="MCP + Skills — Informed Reach">
+    [Skills](/setup/skills-stack) teach Claude domain patterns that make MCP tools useful. Without the skill, Claude can query your database. With the skill, Claude knows your conventions.
 
-```bash
-# Example: Linear
-claude mcp add --transport http linear https://mcp.linear.app/sse
-```
+    - **Database skill + DB MCP** — the skill encodes your migration conventions (timestamped filenames, naming patterns); the MCP reads the current schema. Claude writes migrations that match your existing patterns instead of inventing its own.
+    - **Deployment skill + GitHub MCP** — the skill knows your release process; the MCP creates PRs. Claude targets the right branch, adds the right labels and reviewers for your release train.
+  </Accordion>
+</AccordionGroup>
 
-**What it enables:**
-- "Read the requirements from LINEAR-123 and implement the feature"
-- "What tickets are assigned to me this sprint?"
+## Scoping Strategy
 
-Works with Jira, Linear, Notion, and others. Check the [MCP registry](https://modelcontextprotocol.io/) for your tool.
-</Tab>
-</Tabs>
+The [official docs](https://code.claude.com/docs/en/mcp) explain the three scopes (local, project, user). Here's when to use each:
 
-## How to Add MCP Servers
+| Connection | Scope | Why |
+|-----------|-------|-----|
+| GitHub MCP | `.mcp.json` (project) | Every dev needs it. Commit it. |
+| Database (dev) | `.mcp.json` (project) | Team shares the dev DB connection. |
+| Personal Linear/Slack | `~/.claude.json` (user) | Tied to personal auth tokens. |
+| Experimental servers | Local (default) | Testing — don't pollute team config. |
 
-Three methods, from simplest to most configurable:
+## Next Steps
 
-```bash
-# Remote HTTP server (most common)
-claude mcp add --transport http <name> <url>
-
-# Local stdio server
-claude mcp add --transport stdio <name> -- <command> [args]
-
-# From JSON (for complex config)
-claude mcp add-json <name> '{"type": "http", "url": "..."}'
-```
-
-## Scoping: Team vs. Personal
-
-| Config File | Scope | Use For |
-|-------------|-------|---------|
-| `.mcp.json` (project root) | Team — committed to git | Shared tools (GitHub, DB, CI) |
-| `~/.claude.json` | Personal — all projects | Your Slack, your Linear, personal API keys |
-
-**Rule of thumb:** If every developer on the team needs it, put it in `.mcp.json`. If it's tied to your personal accounts or preferences, keep it in `~/.claude.json`.
-
-## Practical Tips
-
-- **Start with one.** GitHub MCP alone transforms the workflow. Add more as you find friction.
-- **Read-only first.** Give Claude read access to your database, not write. Expand permissions as trust grows.
-- **Check what's available.** Run `claude mcp list` to see your active connections.
-- **OAuth flows are supported.** Many MCP servers handle auth automatically — Claude will prompt you to authenticate on first use.
+- [Writing CLAUDE.md](/setup/claude-md) — direct how Claude uses its MCP connections
+- [Composing a Skills Stack](/setup/skills-stack) — teach domain knowledge that makes MCP tools useful
+- [Hooks Playbook](/setup/hooks-playbook) — enforce guardrails on MCP-powered workflows
+- [Context Distribution](/patterns/distribution) — how all four layers fit together

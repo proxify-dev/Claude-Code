@@ -1,0 +1,116 @@
+---
+title: "Pair Programming Style"
+description: "Sit down with a senior. Walk through it together."
+---
+
+<Steps>
+
+<Step title="Let's build the first one carefully">
+
+> What are we actually making?
+>
+> Ten data tables for the new admin views. All basically the same — columns, loading state, empty state, error handling, pagination.
+>
+> Okay. Don't think about ten yet. Think about one. Build the users table like it's the only one that exists.
+
+```
+"Build a data table for /users with columns: name, email, role, status.
+Include loading state, empty state, error state, and pagination."
+```
+
+> This looks close. I want to change the error handling — toast feels wrong here, I'd rather have an inline alert. And the empty state copy is too generic.
+>
+> Good. Change it. This is your one chance to get everything exactly right before it becomes the template for everything else.
+
+Don't move on until you'd be happy pointing new team members to this file as the example of how we do tables.
+
+</Step>
+
+<Step title="Now write that down before we forget">
+
+> Do we really need to document it? I know what I just built.
+>
+> You do right now. Claude doesn't. Next prompt is a blank slate — it has no memory of what you just approved. We need to get the pattern somewhere it can read.
+
+Open `CLAUDE.md` and write the pattern entry:
+
+```markdown
+## Data Table Pattern
+When building data tables, follow src/components/tables/UsersTable.tsx as the reference:
+- Use the `DataTable` component from src/components/ui/data-table
+- Loading: skeleton rows matching column count
+- Empty: centered message with action button
+- Error: inline alert with retry
+- Pagination: server-side, 25 rows default
+- Column definitions in a separate `columns.tsx` file
+```
+
+> Should I explain the reasoning behind these choices?
+>
+> No. Point at the file. The file is the reasoning. Abstract rules drift — Claude follows examples.
+
+</Step>
+
+<Step title="Okay, fan out">
+
+> We're ready to do the rest?
+>
+> We are. One prompt, three tables.
+
+```
+"Create data tables for /orders, /products, and /invoices following
+the Data Table Pattern in CLAUDE.md. Reference src/components/tables/UsersTable.tsx
+for the canonical implementation."
+```
+
+> That was fast. They look right.
+>
+> They usually do. But looking right and being right aren't the same thing. Let's check.
+
+</Step>
+
+<Step title="Run the variance check — don't trust your eyes">
+
+> I reviewed them. They seem consistent.
+>
+> Ask Claude to compare them explicitly. You'll find at least one thing that slipped through.
+
+```
+"Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable.
+Flag any deviations from the pattern in UsersTable."
+```
+
+> It flagged something in InvoicesTable — pagination defaults to 10 rows instead of 25.
+>
+> Classic. Fix InvoicesTable, then fix the `CLAUDE.md` entry to make the 25-row default more explicit. If you only fix the file, it'll happen again next time.
+
+Every fix to a generated file belongs in the pattern too. That's how the pattern gets sharper.
+
+</Step>
+
+<Step title="One more thing before we're done">
+
+> Are we good?
+>
+> Almost. The pattern only covers tables. The next person who builds forms is going to have the same problem. Think about where else this applies — endpoints, migrations, anything you're building five or more of.
+
+When you hit the threshold again, you know the process:
+
+1. Build one carefully
+2. Write it down with a file reference
+3. Fan out
+4. Check for drift
+
+> What's the threshold?
+>
+> Five. Below five, the setup costs more than it saves.
+
+</Step>
+
+</Steps>
+
+<Tip>After the session — run the variance check. Dev B won't always be there.</Tip>
+
+---
+
+**← Back to [Style Library](index)**

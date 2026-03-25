@@ -1,0 +1,110 @@
+---
+title: "Style Library"
+description: "16 reading styles for the same topic. Pick one, copy the structure, replace the content."
+---
+
+This section takes one doc topic — the Permutation Framework pattern — and presents it in 16 different reading styles. Use it to pick the right format for a new doc, or copy any style as a template. The content is identical across all 16; only the structure and voice change.
+
+<CardGroup cols={2}>
+  <Card title="Quick Win" href="/patterns/permutation-frameworks/quick-win">
+    Problem first, copyable prompt, success checks after each phase.
+
+    **Signature:** `<Tip>`
+  </Card>
+  <Card title="Cookbook" href="/patterns/permutation-frameworks/cookbook">
+    Recipe format with ingredients, method, and done criteria.
+
+    **Signature:** `<Check>`
+  </Card>
+  <Card title="Narrative" href="/patterns/permutation-frameworks/narrative">
+    Second-person story — phases emerge from the situation.
+
+    **Signature:** `<Note>`
+  </Card>
+  <Card title="Reference" href="/patterns/permutation-frameworks/reference-dense">
+    TL;DR up front, then tables. No warmup required.
+
+    **Signature:** Markdown tables
+  </Card>
+  <Card title="Socratic" href="/patterns/permutation-frameworks/socratic">
+    Questions as headers. Jump to the one you have.
+
+    **Signature:** H2 as questions
+  </Card>
+  <Card title="Decision Tree" href="/patterns/permutation-frameworks/decision-tree">
+    Follow the branches. Arrive at the right action.
+
+    **Signature:** Mermaid diagrams
+  </Card>
+  <Card title="Cheatsheet" href="/patterns/permutation-frameworks/cheatsheet">
+    Everything on one screen. Tabbed code blocks per phase.
+
+    **Signature:** `<CodeGroup>`
+  </Card>
+  <Card title="Progressive Disclosure" href="/patterns/permutation-frameworks/progressive-disclosure">
+    Summary first. Open the accordion for depth.
+
+    **Signature:** `<AccordionGroup>`
+  </Card>
+  <Card title="Annotated Example" href="/patterns/permutation-frameworks/annotated-example">
+    The code is the doc. Teaching lives in the annotations.
+
+    **Signature:** `<Frame>`
+  </Card>
+  <Card title="Before / After" href="/patterns/permutation-frameworks/before-after-diff">
+    Tabs showing the same situation without and with the pattern.
+
+    **Signature:** `<Tabs>`
+  </Card>
+  <Card title="Anti-Pattern First" href="/patterns/permutation-frameworks/anti-pattern-first">
+    Opens with what goes wrong. Then the fix.
+
+    **Signature:** `<Warning>` as hero
+  </Card>
+  <Card title="Opinionated Take" href="/patterns/permutation-frameworks/opinionated-take">
+    Strong stance. Argues for the pattern and names the tradeoffs.
+
+    **Signature:** Blockquotes
+  </Card>
+  <Card title="Pair Programming" href="/patterns/permutation-frameworks/pair-programming">
+    A live session walkthrough. Senior guides junior through all three phases.
+
+    **Signature:** `<Steps>` as dialogue
+  </Card>
+  <Card title="Mentor's Margin Notes" href="/patterns/permutation-frameworks/mentors-margin-notes">
+    Clean doc + expandable senior engineer callouts throughout.
+
+    **Signature:** `<Expandable>`
+  </Card>
+  <Card title="War Story" href="/patterns/permutation-frameworks/war-story">
+    Teaches through a realistic failure. The pattern arrives as the fix.
+
+    **Signature:** `<CardGroup>` as timeline
+  </Card>
+  <Card title="Checklist Only" href="/patterns/permutation-frameworks/checklist-only">
+    No prose. Just the preflight checklist.
+
+    **Signature:** `<Check>` only
+  </Card>
+</CardGroup>
+
+## How to use
+
+- Pick the style that matches your reader's context — someone scanning for a quick answer needs a different format than someone learning the concept for the first time
+- Copy the file, replace the Permutation Frameworks content with your topic, keep the structure
+- Each style showcases specific Mintlify components — the component coverage table below shows which style to look at for any given component
+
+| Component | Styles |
+|-----------|--------|
+| `<Tip>` | Quick Win, Cookbook, Cheatsheet, Pair Programming |
+| `<Note>` | Narrative, Reference, Socratic, Mentor's Margin Notes |
+| `<Warning>` | Quick Win, Cookbook, Reference, Anti-Pattern First |
+| `<Check>` | Cookbook, Anti-Pattern First, Checklist Only |
+| `<CardGroup>` / `<Card>` | This page, War Story |
+| `<Steps>` / `<Step>` | Pair Programming |
+| `<Tabs>` / `<Tab>` | Before / After |
+| `<AccordionGroup>` / `<Accordion>` | Progressive Disclosure |
+| `<CodeGroup>` | Cheatsheet |
+| `<Frame>` | Annotated Example |
+| `<Expandable>` | Mentor's Margin Notes |
+| Mermaid diagrams | Decision Tree |

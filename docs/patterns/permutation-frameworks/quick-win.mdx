@@ -1,0 +1,104 @@
+---
+title: "Quick Win Style"
+description: "Build one right, document the pattern, fan out to dozens."
+---
+
+You asked Claude to build 10 data tables. You got 10 slightly different implementations. Different error handling. Different prop names. Each one works, but the codebase looks like four different engineers wrote it on four different days.
+
+This is a prompting structure problem, not a model problem.
+
+<Tip>
+**Quick Win — copy this now:**
+
+```
+"Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable.
+Flag any deviations from the pattern in UsersTable."
+```
+
+Run this after any batch generation. It catches drift before it compounds.
+</Tip>
+
+---
+
+## Phase 1 — Build One Right
+
+Don't skip this. The entire framework depends on having a canonical reference.
+
+Build the first instance by hand — or with Claude, but review every line. This is the one you'll point everything else at.
+
+```
+"Build a data table for /users with columns: name, email, role, status.
+Include loading state, empty state, error state, and pagination."
+```
+
+Fix anything you don't like. Rename props. Adjust the empty state copy. Move the pagination logic. **This instance is permanent — treat it that way.**
+
+<Check>You could hand this file to a new engineer and say "all tables should look like this." If you'd hesitate, keep refining.</Check>
+
+---
+
+## Phase 2 — Extract the Pattern
+
+Now write down what you just built. Not abstractly — concretely. Point at the file.
+
+```markdown
+## Data Table Pattern
+When building data tables, follow src/components/tables/UsersTable.tsx as the reference:
+- Use the `DataTable` component from src/components/ui/data-table
+- Loading: skeleton rows matching column count
+- Empty: centered message with action button
+- Error: inline alert with retry
+- Pagination: server-side, 25 rows default
+- Column definitions in a separate `columns.tsx` file
+```
+
+Put this in `CLAUDE.md` or a project skill. The key detail is the file reference. Abstract instructions drift. **A concrete example does not.**
+
+<Check>Claude can read this and produce something that matches `UsersTable.tsx` without seeing it first.</Check>
+
+---
+
+## Phase 3 — Fan Out
+
+With the pattern anchored, generate the rest in one shot:
+
+```
+"Create data tables for /orders, /products, and /invoices following
+the Data Table Pattern in CLAUDE.md. Reference
+src/components/tables/UsersTable.tsx for the canonical implementation."
+```
+
+This is the payoff. Three implementations, same shape, minimal review time.
+
+<Check>A diff between any two table files shows only data-specific differences — column names, API endpoints, field types. Structural code is identical.</Check>
+
+---
+
+## Under the Hood
+
+Why does the three-phase structure work when a single prompt doesn't?
+
+Claude generates each file somewhat independently. Without an anchor, it reconstructs the "reasonable" implementation from scratch each time — and reasonable varies. Phase 1 creates a concrete anchor. Phase 2 makes that anchor reachable in context. Phase 3 exploits both.
+
+**The pattern document isn't documentation. It's a constraint that travels with the prompt.**
+
+<Warning>
+The setup cost is real. This framework pays off at 5+ similar things — tables, API endpoints, form components, migration scripts. For one-off features, skip it. The math doesn't work below 5.
+</Warning>
+
+---
+
+## Catching Drift
+
+Batch generation isn't set-and-forget. After Phase 3, run a variance check:
+
+```
+"Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable.
+Flag any deviations from the pattern in UsersTable."
+```
+
+This works well as a validator agent with read-only tools — no risk of it "fixing" things while checking. **Drift caught early costs minutes. Drift caught at code review costs hours.**
+
+---
+
+**← Back to [Style Library](index)**

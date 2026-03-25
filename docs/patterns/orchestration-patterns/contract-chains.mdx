@@ -1,0 +1,44 @@
+---
+title: "Contract Chains / Wave Execution"
+description: "Run parallel work in waves — each wave's concrete outputs become the contracts for the next."
+---
+
+The pattern for parallel work that **must integrate cleanly**. Run work in waves — each wave's concrete outputs become the contracts for the next wave's agents.
+
+**How it works:**
+1. **Wave 1** (sequential): Build the foundation — database schema, API contracts, shared types
+2. Extract concrete artifacts from Wave 1 output (the actual interface, not assumptions about it)
+3. **Wave 2+** (parallel): Spawn agents that receive the upstream contracts injected into their prompts, plus their own file ownership boundaries
+4. Each agent also gets downstream obligations — "your component must export these props"
+
+**Example prompt for a Wave 2 agent:**
+```
+You own src/features/billing/.
+
+Upstream contract (from Wave 1):
+- DB schema: see migrations/004_billing.sql
+- API types: see src/types/billing.ts
+
+Downstream obligation:
+- Export BillingDashboard from src/features/billing/index.ts matching the props in src/types/billing.ts
+
+Do not edit files outside your directory.
+```
+
+**Why this beats naive fan-out:** Parallel agents that each *assume* the interface will look a certain way produce code that individually passes tests but fails integration. Contract injection eliminates assumption drift — agents build against verified artifacts, not guesses.
+
+**Best for:** multi-component features, full-stack implementations, any work where parallel agents must produce code that connects at boundaries.
+
+<Tip>**Vertical slices parallelize; horizontal layers serialize.** "Plan 01: User feature end-to-end" can run in parallel with "Plan 02: Product feature end-to-end." But "Plan 01: All models → Plan 02: All APIs" forces sequential execution because Plan 02 depends entirely on Plan 01. Slice by feature, not by layer.</Tip>
+
+**Interface-first ordering within each wave:** Wave 1 defines contracts — schema, API types, shared interfaces. Extract the *actual* artifacts and inject them into Wave 2+ prompts. Each later-wave agent receives:
+1. **Upstream contracts** — concrete file paths to read
+2. **File ownership** — which directory it owns, nothing outside
+3. **Downstream obligations** — what it must export for the next wave
+
+## Examples in the wild
+
+| Example | What it shows |
+|---------|---------------|
+| [gsd:execute-phase](https://github.com/gsd-build/get-shit-done/blob/main/get-shit-done/workflows/execute-phase.md) | Plans grouped by `depends_on` into waves, parallel within each wave. File locking for concurrent `STATE.md` writes, `--no-verify` commit coordination. |
+| [planning-coordinator](https://github.com/FlorianBruniaux/claude-code-ultimate-guide/blob/main/examples/agents/planning-coordinator.md) | Coordinator builds a task graph from parallel researcher outputs, respecting architectural dependencies. Wave 1 contracts feed Wave 2 assignments. |

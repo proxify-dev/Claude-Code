@@ -1,0 +1,86 @@
+---
+title: "War Story Style"
+description: "The sprint where we built 12 tables without a framework. Here's what that cost us."
+---
+
+Q3 sprint. A team of three engineers. A dashboard redesign with 12 data tables to ship — orders, products, invoices, users, sessions, audit logs, payouts, disputes, refunds, subscriptions, webhooks, API keys. Six weeks. Reasonable scope, reasonable team. We used Claude for most of the generation and moved fast.
+
+Here's how it went.
+
+<CardGroup cols={1}>
+
+<Card title="Week 1 — Tables 1–4">
+Orders, products, invoices, users. We built them quickly — each in its own chat, each with a prompt describing the columns and the general shape we wanted. They came back clean. We reviewed them at a surface level and moved on. Each one used Claude's defaults for error handling, loading states, and empty states. We didn't coordinate. There was no reason to think we needed to.
+
+<Warning>
+No two tables used the same error handling approach. Orders got a toast notification. Products got an inline alert. Invoices got a full error boundary. Users got a retry button with no message. All of them worked. None of them matched.
+</Warning>
+</Card>
+
+<Card title="Week 2 — PR Review">
+The first review cycle landed. A senior engineer on the team opened the PR for the orders and invoices tables side-by-side and left a comment: *"Why does OrdersTable toast on error but InvoicesTable renders an inline alert?"* Then another: *"SessionsTable uses 10 rows per page, UsersTable uses 25 — is this intentional?"* Then five more on prop naming, skeleton row counts, and column definition file structure.
+
+<Warning>
+Twelve comments across two PRs. None of them were about logic or correctness. All of them were about pattern consistency. The reviewer wasn't wrong to raise them — they just had no shared reference to point to, and neither did we.
+</Warning>
+</Card>
+
+<Card title="Week 3 — Tables 5–12">
+We had eight tables left and an open question: which pattern were we aligning to? The team had a 45-minute meeting. We looked at the four existing tables and picked UsersTable as the closest to what we wanted. Then we went back to building — this time trying to match UsersTable manually, from memory, in separate chats with Claude that had no knowledge of what we'd decided.
+
+<Warning>
+Two of the next eight tables still drifted. Not because anyone was careless — because there was no machine-readable contract for Claude to follow. The decision lived in a Slack thread and a person's short-term memory.
+</Warning>
+</Card>
+
+<Card title="Week 4 — The Rework">
+With two weeks left in the sprint, we made the call to align everything. Ten tables, all checked against UsersTable, all deviations corrected. Some were one-line fixes. Some required restructuring the error handling logic. Two tables needed their column definition files extracted because they'd been inlined.
+
+<Check>
+We assigned one engineer to own the alignment pass. It took three days. At the end, all 12 tables were consistent. The pattern was finally clear — four weeks in, after the work was already done.
+</Check>
+</Card>
+
+<Card title="What we did differently — retrospectively">
+After the sprint, we applied the framework retroactively as a postmortem exercise. We wrote up what UsersTable was actually doing in a 10-line `CLAUDE.md` entry. We pointed it to the file path. We ran the Phase 3 prompt against the remaining tables to see what would have come out.
+
+<Check>
+The output matched what we'd manually corrected to. Three days of rework, automated. The variance check flagged the two tables that had drifted in our manual pass — the same two we'd had to fix by hand.
+</Check>
+</Card>
+
+</CardGroup>
+
+<Tabs>
+  <Tab title="What it cost">
+- 10 tables reworked in whole or in part
+- 3 days of engineering time on alignment
+- 2 PR review cycles reopened after initial approval
+- 1 alignment meeting (45 minutes, 3 people)
+- Delayed delivery of the last 4 tables by one week
+  </Tab>
+  <Tab title="What it would have cost">
+Phase 1: Build UsersTable carefully, review every line. Call it 45 minutes.
+
+Phase 2: Write the `CLAUDE.md` entry. 15 minutes.
+
+Phase 3: One prompt for the remaining 11 tables. Review in batches of 3.
+
+Total upfront cost: about an hour. The rework cost: three days.
+  </Tab>
+</Tabs>
+
+---
+
+<Tip>
+After any batch generation, run the variance check before merging:
+
+```
+"Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable.
+Flag any deviations from the pattern in UsersTable."
+```
+
+It takes 30 seconds. It catches the drift that code review misses because reviewers don't have the reference implementation memorized.
+</Tip>
+
+**← Back to [Style Library](/patterns/permutation-frameworks/overview)**

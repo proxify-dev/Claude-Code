@@ -1,0 +1,58 @@
+---
+title: "Cheatsheet Style"
+description: "The whole pattern on one screen. No scrolling."
+---
+
+| Phase | What you do | Output |
+|-------|-------------|--------|
+| 1 — Foundation | Build first instance by hand | Reference file |
+| 2 — Pattern | Document it in CLAUDE.md | Pattern entry |
+| 3 — Generate | Fan-out prompt | N consistent files |
+| Verify | Variance check prompt | Drift report |
+
+---
+
+<CodeGroup>
+
+```text Phase 1
+"Build a data table for /users with columns: name, email, role, status.
+Include loading state, empty state, error state, and pagination."
+```
+
+```markdown Phase 2
+## Data Table Pattern
+When building data tables, follow src/components/tables/UsersTable.tsx as the reference:
+- Use the `DataTable` component from src/components/ui/data-table
+- Loading: skeleton rows matching column count
+- Empty: centered message with action button
+- Error: inline alert with retry
+- Pagination: server-side, 25 rows default
+- Column definitions in a separate `columns.tsx` file
+```
+
+```text Phase 3
+"Create data tables for /orders, /products, and /invoices following
+the Data Table Pattern in CLAUDE.md. Reference src/components/tables/UsersTable.tsx
+for the canonical implementation."
+```
+
+```text Variance Check
+"Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable.
+Flag any deviations from the pattern in UsersTable."
+```
+
+</CodeGroup>
+
+---
+
+## When to use
+
+Use for 5+ similar things. Skip for one-offs.
+
+<Tip>
+The thing people forget: document the reference file path (`src/components/tables/UsersTable.tsx`), not just abstract rules. Claude follows examples. Abstract descriptions drift.
+</Tip>
+
+---
+
+**← Back to [Style Library](/patterns/permutation-frameworks/overview)**

@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "cd docs && npx mintlify@latest dev",
     "build": "cd docs && npx mintlify@latest build",
-    "preview": "cd docs && npx mintlify@latest dev"
+    "preview": "cd docs && npx mintlify@latest dev",
+    "render": "cd animations && npm run render"
   }
 }

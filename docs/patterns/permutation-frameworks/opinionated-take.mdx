@@ -1,0 +1,59 @@
+---
+title: "Opinionated Take Style"
+description: "If you're not using a reference implementation, you're wasting review cycles."
+---
+
+**The single most important thing about this pattern: the problem is never Claude. It's you asking the same question ten times with no shared context.**
+
+Every time you open a new chat and describe a data table from scratch, Claude starts from zero. It makes reasonable choices. The next conversation makes different reasonable choices. After ten tables you have a codebase that looks like it was built by five people who never talked to each other — and it was, in a sense.
+
+---
+
+## Why this matters
+
+Inconsistency isn't an aesthetic problem. It's a review tax. Every PR that touches a pattern you've built ten ways requires the reviewer to re-evaluate which way is correct. That's time. It accumulates.
+
+The permutation framework exists to make "correct" legible to Claude before generation starts — not after.
+
+---
+
+## The argument
+
+Phase 1 builds a reference implementation. Not a sketch — a real, reviewed, production-ready instance of the thing. You review every line. You fix what you'd want fixed. When you're done, that file is a decision record: every choice is intentional, and you'd be comfortable pointing to it as the canonical example.
+
+Phase 2 writes that down in one place — `CLAUDE.md`, or the relevant skill. Not as a principle. As a pointer to the file.
+
+> "But I can just describe it well in the prompt." A description has interpretation gaps. A file path does not. Claude treats a reference file as ground truth, not as inspiration.
+
+Phase 3 is one prompt that fans out to all remaining instances. Not ten prompts. One. The reference is already loaded. Claude follows it.
+
+---
+
+## Common objections
+
+> "But my tables are all slightly different." They're not different enough to matter. Column counts differ. Data types differ. The structure — loading state, empty state, error handling, pagination — is the same. That structure is what you're locking down.
+
+> "This is extra work." It's 20 minutes up front. Phase 1 is building one thing carefully instead of ten things carelessly. Phase 2 is writing 10 lines in a markdown file. What you're trading is one focused effort for months of accumulated inconsistency and rework.
+
+> "I can just fix drift at review time." You're doing the work either way. The question is whether you do it in a controlled moment before generation or reactively across ten PRs.
+
+<Note>
+There is one legitimate case to skip Phase 3: when instances genuinely differ on the axis that matters. If your tables have meaningfully different error semantics — one silently retries, another surfaces errors to an external logging system — they aren't the same pattern. Build them separately and document that distinction. The framework is for things that should be consistent, not for things that are actually different.
+</Note>
+
+---
+
+## The recommendation
+
+Build the reference. Document it with a file path. Generate everything else from that reference in one prompt.
+
+If you're already mid-project with inconsistent implementations, the variance check tells you where you are:
+
+```
+"Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable.
+Flag any deviations from the pattern in UsersTable."
+```
+
+Fix the deviations in `CLAUDE.md` first. Then fix the files. If you fix only the files, the next generation recreates the problem.
+
+**← Back to [Style Library](/patterns/permutation-frameworks/overview)**

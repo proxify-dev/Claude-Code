@@ -1,13 +1,13 @@
 ---
 name: docs-maintenance
-description: Maintain the Mintlify docs site in docs/. Use when writing, editing, or restructuring documentation pages — especially when deciding what to include vs. backlink, choosing the right voice for a doc type, placing files in the correct directory, or using Mintlify components. Not for plugin maintenance (CLAUDE.md, skills/, agents/).
+description: Editorial voice and judgment for the Mintlify docs site in docs/. Use when writing or editing documentation pages — especially when deciding what to include vs. backlink, or choosing the right voice and structure for a doc type. Not for navigation structure (use docs-architect agent) or plugin maintenance (CLAUDE.md, skills/, agents/).
 ---
 
-# Docs Site Maintenance
+# Docs Writing Guide
 
-Editorial and structural conventions for the Mintlify docs site at `docs/`. The site teaches brownfield engineers at Proxify how to set up and operate agentic workspaces.
+Editorial conventions for the Mintlify docs site at `docs/`. The site teaches brownfield engineers at Proxify how to set up and operate agentic workspaces.
 
-**This skill covers project-specific editorial judgment only.** Generic Mintlify knowledge (components API, docs.json schema, CLI) lives in the `mintlify` skill.
+**This skill covers voice and editorial judgment only.** Navigation structure and content placement are owned by the `docs-architect` agent. Generic Mintlify knowledge (components API, docs.json schema) lives in the `mintlify` skill.
 
 ## Which reference do I need?
 
@@ -15,6 +15,6 @@ Editorial and structural conventions for the Mintlify docs site at `docs/`. The 
 
 - **Writing or editing a specific doc type?** Read [voice-by-doc-type.md](references/voice-by-doc-type.md) — how setup docs, pattern docs, reference docs, and checklists each have a different voice, opener, and structure.
 
-- **Placing a file or updating navigation?** Read [directory-and-nav.md](references/directory-and-nav.md) — what goes in each subdirectory, frontmatter rules, docs.json tab structure, and the bottom-of-file nav link pattern.
+- **Formatting content or reviewing typography?** Read [typography-rules.md](references/typography-rules.md) — component-level rules for lists, callouts, code formatting, and Mintlify-specific patterns.
 
-- **Using Mintlify components?** Read [component-conventions.md](references/component-conventions.md) — which components this site uses, the sparingly principle, and the `<Tip>` backlink pattern.
+- **Recording provenance for a page you're writing?** Read [provenance-protocol.md](references/provenance-protocol.md) — how to add sources to frontmatter and update the provenance index. **This is mandatory for every page write or edit.**
