@@ -1,0 +1,125 @@
+---
+title: "Before/After Style"
+description: "See exactly what changes when you apply the pattern."
+---
+
+This is what changes when you use a permutation framework.
+
+---
+
+## The Problem
+
+<Tabs>
+  <Tab title="Without framework">
+    ```
+    # Conversation 1
+    "Build a data table for /users with columns: name, email, role, status."
+    → Error handling: toast notification
+    → Pagination: client-side, 10 rows
+
+    # Conversation 2
+    "Build a data table for /orders with columns: id, customer, total, status."
+    → Error handling: inline alert
+    → Pagination: server-side, 25 rows
+
+    # Conversation 3
+    "Build a data table for /invoices with columns: id, vendor, amount, status."
+    → Error handling: console.error + empty state fallback
+    → Pagination: client-side, 50 rows
+    ```
+
+    Each table was generated in a separate conversation. Claude had no memory of the previous one. The result is three tables that each work independently but don't match each other — different error handling, different pagination defaults, different loading patterns. This isn't a model failure. It's an unstructured prompting problem.
+  </Tab>
+  <Tab title="With framework">
+    ```
+    # Conversation 1
+    "Build a data table for /users with columns: name, email, role, status.
+    Include loading state, empty state, error state, and pagination."
+    → Review every line. Fix what you don't like.
+    → Declare UsersTable.tsx canonical.
+
+    # CLAUDE.md (written once)
+    ## Data Table Pattern
+    Reference: src/components/tables/UsersTable.tsx
+    - Error: inline alert with retry
+    - Pagination: server-side, 25 rows default
+    ...
+
+    # All future tables
+    → Error handling: inline alert with retry (every time)
+    → Pagination: server-side, 25 rows (every time)
+    ```
+
+    One reference implementation, one documented pattern, and every subsequent table inherits the same decisions. Consistency comes from structure, not from hoping each prompt lands the same way.
+  </Tab>
+</Tabs>
+
+---
+
+## The Prompt
+
+<Tabs>
+  <Tab title="Ad hoc prompt">
+    ```
+    "Build a data table for /orders with columns:
+    id, customer, total, status."
+    ```
+
+    This prompt works — Claude will generate a table. But it leaves every structural decision open: how errors are shown, what the loading state looks like, whether pagination is client-side or server-side, what the empty state says. Claude will make choices. They won't necessarily match the choices it made last time.
+  </Tab>
+  <Tab title="Pattern-anchored prompt">
+    ```
+    "Create data tables for /orders, /products, and /invoices following
+    the Data Table Pattern in CLAUDE.md. Reference
+    src/components/tables/UsersTable.tsx for the canonical implementation."
+    ```
+
+    This prompt gives Claude two anchors: the written constraints in `CLAUDE.md` and the concrete reference file. Every structural decision is already made. Claude's job is to adapt the pattern to the new entity — not to invent the pattern fresh. Three tables, one prompt, consistent output.
+  </Tab>
+</Tabs>
+
+---
+
+## The Output
+
+<Tabs>
+  <Tab title="Inconsistent output">
+    ```tsx
+    // OrdersTable.tsx
+    {error && <Toast message={error.message} variant="error" />}
+    // ^ toast, dismissed after 3s
+
+    // ProductsTable.tsx
+    {error && <Alert severity="error">{error.message}</Alert>}
+    // ^ inline alert, persistent
+
+    // InvoicesTable.tsx
+    {error ? <div className="text-red-500">{error.message}</div> : null}
+    // ^ unstyled div, no retry
+    ```
+
+    Three tables, three error patterns. Each one was generated without knowledge of the others. The codebase now has three different conventions for the same situation — and none of them are wrong, which makes it harder to argue for changing them.
+  </Tab>
+  <Tab title="Consistent output">
+    ```tsx
+    // OrdersTable.tsx
+    {error && <InlineAlert message={error.message} onRetry={refetch} />}
+
+    // ProductsTable.tsx
+    {error && <InlineAlert message={error.message} onRetry={refetch} />}
+
+    // InvoicesTable.tsx
+    {error && <InlineAlert message={error.message} onRetry={refetch} />}
+    ```
+
+    Same component, same props, same behavior across every table. The pattern was documented once in `CLAUDE.md` and every generated file follows it. Future tables will too — without anyone having to remember what the convention is.
+  </Tab>
+</Tabs>
+
+<Note>
+This is only worth setting up for 5 or more similar things. For one-off features, the 30–45 minute investment in Phases 1–2 exceeds the benefit. The threshold is roughly: if you'll write the same structural prompt more than four times, write the pattern instead.
+</Note>
+
+---
+
+**← Back to [Style Library](/patterns/permutation-frameworks/overview)**

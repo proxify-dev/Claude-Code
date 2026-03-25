@@ -1,0 +1,117 @@
+---
+title: "Socratic Style"
+description: "Every question you'll have about permutation frameworks, answered directly."
+---
+
+## Why does Claude give slightly different results each time I build the same kind of component?
+
+**Because each conversation starts with no memory of the previous one.** When you ask Claude to build a data table in ten separate conversations, you're asking ten different questions — the model has no idea what it generated last time or what decisions you approved. It reconstructs "a data table" from scratch each time, and its choices about error handling, loading states, and prop naming are reasonable but not anchored to anything specific.
+
+This isn't a model quality problem. It's a prompting structure problem. You haven't given Claude a reference to follow, so it invents one each time.
+
+## What's a permutation framework?
+
+A three-phase technique for generating batches of similar things — tables, forms, API endpoints, migrations — with consistent output.
+
+**Phase 1** builds the first instance carefully by hand. That becomes the reference.
+**Phase 2** extracts the pattern from the reference into a place Claude can read (usually `CLAUDE.md`).
+**Phase 3** generates the remaining instances in a single prompt, pointed at the pattern and the reference file.
+
+The leverage is in Phase 3: instead of ten separate prompts drifting in ten directions, you write one prompt that already knows what "correct" looks like.
+
+## How do I start — where does the first reference come from?
+
+Build it yourself, with Claude if you want, but review every line before declaring it canonical. Use a prompt like:
+
+```
+"Build a data table for /users with columns: name, email, role, status.
+Include loading state, empty state, error state, and pagination."
+```
+
+Then go through what Claude gives you and fix the things you don't like — the error handling style, the prop names, the empty state copy. Whatever you change in this file is a decision you're locking in. **This is the one moment where you have full creative control before the pattern locks.**
+
+When you'd be satisfied seeing this exact shape replicated ten times, you're done with Phase 1.
+
+## How do I write the pattern description? What needs to be in it?
+
+Point to the concrete file, not an abstract principle. "Use consistent error handling" tells Claude nothing. "Follow `UsersTable.tsx`" tells Claude exactly where to look.
+
+A pattern entry that works:
+
+```markdown
+## Data Table Pattern
+When building data tables, follow src/components/tables/UsersTable.tsx as the reference:
+- Use the `DataTable` component from src/components/ui/data-table
+- Loading: skeleton rows matching column count
+- Empty: centered message with action button
+- Error: inline alert with retry
+- Pagination: server-side, 25 rows default
+- Column definitions in a separate `columns.tsx` file
+```
+
+The bullet points exist to make the non-obvious decisions explicit. Claude will follow the reference file for most things — the bullets cover the edge cases where you've made a specific call that the file alone might not communicate clearly.
+
+<Tip>Keep the entry under 15 lines. If it needs more, the pattern is too complex to automate reliably yet. Build another instance by hand first.</Tip>
+
+## How do I know the fan-out worked correctly?
+
+Run a variance check after the first batch. Ask Claude directly:
+
+```
+"Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable.
+Flag any deviations from the pattern in UsersTable."
+```
+
+**Claude will catch its own drift if you ask it to.** It won't volunteer the information, but it's reliable at finding differences when you make the comparison explicit.
+
+When you find a deviation, fix it in two places: the generated file and the `CLAUDE.md` entry. If you only fix the file, the same drift will reappear the next time you generate. Fixing the pattern makes every future generation benefit from the correction.
+
+## When is this worth the setup? When should I skip it?
+
+Five or more similar things: worth it. Fewer than five: the setup cost exceeds what you save.
+
+| Situation | Worth the setup? |
+|-----------|-----------------|
+| 5+ similar components | Yes |
+| API endpoints with shared conventions | Yes |
+| Migration pattern applied across a large surface | Yes |
+| One-off feature | No |
+| Two similar things | Probably not |
+
+<Note>The threshold is roughly the point where you'd otherwise write the same review comment three times. If you can already predict the inconsistencies you'll find in code review, a permutation framework would have prevented them.</Note>
+
+## What if my instances aren't quite identical — some tables have filters, some don't?
+
+That's fine. **The pattern is a floor, not a ceiling.** The goal is consistent structure for the shared parts — loading states, error handling, pagination, file layout — not identical behavior across every instance.
+
+In your fan-out prompt, you can specify the variation:
+
+```
+"Create data tables for /orders, /products, and /invoices following
+the Data Table Pattern in CLAUDE.md. The /orders table needs date range
+filters; the other two don't."
+```
+
+Claude applies the pattern as the baseline and layers the variation on top. If you find that a variation is appearing repeatedly across instances, add it to `CLAUDE.md` as a documented variant rather than specifying it ad hoc every time.
+
+## Where should I store the pattern — CLAUDE.md or a skill?
+
+**`CLAUDE.md` if it's project-specific. A skill if it's reusable across projects.**
+
+A data table pattern for your admin dashboard belongs in `CLAUDE.md` — it references specific file paths in your codebase that don't exist anywhere else.
+
+A general "component generation" methodology that you'd want to carry to a new project belongs in a skill. Skills travel with you; `CLAUDE.md` stays with the repo.
+
+When in doubt, start with `CLAUDE.md`. You can promote it to a skill later once you've proven it works and find yourself wanting to reach for it again.
+
+---
+
+## What question do people ask after this?
+
+**"How do I know when a pattern is stable enough to automate?"** — That's covered in the [Permutation Frameworks overview](/patterns/permutation-frameworks), specifically the section on variance testing and when to promote a hand-built reference.
+
+**"How do I batch generate across subagents instead of in a single conversation?"** — See [Parallel Execution](/patterns/parallel-execution) for fanning out across multiple Claude sessions simultaneously.
+
+---
+
+**← Back to [Style Library](index)**

@@ -1,0 +1,121 @@
+---
+title: "Progressive Disclosure Style"
+description: "Start with the summary. Expand what you need. Skip what you don't."
+---
+
+A permutation framework is a three-phase technique for generating 5+ similar components or features with consistent structure. You build one reference implementation by hand, document the pattern in `CLAUDE.md`, then let Claude generate the rest anchored to that reference. The payoff is a codebase where every table, endpoint, or migration looks like it came from the same source — because it did.
+
+<AccordionGroup>
+
+<Accordion title="The Problem: Why Claude Produces Inconsistent Implementations">
+
+Ask Claude to build ten data tables in ten separate prompts and you get ten slightly different implementations. One uses a toast for errors; another uses an inline alert. One paginates at 25 rows; another at 50. Each table works. None of them match.
+
+This is a prompting structure problem, not a model limitation. Claude has no shared memory across conversations. Every prompt starts from a blank slate. Without a documented reference, "build a data table" is underspecified — and Claude fills in the gaps differently each time.
+
+```
+# Prompt 1
+"Build a data table for /users with columns: name, email, role, status."
+
+# Prompt 2 (new conversation)
+"Build a data table for /orders with columns: id, customer, total, status."
+```
+
+Same intent. No shared context. Different outcomes every time.
+
+<Tip>
+The problem shows up in code review, not in the moment you're generating. By the time a teammate asks "why does OrdersTable use toasts but InvoicesTable uses inline alerts?", you've already shipped eight tables.
+</Tip>
+</Accordion>
+
+<Accordion title="Phase 1: Build the Reference — The One You Can't Skip">
+
+Build the first 2–3 instances by hand, or with Claude, but review every line before moving on. This is your canonical implementation — every future generation will copy its shape.
+
+```
+"Build a data table for /users with columns: name, email, role, status.
+Include loading state, empty state, error state, and pagination."
+```
+
+Review the output. Fix what you don't like — error handling style, prop naming, file structure, copy in the empty state. Every decision you make here gets inherited by everything generated in Phase 3.
+
+When you're done, `UsersTable.tsx` is not just a component. It's a decision record. Don't move on until you'd be comfortable seeing this exact shape repeated across ten files.
+
+<Tip>
+Phase 1 is the one time you have full control before the pattern locks in. Spending 20 extra minutes here saves hours of drift cleanup later.
+</Tip>
+</Accordion>
+
+<Accordion title="Phase 2: Document the Pattern — Get It Out of Your Head">
+
+The pattern lives in your head after Phase 1. Phase 2 is moving it into `CLAUDE.md` so Claude can see it at the start of every future conversation.
+
+```markdown
+## Data Table Pattern
+When building data tables, follow src/components/tables/UsersTable.tsx as the reference:
+- Use the `DataTable` component from src/components/ui/data-table
+- Loading: skeleton rows matching column count
+- Empty: centered message with action button
+- Error: inline alert with retry
+- Pagination: server-side, 25 rows default
+- Column definitions in a separate `columns.tsx` file
+```
+
+Two things matter here. First, point to the file (`UsersTable.tsx`), not an abstract description. Claude follows concrete examples more reliably than general instructions. Second, make the non-obvious decisions explicit — loading behavior, error handling style, pagination defaults. Those are exactly the places where undocumented patterns diverge.
+
+<Tip>
+Keep the pattern entry under 15 lines. If it needs more, the pattern itself is too complex to automate reliably yet.
+</Tip>
+</Accordion>
+
+<Accordion title="Phase 3: Generate at Scale — One Prompt for the Remaining Instances">
+
+With the reference built and the pattern documented, the remaining instances are a single prompt:
+
+```
+"Create data tables for /orders, /products, and /invoices following
+the Data Table Pattern in CLAUDE.md. Reference src/components/tables/UsersTable.tsx
+for the canonical implementation."
+```
+
+Claude now has two anchors: the written constraints in `CLAUDE.md` and the concrete example file. Both point to the same decisions. The result is generated output that follows the same shape as your reference — not because Claude is being careful, but because you've structured the context so there's only one clear direction to go.
+
+Generate in batches of 2–3, not all at once. Catching drift early is cheaper than fixing ten files.
+</Accordion>
+
+<Accordion title="When Is This Worth It?">
+
+The setup cost (Phases 1–2) runs 30–45 minutes. That cost amortizes quickly when you're building multiple similar things, and doesn't pay off at all for one-offs.
+
+| Situation | Worth it? |
+|-----------|-----------|
+| 5+ similar components | Yes — high payoff |
+| API endpoints with shared conventions | Yes — high payoff |
+| Migration patterns across a large codebase | Yes — high payoff |
+| 2–3 similar features | Maybe — depends on complexity |
+| One-off features | No — setup cost exceeds benefit |
+
+The general threshold: if you're going to write the same structural prompt more than four times, write the pattern once instead.
+</Accordion>
+
+<Accordion title="Catching Drift After Generation">
+
+Claude doesn't announce when it deviates from the pattern. You have to ask.
+
+```
+"Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable.
+Flag any deviations from the pattern in UsersTable."
+```
+
+Run this after every generation batch. When you find drift, fix the pattern in `CLAUDE.md` first, then fix the generated file. If you update only the file, the same deviation reappears the next time you generate.
+
+<Tip>
+Drift often appears in the same places: error handling style, empty state copy, and prop naming. Document these explicitly in `CLAUDE.md` if you find Claude deviating on them repeatedly.
+</Tip>
+</Accordion>
+
+</AccordionGroup>
+
+---
+
+**← Back to [Style Library](/patterns/permutation-frameworks/overview)**

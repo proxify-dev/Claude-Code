@@ -1,0 +1,76 @@
+---
+title: "Decision Tree Style"
+description: "Follow the branches. End up at the right action."
+---
+
+Use this when you're deciding whether or how to apply the pattern.
+
+---
+
+## Should I use a permutation framework?
+
+```mermaid
+flowchart TD
+    A([Start]) --> B{Building similar things?}
+    B -- No --> C([Skip it — one-off prompting is fine])
+    B -- Yes --> D{More than 5 instances?}
+    D -- No --> E([Probably not worth the setup cost])
+    D -- Yes --> F{Do you have a reference implementation?}
+    F -- No --> G([Start: Phase 1])
+    F -- Yes --> H{Is the pattern documented in CLAUDE.md?}
+    H -- No --> I([Start: Phase 2])
+    H -- Yes --> J([Generate: Phase 3])
+```
+
+**Skip it** — Run a single prompt per feature. No framework needed.
+
+**Probably not worth it** — Setup cost is real. Below 5 instances, time spent on Phases 1–2 won't pay back.
+
+**Start: Phase 1** — Build the first 2–3 instances by hand. Review every line. That output becomes your canonical reference file.
+
+**Start: Phase 2** — You have a working reference but it's only in your head. Write it into `CLAUDE.md` with a concrete file pointer before generating anything else.
+
+**Generate: Phase 3** — Both prerequisites are met. Fan out the remaining instances in one prompt referencing the pattern.
+
+---
+
+## Which phase are you in?
+
+```mermaid
+flowchart TD
+    A([Start]) --> B{Do you have a reviewed,\ncanonical reference file?}
+    B -- No --> C[Phase 1: Build the reference]
+    C --> D{Happy with every line?\nWould you clone this 10 times?}
+    D -- No --> C
+    D -- Yes --> E[Phase 2: Document the pattern]
+    E --> F{Does CLAUDE.md have\na named pattern entry\nwith a file path?}
+    F -- No --> E
+    F -- Yes --> G[Phase 3: Fan-out generation]
+    G --> H{Run variance check.\nAny structural drift?}
+    H -- Yes --> I[Fix drift → update CLAUDE.md]
+    I --> G
+    H -- No --> J([Done])
+```
+
+**Phase 1 exit condition** — You have one file you'd be comfortable pointing a new engineer at and saying "all instances should look like this." If you'd hesitate, keep refining.
+
+**Phase 2 exit condition** — `CLAUDE.md` contains a named section, a concrete file path (not an abstract description), and explicit decisions about the non-obvious parts: loading, empty state, error state, pagination.
+
+**Phase 3 exit condition** — A diff between any two generated files shows only data-specific differences — column names, endpoints, field types. Structural code is identical.
+
+**Drift loop** — If the variance check surfaces deviations, fix the root cause in `CLAUDE.md`, not just the individual file. Each fix sharpens every future generation.
+
+---
+
+<Tip>
+Run this after every batch generation to catch drift before it compounds:
+
+```
+"Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable.
+Flag any deviations from the pattern in UsersTable."
+```
+</Tip>
+
+---
+
+**← Back to [Style Library](/patterns/permutation-frameworks/overview)**

@@ -1,0 +1,111 @@
+---
+title: "Mentor's Margin Notes Style"
+description: "The doc, plus what an experienced engineer would tell you to watch for."
+---
+
+You asked Claude to build 10 data tables. You got 10 slightly different implementations — different error handling, different prop names, different loading states. Each one works. None of them match.
+
+This is a prompting structure problem, not a model limitation. Claude generates each file independently with no memory of previous conversations. Without an anchor, it reconstructs "a reasonable table" from scratch each time — and reasonable varies.
+
+The fix is a permutation framework. Three phases, run once, pays off every time you're building five or more similar things.
+
+---
+
+## Phase 1 — Build the Reference by Hand
+
+Don't skip this phase. The entire framework depends on having one canonical, reviewed implementation to point everything else at.
+
+Build the first instance carefully — with Claude if you like, but review every line:
+
+```
+"Build a data table for /users with columns: name, email, role, status.
+Include loading state, empty state, error state, and pagination."
+```
+
+Fix what you don't like. Rename props. Adjust the empty state copy. Change the error handling style. When you're done, `UsersTable.tsx` should be something you'd hand to a new team member as the example of how we do tables.
+
+<Expandable title="Senior note: Why hand-building matters">
+When you review that first implementation, you're not just checking if it works. You're calibrating your own taste — figuring out which choices actually matter to you and which ones you'd accept either way.
+
+Most engineers skip this and jump straight to generating everything. The result is that the "canonical" reference encodes decisions they never consciously made. Later, when someone asks why the empty state uses that particular copy or why pagination defaults to 25 rows, there's no answer — it was just whatever Claude produced first.
+
+Phase 1 is where you turn implicit preferences into explicit decisions. That's what you're actually doing when you review and revise.
+</Expandable>
+
+---
+
+## Phase 2 — Extract the Pattern
+
+Now get the pattern out of your head and into a place Claude can read. Open `CLAUDE.md` and write it down:
+
+```markdown
+## Data Table Pattern
+When building data tables, follow src/components/tables/UsersTable.tsx as the reference:
+- Use the `DataTable` component from src/components/ui/data-table
+- Loading: skeleton rows matching column count
+- Empty: centered message with action button
+- Error: inline alert with retry
+- Pagination: server-side, 25 rows default
+- Column definitions in a separate `columns.tsx` file
+```
+
+This isn't documentation for your team. It's a constraint that travels with every future prompt — Claude reads `CLAUDE.md` at the start of every conversation in this project.
+
+<Expandable title="Senior note: The file reference is load-bearing">
+Notice that the pattern entry points to a concrete file: `src/components/tables/UsersTable.tsx`. That reference does more work than all the bullet points combined.
+
+Abstract instructions like "use consistent error handling" give Claude latitude to interpret. A file path gives it a ground truth. Claude follows examples far more reliably than it follows rules — and when it deviates from the example, you can point to the deviation precisely rather than arguing about what "consistent" means.
+
+Keep the bullet list short (under 15 lines). Its job is to surface the non-obvious decisions that the file alone might not communicate — not to re-describe everything the file already shows.
+</Expandable>
+
+---
+
+## Phase 3 — Fan Out
+
+With the pattern anchored, generate the remaining instances in one prompt:
+
+```
+"Create data tables for /orders, /products, and /invoices following
+the Data Table Pattern in CLAUDE.md. Reference src/components/tables/UsersTable.tsx
+for the canonical implementation."
+```
+
+Three implementations, same structure, minimal review time. A diff between any two output files should show only data-specific differences — column names, API endpoints, field types.
+
+<Expandable title="Senior note: Don't trust Phase 3 without Phase 4">
+Batch generation looks right more often than it is right. Claude will produce files that look consistent on a quick scan but have subtle deviations — a pagination default that's off, an error handler that uses a slightly different component, a loading skeleton that doesn't match the column count.
+
+Always run the variance check after the first batch. Ask Claude directly:
+
+```
+"Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable.
+Flag any deviations from the pattern in UsersTable."
+```
+
+When you find a deviation, fix it in two places: the generated file and the `CLAUDE.md` entry. If you only fix the file, the same drift reappears next time you generate. The pattern is a living document — each fix makes every future generation more accurate.
+</Expandable>
+
+---
+
+## When to Use This
+
+This framework pays off at five or more similar things. Below that threshold, the setup cost exceeds what you save.
+
+| Situation | Worth it? |
+|-----------|-----------|
+| 5+ similar components (tables, forms, cards) | Yes |
+| API endpoints with shared conventions | Yes |
+| Migration patterns across many files | Yes |
+| One-off features | No |
+| Two or three similar things | Probably not |
+
+<Expandable title="Senior note: I've seen this fail below the threshold">
+Early in a project I tried running this for three endpoints. The setup took longer than just building the three endpoints by hand, and the pattern I extracted was too narrow to reuse. Two sprints later we had twelve endpoints that all needed the same conventions — and no pattern document because we'd given up on the framework too early.
+
+The threshold isn't arbitrary. Five is roughly the point where the amortized cost of Phase 1 and 2 drops below the cost of reviewing each generated file individually. Trust the math.
+</Expandable>
+
+---
+
+**← Back to [Style Library](index)**

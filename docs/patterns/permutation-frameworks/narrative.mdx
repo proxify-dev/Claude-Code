@@ -1,0 +1,71 @@
+---
+title: "Narrative Style"
+description: "The story of how one reference component becomes thirty consistent ones."
+---
+
+You've just been handed a ticket: build data tables for the ten new admin views shipping next sprint. Straightforward enough. You open a chat with Claude, describe the first one, and it comes back clean — loading skeletons, an empty state with a call-to-action, inline error handling, server-side pagination. You approve it and move on.
+
+By the fourth table you've stopped reviewing as carefully. By the eighth you're just shipping them.
+
+Two weeks later a teammate opens a PR and leaves a comment: *"Why does OrdersTable use a toast for errors but InvoicesTable has an inline alert?"* You go look. They're right. Each table works. None of them match.
+
+**This is a prompting structure problem, not a model limitation.** Claude isn't being inconsistent — you just asked it the same question ten times in ten separate conversations with no shared memory of what "correct" looked like. Every prompt was a blank slate.
+
+The fix is a technique called a permutation framework. It runs in three phases, and once you've done it once you'll reach for it any time you're building five or more of the same kind of thing.
+
+---
+
+The first phase is the one you can't skip: you build the reference by hand. Not all ten — just the first two or three, and you review every line.
+
+```
+"Build a data table for /users with columns: name, email, role, status.
+Include loading state, empty state, error state, and pagination."
+```
+
+You look at what comes back. You fix the things you don't like. Maybe you swap the error toast for an inline alert. Maybe you tighten the empty state copy. When you're done, `UsersTable.tsx` isn't just a component — **it's a decision record**. Every choice in it is intentional.
+
+---
+
+Now the pattern lives in your head. The second phase is getting it out of your head and into the codebase where Claude can see it.
+
+You open `CLAUDE.md` and write it down:
+
+```markdown
+## Data Table Pattern
+When building data tables, follow src/components/tables/UsersTable.tsx as the reference:
+- Use the `DataTable` component from src/components/ui/data-table
+- Loading: skeleton rows matching column count
+- Empty: centered message with action button
+- Error: inline alert with retry
+- Pagination: server-side, 25 rows default
+- Column definitions in a separate `columns.tsx` file
+```
+
+This isn't documentation for your team. It's a constraint you're handing to Claude so it can't drift. Every future conversation starts with this context already loaded.
+
+---
+
+The third phase is where the leverage appears. Instead of ten separate prompts, you write one:
+
+```
+"Create data tables for /orders, /products, and /invoices following
+the Data Table Pattern in CLAUDE.md. Reference src/components/tables/UsersTable.tsx."
+```
+
+Here's what you had before: ten tables, ten slightly different implementations, a codebase that looks like it was written by a committee that never met.
+
+Here's what you have now: seven more tables that look like `UsersTable` wrote them itself.
+
+<Note>
+The variance check is worth running after any batch generation: *"Compare the error handling in OrdersTable, ProductsTable, and InvoicesTable. Flag any deviations from the pattern in UsersTable."* Claude will catch its own drift.
+</Note>
+
+---
+
+**What you've built** isn't just a set of tables. It's a repeatable process. The `CLAUDE.md` entry outlives this sprint — next quarter, when someone needs three more admin views, they inherit the same pattern without knowing its history. The reference component becomes the source of truth for every future conversation.
+
+This approach pays off when you're facing five or more similar components, a set of API endpoints that share conventions, or a migration pattern you need to apply across a large surface. For one-off features it's overhead. For anything that fans out, it's the difference between a consistent codebase and a scavenger hunt.
+
+---
+
+**← Back to [Style Library](index)**

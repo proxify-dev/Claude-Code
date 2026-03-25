@@ -3,6 +3,8 @@ title: "Context Distribution"
 description: "How knowledge reaches agents at the right time — the layered architecture behind CLAUDE.md, skills, agents, and why each exists."
 ---
 
+import { ScrollVideo } from "/snippets/ScrollVideo.jsx";
+
 <Note>**You'll learn:** how Claude processes instructions from multiple layers, why each layer exists, how to route knowledge to the right one, and the architectural thinking that led to skills and agents.</Note>
 
 ## The Core Problem
@@ -16,6 +18,8 @@ This is the distribution problem. Every tool in the agentic engineering stack �
 ## The Instruction Hierarchy
 
 When Claude processes a request, it sees instructions from multiple sources. Each source has different priority, reach, and cost.
+
+<ScrollVideo src="/videos/instruction-hierarchy.webm" alt="Animated diagram showing instruction priority layers from System Prompt to User Messages" />
 
 | Priority | Layer | Reach | Cost |
 |----------|-------|-------|------|
@@ -66,6 +70,8 @@ CLAUDE.md is advisory. Hooks execute as code. If you need a guarantee, use a hoo
 
 When you learn something that should persist, pick the right vehicle:
 
+<ScrollVideo src="/videos/routing-decision.webm" alt="Animated flowchart showing knowledge routing decisions" />
+
 | Signal | Route to | Why |
 |--------|----------|-----|
 | Every session needs to know | CLAUDE.md (one line + pointer) | Always in context |
@@ -92,6 +98,8 @@ This isn't abstract design. The tools in this repo exist because of specific dis
 Engineers were stuffing deep domain knowledge into CLAUDE.md. Their CLAUDE.md files grew to 400+ lines. Claude's instruction-following degraded. They'd add more emphasis ("ALWAYS do X", "NEVER do Y") but the problem wasn't emphasis — it was attention budget.
 
 Skills solve this by loading knowledge **only when the task triggers it**. A 200-line testing framework loads when you're writing tests. It doesn't exist when you're refactoring CSS.
+
+<ScrollVideo src="/videos/on-demand-loading.webm" alt="Animated comparison of bloated CLAUDE.md versus distributed skill loading" />
 
 ### Why skill design matters
 
