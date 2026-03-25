@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "skills": {
+    "ui-animation": {
+      "source": "mblode/agent-skills",
+      "sourceType": "github",
+      "computedHash": "86736f1b8ab90f210db0213bc97c6cba047a45f86e2facc68a7e1e98cc315107"
+    }
+  }
+}
