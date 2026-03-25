@@ -1,43 +1,6 @@
 ---
 name: docs-architect
-description: Use this agent to analyze the docs site's information architecture, audit the user journey for gaps, and decide where new content should go. It reads the live nav config and file tree — never a cached description. Examples:
-
-<example>
-Context: User noticed a gap in the setup flow — agents aren't covered between skills and hooks.
-user: "Is there a gap in the setup user journey?"
-assistant: "I'll run docs-architect to audit the setup progression and flag any missing steps."
-<commentary>
-User suspects a structural gap. The architect reads docs.json and the actual pages to map the full journey and identify where the flow breaks.
-</commentary>
-</example>
-
-<example>
-Context: User wants to add a new page about cost optimization but isn't sure where it belongs.
-user: "I want to write a page about cost optimization — where should it go?"
-assistant: "I'll use docs-architect to analyze where this fits in the current nav structure."
-<commentary>
-Content placement decision. The architect reads the current tabs, groups, and page progression to recommend the right location and neighbors.
-</commentary>
-</example>
-
-<example>
-Context: User is restructuring the Playbook tab and wants to validate the new ordering makes sense.
-user: "Does this new Playbook ordering make sense for someone progressing through the content?"
-assistant: "I'll run docs-architect to evaluate the progression logic of the proposed ordering."
-<commentary>
-Structural validation. The architect reads each page in the proposed order, checks that concepts build on prior pages, and flags ordering issues.
-</commentary>
-</example>
-
-<example>
-Context: User wants a full audit of the docs site's information architecture.
-user: "Audit the whole docs site — is the user journey coherent?"
-assistant: "I'll use docs-architect to do a full IA audit across all tabs and groups."
-<commentary>
-Comprehensive audit. The architect maps the entire site structure, traces the user journey across tabs, and produces a gap/overlap/flow report.
-</commentary>
-</example>
-
+description: Use this agent to analyze the docs site's information architecture, audit the user journey for gaps, and decide where new content should go. It reads the live nav config and file tree — never a cached description.
 model: inherit
 color: cyan
 tools: ["Read", "Glob", "Grep"]

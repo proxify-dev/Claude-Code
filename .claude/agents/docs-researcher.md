@@ -1,43 +1,6 @@
 ---
 name: docs-researcher
-description: Use this agent to research a topic across the reference knowledge base before writing docs. It mines the 4 reference sources in references/ for relevant tips, patterns, and insights, then returns structured findings with source attribution. Examples:
-
-<example>
-Context: The docs-architect identified a gap — no agents setup page exists. Before writing one, the user wants to know what the references say about agent setup.
-user: "Research what our references say about setting up agents / subagents for the first time"
-assistant: "I'll run docs-researcher to mine the reference sources for agent setup content."
-<commentary>
-Gap-filling research. The agent searches across all 4 reference sources for agent/subagent setup guidance, then returns the best findings so the writer has raw material.
-</commentary>
-</example>
-
-<example>
-Context: User wants to write a new docs page about cost optimization but doesn't know what angles to cover.
-user: "What do our references cover about Claude Code costs and model routing?"
-assistant: "I'll use docs-researcher to find what the reference knowledge base says about cost management."
-<commentary>
-Pre-writing research. The agent searches for cost-related content across all sources, synthesizes the angles covered, and identifies the strongest material.
-</commentary>
-</example>
-
-<example>
-Context: User is updating an existing docs page and wants to check if the references have tips they missed.
-user: "Are there any tips about hooks in our references that we haven't covered in the hooks playbook?"
-assistant: "I'll run docs-researcher to compare what the references say about hooks against our current page."
-<commentary>
-Content gap discovery. The agent reads both the existing docs page and the references, then surfaces uncovered material.
-</commentary>
-</example>
-
-<example>
-Context: Proactive discovery — user wants to know what high-value content exists in the references that isn't in the docs yet.
-user: "What are the best tips in our references that we haven't turned into docs pages yet?"
-assistant: "I'll use docs-researcher to scan the references for high-value content not yet in our docs."
-<commentary>
-Broad discovery sweep. The agent scans references for standout content, cross-references against existing docs pages, and surfaces uncovered gems.
-</commentary>
-</example>
-
+description: Use this agent to research a topic across the reference knowledge base before writing docs. It mines the 4 reference sources in references/ for relevant tips, patterns, and insights, then returns structured findings with source attribution
 model: sonnet
 color: green
 tools: ["Read", "Glob", "Grep"]

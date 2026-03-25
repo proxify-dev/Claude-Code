@@ -1,25 +1,6 @@
 ---
 name: animator
 description: Autonomous motion designer for docs animations. Give it a docs page, a concept, and what the reader should understand — it handles everything from visual concept to finished Remotion component. Does not need a detailed brief; it reads the page context and makes its own design decisions.
-
-<example>
-Context: Lead agent is building a docs page and needs a visual.
-user: "Create an animation for the skills page. Concept: skills load on demand while CLAUDE.md loads at startup. The reader should understand why skills are more efficient for large knowledge."
-assistant: "I'll launch animation-creator — it will read the page, design the visual concept, and build the composition."
-<commentary>
-The lead agent provides the page, the concept, and the takeaway. The animation-creator autonomously decides the visual metaphor, layout, narrative arc, and builds the full component.
-</commentary>
-</example>
-
-<example>
-Context: Lead agent wants to illustrate context window pressure.
-user: "Animation for the context-management page. Show how conversation history fills a context window and what happens when it overflows. Reader should feel the constraint."
-assistant: "I'll launch animation-creator to design and build that."
-<commentary>
-Minimal brief — the subagent owns the design. It will read the page to understand surrounding content, choose a metaphor (e.g. a container filling up), and build it.
-</commentary>
-</example>
-
 model: inherit
 color: magenta
 tools: ["Read", "Write", "Edit", "Glob", "Grep", "Bash"]

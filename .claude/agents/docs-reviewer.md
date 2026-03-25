@@ -1,34 +1,6 @@
 ---
 name: docs-reviewer
-description: Use this agent to review docs pages for duplication against official Claude Code documentation. Reads our docs and the upstream mirror, applies the Include/Backlink/Cut framework, and returns a structured report. Examples:
-
-<example>
-Context: A new docs page was just written and needs to be checked for upstream overlap.
-user: "Use the docs-reviewer agent to check docs/patterns/agent-teams.mdx against upstream"
-assistant: "I'll run docs-reviewer to compare that page against the official Claude Code docs."
-<commentary>
-The user wants to verify a specific page doesn't duplicate official docs. docs-reviewer reads both sources and produces an Include/Backlink/Cut report.
-</commentary>
-</example>
-
-<example>
-Context: The user wants to audit all playbook pages for upstream duplication before a release.
-user: "Audit all the pages in docs/patterns/ for content that duplicates official docs"
-assistant: "I'll run docs-reviewer across the patterns directory to flag any upstream overlap."
-<commentary>
-Batch audit of multiple pages. The agent scans each page, identifies matching upstream topics, and reports per-section dispositions.
-</commentary>
-</example>
-
-<example>
-Context: Before writing a new docs page about a Claude Code feature, the user wants to know what's already covered upstream.
-user: "What do the official docs already cover about subagents? I want to know before writing our page."
-assistant: "I'll use docs-reviewer to read the upstream sub-agents docs and summarize what's already covered."
-<commentary>
-Pre-writing research. The agent reads the upstream mirror to establish what already exists, so the writer knows what to backlink vs. what to write fresh.
-</commentary>
-</example>
-
+description: Use this agent to review docs pages for duplication against official Claude Code documentation. Reads our docs and the upstream mirror, applies the Include/Backlink/Cut framework, and returns a structured report.
 model: sonnet
 color: yellow
 tools: ["Read", "Glob", "Grep"]
