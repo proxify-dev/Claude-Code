@@ -683,24 +683,40 @@
         {
           "ref": "claudefa.st/blog/guide/mechanics/robots-first-engineering.md",
           "sections": [
-            "Specs as Lookup Tables",
             "Development vs Engineering",
-            "The Mindset"
+            "The Mindset",
+            "Context Windows Are Arrays",
+            "Specs as Lookup Tables",
+            "Linkage Over Fancy Formats",
+            "Back-Pressure Engineering"
           ],
           "quality": "high",
-          "usage": "primary"
+          "usage": "primary",
+          "notes": "Primary source for mindset shift, spec patterns, linkage format, back-pressure rails, and context-window/pin argument"
         },
         {
           "ref": "claudefa.st/blog/guide/agents/agent-teams-workflow.md",
           "sections": [
             "Brownfield Codebases",
-            "file ownership boundaries"
+            "file ownership boundaries",
+            "Assumption drift",
+            "Contract Chain Analysis"
           ],
-          "quality": "medium",
-          "usage": "supporting"
+          "quality": "high",
+          "usage": "supporting",
+          "notes": "Assumption drift failure mode, contract chain mechanism for parallelization section"
+        },
+        {
+          "ref": "claudefa.st/blog/guide/development/agentic-engineering-best-practices.md",
+          "sections": [
+            "PRD-First Development"
+          ],
+          "quality": "high",
+          "usage": "supporting",
+          "notes": "Out of Scope pattern as robots-first spec artifact"
         }
       ],
-      "confidence": "inferred",
+      "confidence": "verified",
       "last_audited": "2026-03-25"
     }
   }

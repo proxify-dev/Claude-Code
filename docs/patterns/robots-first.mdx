@@ -4,31 +4,87 @@ description: "Designing specs, code, and workflows for agent execution — not h
 sources:
   - "claudefa.st/blog/guide/mechanics/robots-first-engineering.md"
   - "claudefa.st/blog/guide/agents/agent-teams-workflow.md"
+  - "claudefa.st/blog/guide/development/agentic-engineering-best-practices.md"
 ---
 
-<Note>**You'll learn:** How to restructure your engineering artifacts so agents can execute them reliably — and why this benefits human engineers too.</Note>
+<Note>**You'll learn:** Concrete techniques for structuring specs, plans, conventions, and repo layout so agents execute reliably — and how to build rails when they don't.</Note>
 
 ## The Shift
 
-Most engineering artifacts — specs, code conventions, architecture docs — are written for humans to interpret. Agents can interpret them too, but they miss nuance, read between lines poorly, and make different assumptions than you would.
+[Agentic engineering](agentic-engineering/) is the mindset — designing systems that write code reliably instead of writing code yourself. This page is the toolkit: **concrete patterns for making your engineering artifacts unambiguous to agents.**
 
-Robots-first engineering means structuring your artifacts so they're **unambiguous to an agent** while remaining readable to humans. This isn't dumbing things down — it's making implicit knowledge explicit.
+Most specs, conventions, and architecture docs are written for humans to interpret. Agents can interpret them too, but they miss nuance, read between lines poorly, and make different assumptions than you would. Robots-first engineering means making implicit knowledge explicit — not dumbing things down, but closing the gaps agents fall through.
+
+Why this matters at the token level: every ambiguity forces the agent to burn context on clarification, exploration, or guessing. More context consumed means earlier compaction. Compaction is lossy — it drops the anchors the agent was using to stay on track. Drift follows. Your spec is the **pin** — the stable reference point that prevents invention. The clearer the pin, the less context the agent wastes finding it.
 
 ## Specs as Lookup Tables
 
 Narrative specs ("the system should gracefully handle edge cases") produce inconsistent agent output. Structured specs produce consistent output.
 
 | Narrative (agent guesses) | Structured (agent looks up) |
-|---------------------------|----------------------------|
+|:--|:--|
 | "Handle errors appropriately" | "4xx → return error message from response body. 5xx → retry 3x with exponential backoff, then throw `ServiceUnavailableError`" |
 | "Follow our naming conventions" | "Files: kebab-case. Components: PascalCase. Hooks: camelCase with `use` prefix. Types: PascalCase with no suffix." |
 | "Make it performant" | "Target: under 200ms p95 latency. Use database indexes on all foreign keys. Paginate queries over 100 rows." |
 
 The pattern: replace adjectives with conditions. Replace "appropriate" with a decision table.
 
+### The alias pattern
+
+Agents search for concepts using whatever vocabulary occurs to them. A spec that only uses one name gets missed when the agent searches with a synonym. Add aliases so every search path leads to the right spec:
+
+```markdown
+## User Authentication
+
+**Also known as**: login, sign-in, auth, session management, identity
+
+**Related files**: src/auth/, src/middleware/session.ts
+
+**Key patterns**: JWT tokens, refresh rotation, secure cookies
+
+**What NOT to do**: Don't implement custom crypto, don't store passwords in plain text
+```
+
+More aliases mean more search hits. More hits mean less invention.
+
+### Explicit scope boundaries
+
+Without boundaries, agents add features that "seem relevant." An auth spec without scope boundaries will produce OAuth, password reset, and 2FA — even if you only wanted email/password login. Make scope a first-class section:
+
+```markdown
+## Out of Scope
+- OAuth providers (Phase 2)
+- Two-factor authentication (Phase 3)
+- Password reset flow (separate task)
+```
+
+The "Out of Scope" section does more work per line than any other part of the spec. It prevents the most common class of agent overreach.
+
+## Linkage Over Fancy Formats
+
+Many engineers over-engineer their implementation plans — complex JSON schemas, nested task hierarchies, elaborate formatting. Strong linkage beats fancy formats.
+
+What works: bullet points with explicit references to the spec section, the exact file, and the existing pattern to follow.
+
+```markdown
+## Implementation Plan
+
+- [ ] Add JWT validation middleware
+  - Spec: auth-spec.md#token-validation
+  - File: src/middleware/auth.ts (lines 45-60)
+  - Pattern: Follow existing rate-limit middleware structure
+
+- [ ] Create refresh token endpoint
+  - Spec: auth-spec.md#refresh-flow
+  - File: src/routes/auth/refresh.ts (new file)
+  - Pattern: Match existing /auth/login endpoint structure
+```
+
+The agent can now search precisely. It finds the right file hunks. It follows existing patterns instead of inventing new ones. Every line in the plan is a search query the agent can execute — not a paragraph it has to interpret.
+
 ## Code Conventions That Reduce Ambiguity
 
-Structure your CLAUDE.md so agents don't need judgment calls on recurring decisions:
+Structure your `CLAUDE.md` so agents don't need judgment calls on recurring decisions:
 
 ```markdown
 ## Import Order
@@ -44,7 +100,9 @@ Blank line between each group.
 - Never swallow errors silently — log at minimum
 ```
 
-Every convention that's implicit in your team's culture but not written down is a source of agent inconsistency. Write it down once, enforce via [hooks](../setup/hooks-playbook/) where possible.
+Every convention that's implicit in your team's culture but not written down is a source of **assumption drift** — where parallel agents independently invent different conventions for the same decision. One agent writes `camelCase` API responses while another uses `snake_case`. Both pass their own tests. Integration fails. Write it down once, enforce via [hooks](../setup/hooks-playbook/) where possible.
+
+<Tip>The same principle applies at the single-request level. See [Invocation Quality](invocation-quality) for the five-question checklist every agent invocation should answer.</Tip>
 
 ## Repo Structure for Parallelization
 
@@ -55,11 +113,19 @@ Agents work in parallel best when they have clear ownership boundaries. Design y
 - **Shared types in a shared location** — `src/types/` is the contract layer
 - **No cross-feature imports** — features communicate through shared types, not direct imports
 
-This structure lets you give each agent a directory and say "you own this, don't touch anything outside it." See [Contract Chains](orchestration-patterns#contract-chains--wave-execution) for how this enables reliable parallel execution.
+This structure lets you give each agent a directory and say "you own this, don't touch anything outside it." See [Contract Chains](orchestration-patterns/contract-chains) for how this enables reliable parallel execution — where each wave's concrete output gets injected into the next wave's agent prompts, so parallel agents build against verified interfaces instead of inventing their own.
+
+## Back-Pressure Engineering
+
+Robots-first artifacts don't prevent all failures — they reduce the blast radius and make failures correctable. When agent output drifts, the fix is engineering tighter rails:
+
+1. **Add constraints to specs** — tighten decision tables, add "What NOT to do" sections
+2. **Strengthen linkage** — add file paths, line numbers, spec section references to plans
+3. **Improve search guidance** — add aliases, related-files pointers, cross-references
+4. **Increase gating** — add tests, linting rules, formatters, security checks via [hooks](../setup/hooks-playbook/)
+
+When outcomes are still poor after tightening the primary loop, add remediation loops: a refactor loop, a convention-enforcement loop, a security-audit loop. Each loop is small, focused, and addresses one failure domain. Back-pressure keeps the generative function on the rails — the locomotive stays on track because you've engineered the track.
 
 ## The Compound Effect
 
-Robots-first conventions compound: every spec you restructure, every convention you make explicit, every directory boundary you enforce makes *every future agent session* more reliable. This is the [system evolution](system-evolution/) mindset applied to engineering artifacts.
-
----
-
+Robots-first conventions compound: every spec you restructure, every convention you make explicit, every directory boundary you enforce makes *every future agent session* more reliable. This is the [system evolution](system-evolution/) mindset applied to engineering artifacts — you're not fixing one session, you're fixing the system.
