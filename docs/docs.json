@@ -22,7 +22,7 @@
         "tab": "Quickstart",
         "groups": [
           {
-            "group": "Introduction",
+            "group": "Level Up",
             "pages": ["index"]
           },
           {
@@ -107,7 +107,7 @@
         "tab": "Dojo",
         "groups": [
           {
-            "group": "Dojo",
+            "group": "Practice",
             "pages": ["dojo/index"]
           }
         ]
