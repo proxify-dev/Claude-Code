@@ -9,8 +9,8 @@
   "favicon": "/favicon.ico",
   "colors": {
     "primary": "#5258FB",
-    "light": "#D5D5FE",
-    "dark": "#171559"
+    "light": "#999AFD",
+    "dark": "#5258FB"
   },
   "topbarCtaButton": {
     "name": "GitHub",
