@@ -1,0 +1,6 @@
+/* Fix shields.io badge alignment in markdown tables */
+table td img {
+  display: inline !important;
+  vertical-align: middle !important;
+  margin: 0 !important;
+}

@@ -73,6 +73,8 @@ npx skills search <keyword>
 npx skills add owner/repo@skill-name
 ```
 
+<Warning>**Vet before you install.** Skills are markdown files injected into Claude's system prompt — they control what the agent does. Always read the source before installing community skills. See [The Supply Chain](/patterns/supply-chain) for the trust model and what to look for.</Warning>
+
 ## Composing Skills That Work Together
 
 Skills are independent by design — each triggers on its own conditions. But some combinations are particularly effective:

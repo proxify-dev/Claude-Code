@@ -44,6 +44,20 @@ For [Agent Teams](agent-teams/) and [subagents](subagent-patterns/), permission 
 
 If an agent stalls, it's often waiting for a permission prompt you can't see. Route background agents to `dontAsk` mode with [hooks](../setup/hooks-playbook/) providing the safety layer.
 
+## Permissions and Instructions
+
+Permission modes control what Claude can **do**. But there's a second trust axis: what Claude is **told** to do. Every skill, plugin, and MCP server injects instructions into the prompt. If those instructions are compromised, permissions are your containment layer.
+
+The rule: **lower instruction trust demands tighter capability restrictions.**
+
+| Instruction trust | Recommended permission floor |
+|-------------------|------------------------------|
+| High (your own CLAUDE.md, vetted skills) | Auto-accept or Don't ask |
+| Medium (popular community skill, first use) | Normal — approve each action |
+| Low (unknown skill, unvetted MCP server) | Normal + OS-level sandboxing |
+
+For the full trust model — who controls each instruction layer and how to vet community content — see [The Supply Chain](/patterns/supply-chain).
+
 ## Sandboxing for Autonomous Work
 
 <Tip>**Official reference** — For OS-level sandboxing (macOS Seatbelt, Linux bubblewrap), filesystem isolation, and network restrictions, see the [official sandboxing docs](https://code.claude.com/docs/en/security#sandboxing).</Tip>
