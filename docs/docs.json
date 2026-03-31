@@ -113,18 +113,18 @@
         ]
       },
       {
-        "tab": "Awesome",
+        "tab": "Explore",
         "groups": [
           {
             "group": "Community Resources",
             "pages": [
-              "awesome/index",
-              "awesome/collections",
-              "awesome/skills",
-              "awesome/memory",
-              "awesome/orchestration",
-              "awesome/tools",
-              "awesome/commands"
+              "explore/index",
+              "explore/collections",
+              "explore/skills",
+              "explore/memory",
+              "explore/orchestration",
+              "explore/tools",
+              "explore/commands"
             ]
           }
         ]
