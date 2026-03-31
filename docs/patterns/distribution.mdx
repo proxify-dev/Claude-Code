@@ -110,7 +110,7 @@ If a principle lives in a skill, CLAUDE.md should point to it — not restate it
 
 The failure mode: you write the same rule in CLAUDE.md and in a skill. Six months later, you update the skill but forget CLAUDE.md. Now the agent sees two conflicting instructions and has to guess which one is current.
 
-**Each instruction lives in exactly one layer.** Pointers connect the layers; copies break them.
+**Each instruction lives in exactly one layer.** Pointers connect the layers; copies break them. And each layer has a different trust profile — see [The Supply Chain](/patterns/supply-chain) for who controls what.
 
 ## Why Skills Exist
 
