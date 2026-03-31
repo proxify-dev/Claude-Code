@@ -111,6 +111,23 @@
             "pages": ["dojo/index"]
           }
         ]
+      },
+      {
+        "tab": "Awesome",
+        "groups": [
+          {
+            "group": "Community Resources",
+            "pages": [
+              "awesome/index",
+              "awesome/collections",
+              "awesome/skills",
+              "awesome/memory",
+              "awesome/orchestration",
+              "awesome/tools",
+              "awesome/commands"
+            ]
+          }
+        ]
       }
     ]
   }
