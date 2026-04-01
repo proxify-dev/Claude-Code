@@ -1,0 +1,134 @@
+---
+title: "Make It Yours"
+description: "Create a personal plugin workspace — your portable Claude configuration that follows you across every project."
+sources: []
+---
+
+<Tip>**Official reference** — For plugin.json schema and SKILL.md frontmatter spec, see the [official plugin docs](https://code.claude.com/docs/en/plugins) and [skills authoring docs](https://code.claude.com/docs/en/skills). This page covers why you want a personal workspace and how to set one up.</Tip>
+
+Claude Code has layers: `~/.claude/CLAUDE.md` for global preferences, project CLAUDE.md for repo-specific context, community skills for your tech stack. But there's a layer missing from most setups — **your own tooling**. The skills, agents, hooks, and workflows you build to make Claude work the way *you* work.
+
+That's your personal plugin workspace. It's a directory in your home folder that acts as your Claude operating system: meta-skills that improve how Claude reasons, custom agents for how you review code, slash commands for your daily workflows, hooks that enforce your standards. It loads in every session, across every codebase.
+
+Think of it as your dotfiles for Claude.
+
+## Where It Fits
+
+Claude Code already has global config (`~/.claude/CLAUDE.md`) and per-project config. Your workspace is a different thing entirely — it's not configuration, it's **tooling**.
+
+| Layer | What it is | Example |
+|---|---|---|
+| `~/.claude/CLAUDE.md` | Global preferences | "I prefer concise responses" |
+| Project `CLAUDE.md` | Repo-specific context | "Run `npm test`, we use Prisma" |
+| Community skills | Tech stack patterns | React, Tailwind, Zod conventions |
+| **Your workspace** | **Your meta-tooling** | Decision frameworks, custom agents, workflow commands, context auditors |
+
+The first three tell Claude *what to know*. Your workspace tells Claude *how to operate*.
+
+## Set It Up
+
+One command:
+
+```bash
+npx new-claude-plugin my-workspace
+```
+
+This creates:
+
+```
+~/my-workspace/
+├── .claude-plugin/
+│   └── plugin.json
+├── skills/
+│   └── hello/
+│       └── SKILL.md     # Starter skill — rename and fill in
+└── README.md
+```
+
+The interactive prompts let you opt into agents, hooks, and MCP servers. Start with just a skill — you can add the rest later.
+
+## Load It
+
+Point Claude at your workspace to start using it:
+
+```bash
+claude --plugin-dir ~/my-workspace
+```
+
+Hot-reload while you're editing, without restarting:
+
+```
+/reload-plugins
+```
+
+When it's stable, install it permanently so it loads in every session:
+
+```
+/plugin marketplace add ~/my-workspace
+```
+
+| Stage | How to load | When |
+|-------|-------------|------|
+| Trying it out | `claude --plugin-dir ~/my-workspace` | First day |
+| Daily driver | `/plugin marketplace add ~/my-workspace` | After a week of use |
+| Sharing with your team | Push to GitHub, `/plugin marketplace add owner/repo` | When others want it |
+
+## What Belongs Here
+
+Anything that makes Claude better at working **your way**, regardless of the project you're in.
+
+<Tabs>
+  <Tab title="Meta-skills">
+    Skills that improve how Claude operates — not domain knowledge, but operational tooling:
+    - A decision framework for where new knowledge should live (CLAUDE.md vs skill vs agent)
+    - A context auditor that shows which skills consume the most tokens
+    - A skill architecture guide that teaches Claude how to build better skills
+  </Tab>
+  <Tab title="Custom agents">
+    Agents that match your workflow:
+    - A code reviewer that follows your standards
+    - A blueprint scaffolder for multi-agent setups
+    - A research agent tuned to your preferred sources
+  </Tab>
+  <Tab title="Slash commands">
+    Commands for your daily routines:
+    - `/commit` with your preferred message format
+    - `/pr-review` with your team's checklist
+    - `/brainstorm` with your product thinking framework
+  </Tab>
+  <Tab title="Hooks">
+    Guardrails and automations that apply everywhere:
+    - Auto-lint before commits
+    - Block sensitive file patterns
+    - Enforce your naming conventions
+  </Tab>
+</Tabs>
+
+Write skill descriptions as "use when" rules — that's how Claude decides whether to load them:
+
+```yaml
+---
+name: skill-architecture
+description: >-
+  How to design skills that actually reach agents at the right time.
+  Use when creating, restructuring, or auditing skills.
+---
+```
+
+**Not here:** project-specific build commands (that's CLAUDE.md), tech stack patterns a community skill already covers (install those instead), or things that change every sprint (too volatile to codify).
+
+## Growing It
+
+Start with one skill. Add the next piece when you catch yourself working around a gap.
+
+As your workspace matures, organize by concern — keep meta-tooling, domain skills, and workflow commands in separate plugins under one repo. A `marketplace.json` at the root lets you manage multiple plugins together. See the [official plugin docs](https://code.claude.com/docs/en/plugins) for the marketplace structure.
+
+When something in your personal workspace turns out to be useful for your whole team, extract it into a shared plugin. Your workspace stays yours.
+
+## Anti-Patterns
+
+**Don't confuse config with tooling.** Global preferences go in `~/.claude/CLAUDE.md`. Project context goes in your project's CLAUDE.md. Your workspace is for *tools that change how Claude operates* — see [Context Distribution](/patterns/distribution).
+
+**Don't skip the trial period.** Use `--plugin-dir` mode for a week before installing permanently. If a skill's description never triggers, rewrite it. If you keep editing the body, it's not ready.
+
+**Don't build a monolith.** If your workspace grows past 5–6 unrelated skills, split by concern. Meta-tooling, workflow commands, and domain skills have different lifecycles.
