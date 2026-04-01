@@ -1,8 +1,8 @@
-# Claude-Code
-
-Proxify's Claude Code plugin — skills, agents, and guides for agentic engineering.
+Proxify's Agentic Engineering Acceleration guide.
 
 `@docs/` hosts the Mintlify site.
+
+Hosted at proxifyab.mintlify.app
 
 ## Repo Structure
 
